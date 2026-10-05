@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Phase 3 generator: keeps the admin patch reproducible and idempotent.
 path = Path('admin.html')
 text = path.read_text(encoding='utf-8')
 
