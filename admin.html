@@ -115,7 +115,52 @@ function categoryOptions(selected){return CATEGORIES.map(c=>`<option value="${es
 function renderProducts(){const body=$('productsBody');if(!PRODUCTS.length){body.innerHTML='<tr><td colspan="10" class="muted">Aucun produit.</td></tr>';return;}body.innerHTML=PRODUCTS.map(p=>`<tr data-id="${esc(p.id)}"><td><img class="thumb" src="${esc(p.img)}" alt=""><input type="file" accept="image/jpeg,image/png,image/webp" data-file="${esc(p.id)}" style="max-width:110px;margin-top:6px"></td><td><input type="checkbox" data-f="visible" ${p.visible!==false&&p.status!=='draft'?'checked':''}></td><td><input data-f="name" value="${esc(p.name)}"></td><td><select data-f="cat">${categoryOptions(p.cat)}</select></td><td><select data-f="badge"><option value="" ${!p.badge?'selected':''}>Aucun</option><option value="new" ${p.badge==='new'?'selected':''}>New</option><option value="bestseller" ${p.badge==='bestseller'?'selected':''}>Best Seller</option><option value="promo" ${p.badge==='promo'?'selected':''}>Promo</option></select></td><td><textarea data-f="desc" rows="3">${esc(p.desc)}</textarea></td><td><input data-f="price" type="number" min="0" value="${Number(p.price||0)}"></td><td><input data-f="oldPrice" type="number" min="0" value="${p.oldPrice??''}"></td><td><input data-f="stock" type="number" min="0" value="${Number(p.stock||0)}"></td><td><div class="row-actions"><button class="btn primary" data-save="${esc(p.id)}">Enregistrer</button><button class="btn gold" data-dup="${esc(p.id)}">Dupliquer</button><button class="btn danger" data-del="${esc(p.id)}">Supprimer</button></div></td></tr>`).join('');
 body.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>saveRow(b.dataset.save));body.querySelectorAll('[data-dup]').forEach(b=>b.onclick=()=>duplicateProduct(b.dataset.dup));body.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>deleteProduct(b.dataset.del));body.querySelectorAll('[data-file]').forEach(inp=>inp.onchange=e=>replaceImage(inp.dataset.file,e.target.files[0]));}
 async function saveRow(id){const row=document.querySelector(`tr[data-id="${CSS.escape(id)}"]`),p=PRODUCTS.find(x=>String(x.id)===String(id));if(!row||!p)return;const q=n=>row.querySelector(`[data-f="${n}"]`);p.name=q('name').value.trim()||p.name;p.cat=q('cat').value;p.badge=q('badge').value;p.desc=q('desc').value.trim();p.price=Math.max(0,Number(q('price').value)||0);p.oldPrice=q('oldPrice').value===''?null:Math.max(0,Number(q('oldPrice').value)||0);p.stock=Math.max(0,parseInt(q('stock').value,10)||0);p.visible=q('visible').checked;p.status=p.visible?'active':'draft';try{await setStore('axoria_products',PRODUCTS);toast('Produit enregistré');}catch(e){console.error(e);toast('Échec de sauvegarde');}}
-async function replaceImage(id,file){if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){toast('Format image non supporté');return;}if(file.size>1.5*1024*1024){toast('Image trop lourde (1,5 Mo max pour cette phase)');return;}const p=PRODUCTS.find(x=>String(x.id)===String(id));if(!p)return;const r=new FileReader();r.onload=async()=>{p.img=r.result;try{await setStore('axoria_products',PRODUCTS);renderProducts();toast('Image mise à jour');}catch(e){console.error(e);toast('Échec de sauvegarde image');}};r.readAsDataURL(file);}
+const PRODUCT_IMAGE_BUCKET='product-images';
+function productImageStoragePath(url){
+  const marker=`/storage/v1/object/public/${PRODUCT_IMAGE_BUCKET}/`;
+  const value=String(url||'');
+  const i=value.indexOf(marker);
+  if(i<0)return null;
+  return decodeURIComponent(value.slice(i+marker.length).split('?')[0]);
+}
+function safeUploadName(name){
+  return String(name||'image').normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/^-+|-+$/g,'')||'image';
+}
+async function replaceImage(id,file){
+  if(!file)return;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)){toast('Format image non supporté');return;}
+  if(file.size>5*1024*1024){toast('Image trop lourde (5 Mo max)');return;}
+  const p=PRODUCTS.find(x=>String(x.id)===String(id));
+  if(!p)return;
+  const oldUrl=p.img||'';
+  const filename=safeUploadName(file.name);
+  const objectPath=`products/${encodeURIComponent(String(id))}/${Date.now()}-${Math.random().toString(36).slice(2,10)}-${filename}`;
+  try{
+    const {error:uploadError}=await sb.storage.from(PRODUCT_IMAGE_BUCKET).upload(objectPath,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+    if(uploadError)throw uploadError;
+    const {data:publicData}=sb.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(objectPath);
+    const newUrl=publicData?.publicUrl;
+    if(!newUrl)throw new Error('Public image URL unavailable');
+    p.img=newUrl;
+    try{
+      await setStore('axoria_products',PRODUCTS);
+    }catch(saveError){
+      p.img=oldUrl;
+      await sb.storage.from(PRODUCT_IMAGE_BUCKET).remove([objectPath]);
+      throw saveError;
+    }
+    const oldPath=productImageStoragePath(oldUrl);
+    if(oldPath && oldPath!==objectPath){
+      const {error:removeError}=await sb.storage.from(PRODUCT_IMAGE_BUCKET).remove([oldPath]);
+      if(removeError)console.warn('Old product image cleanup failed',removeError);
+    }
+    renderProducts();
+    toast('Image mise à jour');
+  }catch(e){
+    console.error(e);
+    toast('Échec de sauvegarde image');
+  }
+}
 $('addProduct').onclick=async()=>{const cat=CATEGORIES[0]?.name||'Produits';PRODUCTS.unshift({id:idNew(),cat,name:'Nouveau produit',price:99,oldPrice:null,badge:'',stock:50,status:'draft',visible:false,desc:'',longDesc:'',img:''});try{await setStore('axoria_products',PRODUCTS);renderProducts();toast('Produit ajouté en brouillon');}catch(e){console.error(e);toast('Échec ajout produit');}};
 async function duplicateProduct(id){const p=PRODUCTS.find(x=>String(x.id)===String(id));if(!p)return;PRODUCTS.unshift({...p,id:idNew(),name:(p.name||'Produit')+' (copie)',visible:false,status:'draft'});try{await setStore('axoria_products',PRODUCTS);renderProducts();toast('Produit dupliqué');}catch(e){console.error(e);toast('Échec duplication');}}
 async function deleteProduct(id){if(!confirm('Supprimer ce produit ?'))return;const before=[...PRODUCTS];PRODUCTS=PRODUCTS.filter(x=>String(x.id)!==String(id));try{await setStore('axoria_products',PRODUCTS);renderProducts();toast('Produit supprimé');}catch(e){PRODUCTS=before;console.error(e);toast('Échec suppression');}}
