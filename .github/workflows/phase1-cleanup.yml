@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - security-phase-1
+    paths:
+      - 'scripts/phase1_cleanup.py'
+      - '.github/workflows/phase1-cleanup.yml'
   workflow_dispatch:
 
 permissions:
@@ -19,8 +22,22 @@ jobs:
           ref: security-phase-1
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Run Phase 1 cleanup
         run: python scripts/phase1_cleanup.py
+
+      - name: Validate generated storefront
+        shell: bash
+        run: |
+          git diff --check
+          ! grep -q 'Kaltommohamed1965' index.html
+          ! grep -q 'ADMIN_RECOVERY_ANSWER' index.html
+          ! grep -q 'axoria_admin_pin' index.html
+          ! grep -q 'axoria_admin_recovery' index.html
 
       - name: Commit cleanup if needed
         shell: bash
@@ -29,8 +46,8 @@ jobs:
             echo "No index.html changes to commit."
             exit 0
           fi
-          git config user.name "AXORIA Security Bot"
-          git config user.email "actions@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
           git commit -m "security: remove legacy storefront admin and PIN"
           git push origin HEAD:security-phase-1
