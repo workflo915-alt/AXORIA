@@ -1,20 +1,24 @@
 -- AXORIA — Security Phase 1
--- Run this in Supabase SQL Editor ONLY after the new authenticated admin page is ready.
--- This migration removes anonymous read/write access to private/admin data.
--- IMPORTANT: in Supabase Authentication settings, disable public email sign-ups
--- and create the owner/admin account manually before applying this migration.
+-- Run this in Supabase SQL Editor after the AXORIA admin Auth user exists.
+-- This version is safe even if `axoria_store` was previously deleted.
 
 begin;
 
 -- -----------------------------------------------------------------------------
 -- 1) Store/catalog table
--- Public visitors may only read storefront data.
--- Only authenticated users may change shared store data.
+-- Re-create the current AXORIA shared store only if it does not exist.
+-- This is NOT the old site's data: it is a clean store for the current AXORIA site.
 -- -----------------------------------------------------------------------------
 
-alter table if exists public.axoria_store enable row level security;
+create table if not exists public.axoria_store (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
+);
 
--- Remove the broad policies used by the original single-file prototype.
+alter table public.axoria_store enable row level security;
+
+-- Remove any broad legacy policies if they exist.
 drop policy if exists "public read" on public.axoria_store;
 drop policy if exists "public write" on public.axoria_store;
 drop policy if exists "public update" on public.axoria_store;
@@ -41,16 +45,72 @@ to authenticated
 using (true)
 with check (true);
 
--- Remove obsolete client-side admin secrets if they already exist.
+-- Seed only the current AXORIA storefront defaults when rows do not exist.
+-- Existing rows are preserved.
+insert into public.axoria_store (key, value)
+values
+(
+  'axoria_categories',
+  '[
+    {"id":"c1","name":"Support & Récupération","img":4506106},
+    {"id":"c2","name":"Ceinture Amincissante","img":5629203},
+    {"id":"c3","name":"Fitness & Mobilité","img":4397831},
+    {"id":"c4","name":"Massage & Détente","img":6207527},
+    {"id":"c5","name":"Confort & Sommeil","img":6541176}
+  ]'::jsonb
+),
+(
+  'axoria_products',
+  '[
+    {
+      "id":"1965",
+      "cat":"Support & Récupération",
+      "name":"Posture Corrector",
+      "price":149,
+      "oldPrice":null,
+      "discount":0,
+      "badge":"bestseller",
+      "stock":50,
+      "status":"active",
+      "visible":true,
+      "desc":"Redresse les épaules et soutient le dos pour une meilleure posture au quotidien, dès les premières minutes de port.",
+      "longDesc":"Redresse les épaules et soutient le dos pour une meilleure posture au quotidien, dès les premières minutes de port. Fabriqué avec des matériaux résistants et respirants, ce produit AXORIA est conçu pour un usage quotidien prolongé, que ce soit au bureau, à la maison ou pendant le sport. Réglable et ajustable pour s''adapter à toutes les morphologies.",
+      "img":"https://images.pexels.com/photos/4506106/pexels-photo-4506106.jpeg?auto=compress&cs=tinysrgb&w=900"
+    },
+    {
+      "id":"1966",
+      "cat":"Ceinture Amincissante",
+      "name":"Slimming Waist Belt",
+      "price":179,
+      "oldPrice":null,
+      "discount":0,
+      "badge":"new",
+      "stock":50,
+      "status":"active",
+      "visible":true,
+      "desc":"Ceinture amincissante ajustable qui affine la taille, soutient le dos et accompagne vos séances de sport ou votre routine quotidienne.",
+      "longDesc":"Ceinture amincissante ajustable qui affine la taille, soutient le dos et accompagne vos séances de sport ou votre routine quotidienne. Fabriqué avec des matériaux résistants et respirants, ce produit AXORIA est conçu pour un usage quotidien prolongé, que ce soit au bureau, à la maison ou pendant le sport. Réglable et ajustable pour s''adapter à toutes les morphologies.",
+      "img":"https://images.pexels.com/photos/5629203/pexels-photo-5629203.jpeg?auto=compress&cs=tinysrgb&w=900"
+    }
+  ]'::jsonb
+),
+(
+  'axoria_reviews',
+  '[
+    {"name":"Yassine B.","loc":"Casablanca, Maroc","rating":5,"comment":"Le correcteur de posture a changé ma façon de m''asseoir au bureau. Moins de douleurs au dos après une semaine."},
+    {"name":"Sara M.","loc":"Rabat, Maroc","rating":5,"comment":"La ceinture amincissante est confortable et le service a été rapide."}
+  ]'::jsonb
+)
+on conflict (key) do nothing;
+
+-- Remove obsolete client-side admin secrets if they somehow exist.
 delete from public.axoria_store
 where key in ('axoria_admin_pin', 'axoria_admin_recovery');
 
 -- -----------------------------------------------------------------------------
 -- 2) Orders
--- Visitors can create an order, but cannot read, list, update or delete orders.
+-- Visitors can create an order, but cannot read/list/update/delete orders.
 -- Authenticated admin users can manage orders.
--- NOTE: server-side price validation is Phase 2; this migration protects privacy
--- and admin mutation rights, but the browser still supplies item prices/total.
 -- -----------------------------------------------------------------------------
 
 alter table if exists public.orders enable row level security;
@@ -61,6 +121,7 @@ drop policy if exists "public update" on public.orders;
 drop policy if exists "public delete" on public.orders;
 drop policy if exists "storefront_create_order" on public.orders;
 drop policy if exists "admin_read_orders" on public.orders;
+drop policy if exists "admin_insert_orders" on public.orders;
 drop policy if exists "admin_update_orders" on public.orders;
 drop policy if exists "admin_delete_orders" on public.orders;
 
@@ -113,7 +174,8 @@ using (true);
 
 commit;
 
--- Verification queries (run after COMMIT):
+-- Optional verification after COMMIT:
+-- select key from public.axoria_store order by key;
 -- select policyname, roles, cmd from pg_policies
 -- where schemaname='public' and tablename in ('axoria_store','orders')
 -- order by tablename, policyname;
