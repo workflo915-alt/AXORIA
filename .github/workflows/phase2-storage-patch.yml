@@ -1,0 +1,51 @@
+name: AXORIA Phase 2 Storage Patch
+
+on:
+  push:
+    branches:
+      - phase-2-storage-sync
+    paths:
+      - 'scripts/phase2_storage_patch.py'
+      - '.github/workflows/phase2-storage-patch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-admin-storage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-2-storage-sync
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Patch admin image upload
+        run: python scripts/phase2_storage_patch.py
+
+      - name: Validate patch
+        shell: bash
+        run: |
+          git diff --check
+          grep -q "PRODUCT_IMAGE_BUCKET='product-images'" admin.html
+          ! grep -q 'r.readAsDataURL(file)' admin.html
+
+      - name: Commit patch
+        shell: bash
+        run: |
+          if git diff --quiet -- admin.html; then
+            echo "No admin.html changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add admin.html
+          git commit -m "phase2: move product image uploads to Supabase Storage"
+          git push origin HEAD:phase-2-storage-sync
