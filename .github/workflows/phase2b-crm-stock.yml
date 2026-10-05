@@ -1,0 +1,54 @@
+name: AXORIA Phase 2B CRM Stock
+
+on:
+  push:
+    branches:
+      - phase-2b-crm-stock
+    paths:
+      - 'scripts/phase2b_crm_stock.py'
+      - '.github/workflows/phase2b-crm-stock.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Phase 2B branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-2b-crm-stock
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply Phase 2B patch
+        run: python scripts/phase2b_crm_stock.py
+
+      - name: Validate generated files
+        shell: bash
+        run: |
+          git diff --check
+          grep -q "sb.rpc('place_order'" index.html
+          grep -q "sb.rpc('set_order_status'" admin.html
+          grep -q "orderSearch" admin.html
+          if grep -q "sb.from('orders').insert" index.html; then exit 1; fi
+          if grep -q "sb.from('orders').update({status})" admin.html; then exit 1; fi
+
+      - name: Commit generated changes
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html admin.html; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html admin.html
+          git commit -m "phase2b: secure checkout and improve CRM stock sync"
+          git push origin HEAD:phase-2b-crm-stock

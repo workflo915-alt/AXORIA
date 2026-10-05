@@ -1450,18 +1450,32 @@ async function submitOrder(){
   if(!name || !phone || !city || !address){ errEl.textContent = t.orderFillFields; return; }
   if(!sb){ errEl.textContent = t.orderNoConnection; return; }
 
-  // Automatically pulled from the cart -- never re-entered by the customer.
-  const items = CART.map(c=>({ product_id: c.id, name: c.name, qty: c.qty, price: c.price, subtotal: c.price*c.qty }));
-  const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
+  // Only product IDs and quantities leave the browser. Prices, availability and
+  // stock are resolved atomically on the server by the place_order RPC.
+  const rpcItems = CART.map(c=>({ product_id:c.id, qty:c.qty }));
 
   const btn = document.getElementById('orderFormSubmitBtn');
   btn.disabled = true;
   try{
-    const { error } = await sb.from('orders').insert({
-      customer_name: name, phone, city, address, items, total,
-      notes: notes || null, status: 'New'
+    const { data, error } = await sb.rpc('place_order', {
+      p_customer_name:name,
+      p_phone:phone,
+      p_city:city,
+      p_address:address,
+      p_notes:notes || null,
+      p_items:rpcItems
     });
     if(error) throw error;
+    const placed = Array.isArray(data) ? data[0] : data;
+
+    // Stock changed server-side: refresh the visible catalog immediately.
+    const fresh = await fetchProductsSafe();
+    if(fresh.status==='ok' && Array.isArray(fresh.data)){
+      PRODUCTS = fresh.data;
+      syncNextProductId();
+      renderCatFilters();
+      renderMenuGrid();
+    }
     CART = [];
     persistCart();
     renderCart();
@@ -1471,10 +1485,24 @@ async function submitOrder(){
     document.getElementById('ofAddress').value = '';
     document.getElementById('ofNotes').value = '';
     closeOrderForm();
-    toast(t.orderSuccess);
+    const ref = placed?.order_code ? ` #${placed.order_code}` : '';
+    toast(t.orderSuccess + ref);
   }catch(e){
     console.error('submitOrder failed', e);
-    errEl.textContent = t.orderFailed;
+    const msg = String(e?.message || '');
+    if(msg.includes('Insufficient stock') || msg.includes('Product unavailable') || msg.includes('Product not found')){
+      errEl.textContent = currentLang==='ar'
+        ? 'الكمية المطلوبة غير متوفرة حالياً. حدّث الصفحة وحاول من جديد.'
+        : currentLang==='en'
+          ? 'The requested quantity is no longer available. Refresh and try again.'
+          : 'La quantité demandée n’est plus disponible. Actualisez puis réessayez.';
+      const fresh = await fetchProductsSafe();
+      if(fresh.status==='ok' && Array.isArray(fresh.data)){
+        PRODUCTS=fresh.data; syncNextProductId(); renderCatFilters(); renderMenuGrid(); renderCart();
+      }
+    }else{
+      errEl.textContent = t.orderFailed;
+    }
   }finally{
     btn.disabled = false;
   }
