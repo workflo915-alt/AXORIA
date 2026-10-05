@@ -1,0 +1,36 @@
+name: AXORIA Phase 1 Cleanup
+
+on:
+  push:
+    branches:
+      - security-phase-1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup-storefront:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: security-phase-1
+          fetch-depth: 0
+
+      - name: Run Phase 1 cleanup
+        run: python scripts/phase1_cleanup.py
+
+      - name: Commit cleanup if needed
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index.html changes to commit."
+            exit 0
+          fi
+          git config user.name "AXORIA Security Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "security: remove legacy storefront admin and PIN"
+          git push origin HEAD:security-phase-1
