@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AXORIA — Feel Better, Every Day</title>
 <meta name="description" content="AXORIA — correcteur de posture et ceinture amincissante premium. Marque marocaine de bien-être. Livraison partout au Maroc, paiement à la livraison.">
 <meta property="og:title" content="AXORIA — Feel Better, Every Day">
@@ -390,55 +390,8 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 .pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;animation:pulsering 2s ease-out infinite;}
 @keyframes pulsering{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.7);opacity:0;}}
 
-/* ---------- Admin ---------- */
-.admin-overlay{position:fixed;inset:0;background:rgba(8,14,12,.75);z-index:950;display:none;align-items:center;justify-content:center;padding:20px;}
-.admin-overlay.open{display:flex;}
-.pinbox{background:var(--surface);border-radius:22px;padding:34px;max-width:320px;width:100%;text-align:center;box-shadow:var(--shadow-lg);}
-.pinbox input{text-align:center;letter-spacing:.4em;font-family:var(--font-mono);font-size:20px;width:100%;margin:16px 0;}
-/* ---- Hidden admin trigger ---- */
-.admin-tiny-btn{position:fixed;left:10px;bottom:10px;width:14px;height:14px;border-radius:50%;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.12;transition:opacity .3s ease, transform .3s ease;padding:0;}
-.admin-tiny-btn:hover{opacity:.6;transform:scale(1.3);}
+.form-error{color:#D34747;font-size:12.5px;font-weight:600;min-height:16px;margin-bottom:6px;}
 
-/* ---- PIN gate (glass) ---- */
-.pinbox input{width:100%;text-align:center;font-size:22px;letter-spacing:10px;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg-alt);color:var(--text);margin:18px 0 8px;font-family:var(--font-mono);}
-.pin-error{color:#D34747;font-size:12.5px;font-weight:600;min-height:16px;margin-bottom:6px;}
-
-/* ---- Admin panel shell (glassmorphism) ---- */
-.admin-panel{position:fixed;inset:0;background:linear-gradient(160deg, var(--bg) 0%, var(--bg-alt) 100%);z-index:960;display:none;flex-direction:column;}
-.admin-panel.open{display:flex;}
-.admin-head{padding:20px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04);backdrop-filter:blur(14px);flex-wrap:wrap;gap:12px;}
-.admin-head h3{font-size:19px;font-weight:800;}
-.admin-head .ahead-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.admin-body{flex:1;overflow:auto;padding:28px;}
-.mini-btn{padding:9px 16px;border-radius:10px;border:none;font-size:12.5px;font-weight:700;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease;margin-right:0;}
-.mini-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
-.mini-btn.danger{background:#FBE2DB;color:#C0392B;}
-.mini-btn.ghost{background:var(--bg-alt);color:var(--text);border:1px solid var(--line);}
-.mini-btn.save{background:linear-gradient(120deg,var(--teal),var(--teal-deep));color:#fff;}
-.mini-btn.gold{background:linear-gradient(120deg,var(--coral),#a8811d);color:#fff;}
-.toggle{width:36px;height:20px;border-radius:20px;background:var(--line);position:relative;border:none;flex-shrink:0;}
-.toggle.on{background:var(--teal);}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s ease;}
-.toggle.on::after{transform:translateX(16px);}
-
-/* ---- Admin table (inline-editable, matches reference layout) ---- */
-.admin-table{width:100%;border-collapse:collapse;font-size:13.5px;}
-.admin-table th{text-align:left;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;color:var(--text-soft);padding:10px;border-bottom:1px solid var(--line);white-space:nowrap;}
-.admin-table td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle;}
-.admin-table input, .admin-table select, .admin-table textarea{padding:8px 10px;font-size:13px;width:100%;border-radius:10px;border:1.5px solid var(--line);background:var(--bg-alt);color:var(--text);font-family:var(--font-body);}
-.admin-table textarea{resize:vertical;min-height:44px;}
-.status-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;}
-.status-pill.st-new{background:#FBE2DB;color:#C0392B;}
-.status-pill.st-contacted{background:#FCEACB;color:#B8710B;}
-.status-pill.st-confirmed{background:#DDF2E3;color:#1F7A3F;}
-.status-pill.st-shipped{background:#DCE9FB;color:#1D5FA8;}
-.status-pill.st-delivered{background:#123B22;color:#F1FBF4;}
-.status-pill.st-cancelled{background:#E7E7E7;color:#6B6B6B;}
-.order-action-btns{display:flex;gap:6px;margin-top:6px;}
-.order-action-btns a.mini-btn{padding:5px 9px;font-size:13px;line-height:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
-.admin-thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;display:block;margin-bottom:6px;background:var(--bg-alt);}
-.admin-photo-cell{min-width:150px;}
-.admin-photo-cell input{font-size:11px;padding:6px 8px;}
 /* ---- Modal shell (Category Manager) ---- */
 .modal-overlay{position:fixed;inset:0;background:rgba(6,12,20,.65);backdrop-filter:blur(8px);z-index:980;display:none;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.open{display:flex;}
@@ -448,13 +401,6 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 .modal-head h3{font-size:18px;font-weight:800;}
 .modal-body{padding:24px 26px 28px;}
 
-/* ---- Category manager ---- */
-.cat-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.cat-row{display:flex;align-items:center;gap:10px;background:var(--bg-alt);border:1px solid var(--line);border-radius:14px;padding:10px 14px;}
-.cat-row input{flex:1;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:13.5px;}
-.cat-row .mini-btn{padding:7px 12px;}
-.cat-add-row{display:flex;gap:10px;}
-.cat-add-row input{flex:1;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--charcoal);color:#fff;padding:14px 22px;border-radius:12px;font-size:13.5px;font-weight:600;z-index:1000;opacity:0;visibility:hidden;transition:all .35s ease;box-shadow:var(--shadow-md);}
 .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
 </style>
@@ -717,7 +663,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
         <div class="form-row"><label id="lblOrderAddress"></label><input type="text" id="ofAddress" autocomplete="street-address"></div>
       </div>
       <div class="form-row"><label id="lblOrderNotes"></label><textarea id="ofNotes" rows="3"></textarea></div>
-      <div class="pin-error" id="orderFormError"></div>
+      <div class="form-error" id="orderFormError"></div>
       <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;"></button>
       <button class="btn btn-green" id="orderFormWaBtn" style="width:100%;justify-content:center;margin-top:10px;"></button>
     </div>
@@ -762,97 +708,15 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
   </a>
 </div>
 
-<button class="admin-tiny-btn" id="adminTinyBtn" aria-label="" tabindex="-1"></button>
-
-<div class="admin-overlay" id="adminOverlay">
-  <div class="pinbox">
-    <h3 style="font-size:18px;">Accès administrateur</h3>
-    <p style="font-size:12.5px;color:var(--text-soft);margin-top:8px;">Entrez le code pour gérer la boutique</p>
-    <input type="password" id="pinInput" maxlength="40" placeholder="Mot de passe" autocomplete="off">
-    <div class="pin-error" id="pinError"></div>
-    <button class="btn btn-dark" id="pinSubmit" style="width:100%;justify-content:center;">Déverrouiller</button>
-    <button class="btn" id="pinCancel" style="width:100%;justify-content:center;margin-top:8px;background:transparent;color:var(--text-soft);">Annuler</button>
-    <a href="#" id="pinForgotLink" style="display:block;margin-top:14px;font-size:12px;color:var(--text-soft);text-decoration:underline;">Mot de passe oublié ?</a>
-
-    <div id="recoverBox" style="display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);text-align:left;">
-      <p style="font-size:12.5px;color:var(--text-soft);margin-bottom:10px;">Question de sécurité : en quelle année votre mère est-elle décédée ?</p>
-      <input type="text" id="recoverAnswer" placeholder="Année" inputmode="numeric" style="width:100%;text-align:center;font-size:16px;letter-spacing:2px;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg-alt);color:var(--text);margin:0 0 8px;font-family:var(--font-mono);">
-      <div class="pin-error" id="recoverError"></div>
-
-      <div id="recoverStep2" style="display:none;margin-top:10px;">
-        <input type="password" id="newPinInput" maxlength="40" placeholder="Nouveau mot de passe" autocomplete="off" style="width:100%;text-align:center;font-size:15px;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg-alt);color:var(--text);margin:0 0 10px;font-family:var(--font-mono);">
-        <button class="btn btn-dark" id="setNewPinBtn" style="width:100%;justify-content:center;">Enregistrer le nouveau mot de passe</button>
-      </div>
-
-      <button class="mini-btn ghost" id="recoverCheckBtn" style="width:100%;justify-content:center;margin-top:8px;">Vérifier</button>
-      <a href="#" id="recoverCancelLink" style="display:block;margin-top:10px;font-size:12px;color:var(--text-soft);text-decoration:underline;text-align:center;">Retour</a>
-    </div>
-  </div>
-</div>
-
-<div class="admin-panel" id="adminPanel">
-  <div class="admin-head">
-    <h3>Gestion du menu — AXORIA</h3>
-    <div class="ahead-actions">
-      <button class="mini-btn save" id="adminTabProducts">📦 Produits</button>
-      <button class="mini-btn ghost" id="adminTabOrders">🧾 Commandes <span id="newOrdersBadge" style="display:none;background:#D34747;color:#fff;border-radius:999px;padding:2px 7px;font-size:11px;font-weight:700;margin-left:4px;vertical-align:middle;">0</span></button>
-      <button class="mini-btn ghost" id="adminCatBtn">📁 Catégories</button>
-      <button class="mini-btn save" id="adminAddBtn">+ Ajouter un produit</button>
-      <button class="iconbtn" id="adminCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-  </div>
-  <div class="admin-body">
-    <table class="admin-table" id="adminTable">
-      <thead><tr>
-        <th>Photo</th><th>Visible</th><th>Nom</th><th>Catégorie</th><th>Badge</th>
-        <th>Description</th><th>Prix</th><th>Ancien prix</th><th>Stock</th><th></th>
-      </tr></thead>
-      <tbody id="adminTbody"></tbody>
-    </table>
-    <table class="admin-table" id="ordersTable" style="display:none;">
-      <thead><tr>
-        <th>Date</th><th>Client</th><th>Téléphone</th><th>Ville</th><th>Adresse</th>
-        <th>Produits</th><th>Total</th><th>Notes</th><th>Statut</th><th>Action</th>
-      </tr></thead>
-      <tbody id="ordersTbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Category Manager Modal -->
-<div class="modal-overlay" id="catManagerOverlay">
-  <div class="modal-box" style="width:min(480px,96vw);">
-    <div class="modal-head">
-      <h3>Gestion des catégories</h3>
-      <button class="iconbtn" id="catCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <div class="cat-list" id="catList"></div>
-      <div class="cat-add-row">
-        <input type="text" id="catNewName" placeholder="Nouvelle catégorie...">
-        <button class="mini-btn save" id="catAddBtn">+ Ajouter</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-/* ====== CONNEXION BASE DE DONNÉES (Supabase) ======
-   1) Créez un compte gratuit sur https://supabase.com et un nouveau projet.
-   2) Dans "SQL Editor", exécutez :
-        create table axoria_store (
-          key text primary key,
-          value jsonb,
-          updated_at timestamptz default now()
-        );
-        alter table axoria_store enable row level security;
-        create policy "public read" on axoria_store for select using (true);
-        create policy "public write" on axoria_store for insert with check (true);
-        create policy "public update" on axoria_store for update using (true);
-   3) Dans Project Settings > API, copiez "Project URL" et "anon public key"
-      et collez-les ci-dessous à la place des deux valeurs entre guillemets.
-   =================================================== */
+/* ====== SUPABASE ======
+   The publishable key below is intentionally safe to expose in the browser.
+   Database security is enforced by Row Level Security (RLS): storefront visitors
+   can read catalog data and create orders, while administration requires an
+   authenticated Supabase session through admin.html.
+   ======================== */
 const SUPABASE_URL = 'https://gdemgpkkrmpridqgjmtx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD';
 const sb = (SUPABASE_URL.startsWith('http') && window.supabase)
@@ -866,8 +730,7 @@ const I18N = {
     heroOrder:'Commander maintenant', heroMenu:'Découvrir les produits', scroll:'DÉFILER',
     trustBadges:['Livraison partout au Maroc','Paiement à la livraison','Garantie qualité'],
     menuEyebrow:'Notre Sélection', menuTitle:'Les essentiels AXORIA', menuDesc:'Deux produits lancés avec exigence : un correcteur de posture et une ceinture amincissante, choisis pour leur efficacité et leur confort au quotidien.',
-    all:'Tout', comingSoon:'De nouveaux produits arrivent bientôt dans cette catégorie.', quickBuy:'Achat rapide', viewCart:'Voir le panier',
-    addDishLabel:'Ajouter un produit', addDishSub:'Accès protégé par code', aboutEyebrow:'À Propos d\'AXORIA', aboutTitle:'Le bien-être, pensé au Maroc',
+    all:'Tout', comingSoon:'De nouveaux produits arrivent bientôt dans cette catégorie.', quickBuy:'Achat rapide', viewCart:'Voir le panier', aboutEyebrow:'À Propos d\'AXORIA', aboutTitle:'Le bien-être, pensé au Maroc',
     aboutText1:"AXORIA est une marque marocaine de bien-être fondée sur une conviction simple : une bonne posture et un dos soutenu changent tout, au bureau comme à la maison. Nous concevons des accessoires pensés pour accompagner le corps au quotidien — sans gadgets inutiles, sans compromis sur la qualité des matériaux.",
     aboutText2:"Chaque produit AXORIA est testé pour son confort de port, sa durabilité et son efficacité réelle. Notre équipe reste disponible par WhatsApp avant et après votre commande, et nous livrons partout au Maroc avec paiement à la livraison.",
     pillars:['Qualité premium contrôlée','Livraison partout au Maroc','Paiement à la livraison','Support réactif 7j/7'],
@@ -929,8 +792,7 @@ const I18N = {
     heroOrder:'Order Now', heroMenu:'Discover Products', scroll:'SCROLL',
     trustBadges:['Delivery across Morocco','Cash on delivery','Quality guarantee'],
     menuEyebrow:'Our Selection', menuTitle:'The AXORIA essentials', menuDesc:'Two products launched with care: a posture corrector and a slimming waist belt, chosen for real effectiveness and everyday comfort.',
-    all:'All', comingSoon:'New products are coming soon to this category.', quickBuy:'Quick Buy', viewCart:'View Cart',
-    addDishLabel:'Add a product', addDishSub:'Code-protected access', aboutEyebrow:'About AXORIA', aboutTitle:'Wellness, designed in Morocco',
+    all:'All', comingSoon:'New products are coming soon to this category.', quickBuy:'Quick Buy', viewCart:'View Cart', aboutEyebrow:'About AXORIA', aboutTitle:'Wellness, designed in Morocco',
     aboutText1:"AXORIA is a Moroccan wellness brand built on a simple belief: good posture and a well-supported back change everything, at the office and at home. We design accessories meant to support the body every day — no unnecessary gadgets, no compromise on material quality.",
     aboutText2:"Every AXORIA product is tested for comfort, durability and real effectiveness. Our team stays available on WhatsApp before and after your order, and we deliver across Morocco with cash on delivery.",
     pillars:['Premium checked quality','Delivery across Morocco','Cash on delivery','Responsive 7/7 support'],
@@ -992,8 +854,7 @@ const I18N = {
     heroOrder:'اطلب الآن', heroMenu:'اكتشف المنتجات', scroll:'مرر للأسفل',
     trustBadges:['توصيل لجميع مدن المغرب','الدفع عند الاستلام','ضمان الجودة'],
     menuEyebrow:'اختيارنا', menuTitle:'أساسيات أكسوريا', menuDesc:'منتجان تم إطلاقهما بعناية: مصحح للقوام وحزام تنحيف للخصر، تم اختيارهما لفعاليتهما الحقيقية وراحتهما اليومية.',
-    all:'الكل', comingSoon:'منتجات جديدة قادمة قريباً في هذه الفئة.', quickBuy:'شراء سريع', viewCart:'عرض السلة',
-    addDishLabel:'إضافة منتج', addDishSub:'الوصول محمي برمز', aboutEyebrow:'عن أكسوريا', aboutTitle:'العافية، بتصميم مغربي',
+    all:'الكل', comingSoon:'منتجات جديدة قادمة قريباً في هذه الفئة.', quickBuy:'شراء سريع', viewCart:'عرض السلة', aboutEyebrow:'عن أكسوريا', aboutTitle:'العافية، بتصميم مغربي',
     aboutText1:"أكسوريا علامة مغربية للعافية مبنية على قناعة بسيطة: القوام السليم والدعم الجيد للظهر يغيران كل شيء، في المكتب وفي المنزل. نصمم إكسسوارات مخصصة لدعم الجسم يومياً — دون أدوات غير ضرورية، ودون أي تنازل عن جودة المواد.",
     aboutText2:"يتم اختبار كل منتج من أكسوريا من حيث الراحة والمتانة والفعالية الحقيقية. فريقنا متوفر دائماً عبر واتساب قبل وبعد طلبك، ونوصل لجميع مدن المغرب مع الدفع عند الاستلام.",
     pillars:['جودة فاخرة مُراقبة','توصيل لجميع مدن المغرب','الدفع عند الاستلام','دعم سريع الاستجابة 7/7'],
@@ -1126,7 +987,6 @@ function syncNextProductId(){
   const maxId = PRODUCTS.reduce((m,p)=>{ const n = parseInt(p.id,10); return (!isNaN(n) && n>=m) ? n+1 : m; }, 1965);
   NEXT_PRODUCT_ID = Math.max(NEXT_PRODUCT_ID, maxId);
 }
-function saveCategories(){ storeSet('axoria_categories', CATEGORIES, true); }
 
 function seedProducts(){
   const seed = [
@@ -1211,7 +1071,6 @@ let FAVS = [];
 let currentCategory = 'all';
 let modalProduct = null;
 let modalQty = 1;
-let adminUnlocked = false;
 
 const DEFAULT_REVIEWS = [
   {name:'Yassine B.', loc:'Casablanca, Maroc', rating:5, comment:'Le correcteur de posture a changé ma façon de m\'asseoir au bureau. Moins de douleurs au dos après une semaine.'},
@@ -1402,13 +1261,7 @@ function renderMenuGrid(){
   const t = I18N[currentLang];
   const items = PRODUCTS.filter(p=>p.visible && (currentCategory==='all' || p.cat===currentCategory));
   if(items.length===0 && currentCategory!=='all'){
-    grid.innerHTML = `<div class="cat-empty" style="grid-column:1/-1;">${t.comingSoon}</div>` + `
-    <button class="pcard pcard-add" id="menuAddCard" type="button" style="grid-column:1/-1;max-width:340px;margin:0 auto;">
-      <span class="add-circle">${ICONS.plus}</span>
-      <span class="add-label">${t.addDishLabel}</span>
-      <span class="add-sub">${t.addDishSub}</span>
-    </button>`;
-    document.getElementById('menuAddCard').onclick = ()=>openAdminGate('quick');
+    grid.innerHTML = `<div class="cat-empty" style="grid-column:1/-1;">${t.comingSoon}</div>`;
     return;
   }
   grid.innerHTML = items.map(p=>{
@@ -1435,13 +1288,7 @@ function renderMenuGrid(){
         </div>
       </div>
     </div>`;
-  }).join('') + `
-    <button class="pcard pcard-add" id="menuAddCard" type="button">
-      <span class="add-circle">${ICONS.plus}</span>
-      <span class="add-label">${t.addDishLabel}</span>
-      <span class="add-sub">${t.addDishSub}</span>
-    </button>`;
-  document.getElementById('menuAddCard').onclick = ()=>openAdminGate('quick');
+  }).join('');
   grid.querySelectorAll('.pcard:not(.pcard-add)').forEach(card=>{
     card.addEventListener('click', (e)=>{
       if(e.target.closest('.favbtn') || e.target.closest('.addbtn')) return;
@@ -1633,165 +1480,6 @@ async function submitOrder(){
   }
 }
 
-/* ---------- Admin: Orders management ----------
-   PIN-gated (only reachable from inside #adminPanel, after tryPin() succeeds).
-   Never rendered anywhere outside #adminPanel. Never touches PRODUCTS/storeGet/storeSet
-   or the axoria_store table -- orders live in their own 'orders' table. */
-let ORDERS = [];
-const ORDER_STATUSES = ['New','Contacted','Confirmed','Shipped','Delivered','Cancelled'];
-
-function escOrder(v){
-  return String(v==null?'':v).replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-}
-function fmtOrderDate(iso){
-  try{ return new Date(iso).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
-  catch(e){ return iso || ''; }
-}
-
-const ORDER_STATUS_CLASS = {
-  New:'st-new', Contacted:'st-contacted', Confirmed:'st-confirmed',
-  Shipped:'st-shipped', Delivered:'st-delivered', Cancelled:'st-cancelled'
-};
-function statusPillClass(status){ return ORDER_STATUS_CLASS[status] || ''; }
-
-/* Phone helpers -- purely for building tel:/wa.me links, never sent anywhere. */
-function phoneForTel(phone){
-  return String(phone||'').replace(/[^\d+]/g,'');
-}
-function phoneForWhatsapp(phone){
-  let digits = String(phone||'').replace(/\D/g,'');
-  if(digits.startsWith('0')) digits = '212' + digits.slice(1); // local MA trunk prefix -> international
-  return digits;
-}
-function waMessageFor(customerName){
-  return `Bonjour ${customerName||''}, concernant votre commande Axoria...`;
-}
-
-function switchAdminTab(tab){
-  const isOrders = tab === 'orders';
-  document.getElementById('adminTable').style.display = isOrders ? 'none' : '';
-  document.getElementById('ordersTable').style.display = isOrders ? '' : 'none';
-  document.getElementById('adminCatBtn').style.display = isOrders ? 'none' : '';
-  document.getElementById('adminAddBtn').style.display = isOrders ? 'none' : '';
-  document.getElementById('adminTabProducts').className = 'mini-btn ' + (isOrders ? 'ghost' : 'save');
-  document.getElementById('adminTabOrders').className = 'mini-btn ' + (isOrders ? 'save' : 'ghost');
-  if(isOrders){ loadOrders(); } // Orders are fetched only when this tab is opened -- never on page load, never for products.
-}
-
-async function loadOrders(){
-  const tbody = document.getElementById('ordersTbody');
-  if(!sb){
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-soft);">Connexion Supabase indisponible.</td></tr>`;
-    updateNewOrdersBadge();
-    return;
-  }
-  tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-soft);">Chargement des commandes...</td></tr>`;
-  try{
-    const { data, error } = await sb.from('orders').select('*').order('created_at', { ascending:false });
-    if(error) throw error;
-    ORDERS = data || [];
-    renderOrdersTable();
-  }catch(e){
-    console.error('loadOrders failed', e);
-    ORDERS = [];
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-soft);">Erreur de chargement des commandes.</td></tr>`;
-    toast('Erreur : impossible de charger les commandes.');
-  }
-  updateNewOrdersBadge();
-}
-
-function renderOrdersTable(){
-  const tbody = document.getElementById('ordersTbody');
-  if(!ORDERS.length){
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-soft);">Aucune commande pour le moment.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = ORDERS.map(o=>{
-    const itemsText = Array.isArray(o.items) ? o.items.map(it=>`${escOrder(it.name)} x${it.qty}`).join(', ') : '';
-    const notesText = (o.notes==null || String(o.notes).trim()==='') ? '-' : escOrder(o.notes);
-    const telHref = escOrder('tel:' + phoneForTel(o.phone));
-    const waHref = escOrder('https://wa.me/' + phoneForWhatsapp(o.phone) + '?text=' + encodeURIComponent(waMessageFor(o.customer_name)));
-    return `
-    <tr data-order="${escOrder(o.id)}">
-      <td style="white-space:nowrap;">${fmtOrderDate(o.created_at)}</td>
-      <td>${escOrder(o.customer_name)}</td>
-      <td style="white-space:nowrap;">${escOrder(o.phone)}</td>
-      <td>${escOrder(o.city)}</td>
-      <td>${escOrder(o.address)}</td>
-      <td style="min-width:160px;">${itemsText}</td>
-      <td style="white-space:nowrap;">${fmtPrice(o.total)}</td>
-      <td style="min-width:140px;">${notesText}</td>
-      <td><span class="status-pill ${statusPillClass(o.status)}" data-statustext="${escOrder(o.id)}">${escOrder(o.status)}</span></td>
-      <td>
-        <select data-status="${escOrder(o.id)}">
-          ${ORDER_STATUSES.map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${s}</option>`).join('')}
-        </select>
-        <div class="order-action-btns">
-          <a class="mini-btn ghost" href="${telHref}" title="Appeler">📞 Call</a>
-          <a class="mini-btn ghost" href="${waHref}" target="_blank" rel="noopener noreferrer" title="WhatsApp">💬 WhatsApp</a>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-  tbody.querySelectorAll('[data-status]').forEach(sel=>{
-    sel.onchange = ()=>updateOrderStatus(sel.dataset.status, sel.value, sel);
-  });
-}
-
-/* ---------- New orders badge ---------- */
-function updateNewOrdersBadge(){
-  const badge = document.getElementById('newOrdersBadge');
-  if(!badge) return;
-  const count = ORDERS.filter(o=>o.status==='New').length;
-  if(count > 0){
-    badge.textContent = String(count);
-    badge.style.display = '';
-  } else {
-    badge.style.display = 'none';
-  }
-}
-
-async function refreshNewOrdersBadgeFromDb(){
-  const badge = document.getElementById('newOrdersBadge');
-  if(!badge || !sb) return;
-  try{
-    const { count, error } = await sb.from('orders').select('*', { count:'exact', head:true }).eq('status','New');
-    if(error) throw error;
-    if(count > 0){
-      badge.textContent = String(count);
-      badge.style.display = '';
-    } else {
-      badge.style.display = 'none';
-    }
-  }catch(e){
-    console.error('refreshNewOrdersBadgeFromDb failed', e);
-  }
-}
-
-async function updateOrderStatus(orderId, newStatus, selectEl){
-  const order = ORDERS.find(o=>o.id===orderId);
-  const prevStatus = order ? order.status : null;
-  selectEl.disabled = true;
-  try{
-    const { error } = await sb.from('orders').update({ status: newStatus }).eq('id', orderId);
-    if(error) throw error;
-    if(order) order.status = newStatus;
-    const label = document.querySelector(`[data-statustext="${orderId}"]`);
-    if(label){
-      label.textContent = newStatus;
-      label.className = 'status-pill ' + statusPillClass(newStatus);
-    }
-    updateNewOrdersBadge();
-    toast('Statut de la commande mis à jour');
-  }catch(e){
-    console.error('updateOrderStatus failed', e);
-    if(prevStatus) selectEl.value = prevStatus;
-    toast('Erreur : la mise à jour du statut a échoué.');
-  }finally{
-    selectEl.disabled = false;
-  }
-}
-
 function renderReviews(){
   const slider = document.getElementById('reviewSlider');
   slider.innerHTML = REVIEWS.map(r=>`
@@ -1839,238 +1527,6 @@ function ripple(e){
   setTimeout(()=>span.remove(), 650);
 }
 
-let ADMIN_PIN = 'Kaltommohamed1965';
-let ADMIN_RECOVERY_ANSWER = '2014';
-let gateMode = 'panel';
-
-function openAdminGate(mode){
-  gateMode = mode || 'panel';
-  document.getElementById('adminOverlay').classList.add('open');
-  document.getElementById('pinInput').value='';
-  document.getElementById('pinError').textContent='';
-  closeRecoverBox();
-  document.getElementById('pinInput').focus();
-}
-function closeAdminGate(){ document.getElementById('adminOverlay').classList.remove('open'); closeRecoverBox(); }
-
-function openRecoverBox(){
-  document.getElementById('recoverBox').style.display = 'block';
-  document.getElementById('recoverStep2').style.display = 'none';
-  document.getElementById('recoverAnswer').value = '';
-  document.getElementById('newPinInput').value = '';
-  document.getElementById('recoverError').textContent = '';
-  document.getElementById('recoverAnswer').focus();
-}
-function closeRecoverBox(){
-  const box = document.getElementById('recoverBox');
-  if(box) box.style.display = 'none';
-}
-
-async function saveProducts(){
-  const ok = await storeSet('axoria_products', PRODUCTS, true);
-  if(!ok){ toast('Erreur : la sauvegarde a échoué. Vérifiez votre connexion et réessayez.'); }
-  return ok;
-}
-
-function fileToDataURL(file){
-  return new Promise((resolve, reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=>resolve(reader.result);
-    reader.onerror = ()=>reject(reader.error);
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ---------- Product Manager (grid of luxury cards) ---------- */
-function fillCatSelect(selectEl, selectedName){
-  selectEl.innerHTML = catNames().map(c=>`<option value="${c}" ${c===selectedName?'selected':''}>${c}</option>`).join('');
-}
-function renderAdminTable(){
-  const tbody = document.getElementById('adminTbody');
-  if(PRODUCTS.length===0){
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-soft);">Aucun produit. Cliquez sur "+ Ajouter un produit" pour commencer.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = PRODUCTS.map(p=>`
-    <tr data-id="${p.id}">
-      <td class="admin-photo-cell">
-        <img class="admin-thumb" data-thumb="${p.id}" src="${p.img}" alt="${p.name}">
-        <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" data-imgfile="${p.id}" style="display:none;">
-        <button type="button" class="mini-btn ghost" data-imgbtn="${p.id}" style="font-size:11px;padding:6px 10px;white-space:nowrap;">Choisir une image</button>
-      </td>
-      <td><button class="toggle ${p.status==='active'?'on':''}" data-vis="${p.id}" title="Visible sur le site"></button></td>
-      <td><input type="text" data-field="name" value="${p.name}" style="min-width:120px;"></td>
-      <td><select data-field="cat">${catNames().map(c=>`<option value="${c}" ${c===p.cat?'selected':''}>${c}</option>`).join('')}</select></td>
-      <td>
-        <select data-field="badge" style="min-width:90px;">
-          <option value="" ${!p.badge?'selected':''}>Aucun</option>
-          <option value="new" ${p.badge==='new'?'selected':''}>New</option>
-          <option value="bestseller" ${p.badge==='bestseller'?'selected':''}>Best Seller</option>
-          <option value="promo" ${p.badge==='promo'?'selected':''}>Promo</option>
-        </select>
-      </td>
-      <td><textarea data-field="desc" rows="2" style="min-width:180px;">${p.desc}</textarea></td>
-      <td><input type="number" data-field="price" value="${p.price}" style="width:75px;"></td>
-      <td><input type="number" data-field="oldPrice" value="${p.oldPrice||''}" style="width:80px;" placeholder="—"></td>
-      <td><input type="number" data-field="stock" value="${p.stock ?? 0}" style="width:65px;"></td>
-      <td style="white-space:nowrap;">
-        <button class="mini-btn save" data-save="${p.id}">Enregistrer</button>
-        <button class="mini-btn gold" data-dup="${p.id}">Dupliquer</button>
-        <button class="mini-btn danger" data-del="${p.id}">Suppr.</button>
-      </td>
-    </tr>`).join('');
-
-  const IMG_TYPES = ['image/jpeg','image/jpg','image/png','image/webp'];
-  const IMG_MAX_BYTES = 5 * 1024 * 1024;
-  tbody.querySelectorAll('[data-imgbtn]').forEach(btn=>{
-    btn.onclick = ()=>{
-      tbody.querySelector(`[data-imgfile="${btn.dataset.imgbtn}"]`).click();
-    };
-  });
-  tbody.querySelectorAll('[data-imgfile]').forEach(inp=>{
-    inp.addEventListener('change', async (e)=>{
-      const file = e.target.files[0];
-      if(!file) return;
-      if(!IMG_TYPES.includes(file.type)){
-        toast('Format non supporté (JPG, PNG ou WEBP uniquement)');
-        e.target.value = '';
-        return;
-      }
-      if(file.size > IMG_MAX_BYTES){
-        toast('Image trop lourde (5 Mo maximum)');
-        e.target.value = '';
-        return;
-      }
-      const dataUrl = await fileToDataURL(file);
-      const p = PRODUCTS.find(x=>x.id===inp.dataset.imgfile);
-      if(p){
-        const prevImg = p.img;
-        p.img = dataUrl;
-        const ok = await saveProducts();
-        if(!ok){ p.img = prevImg; }
-        const thumb = tbody.querySelector(`[data-thumb="${p.id}"]`);
-        if(thumb) thumb.src = p.img;
-        renderMenuGrid();
-        if(ok) toast('Image mise à jour');
-      }
-      e.target.value = '';
-    });
-  });
-  tbody.querySelectorAll('[data-vis]').forEach(b=>b.onclick=async ()=>{
-    const p = PRODUCTS.find(x=>x.id===b.dataset.vis);
-    const prevStatus = p.status, prevVisible = p.visible;
-    p.status = p.status==='active' ? 'draft' : 'active';
-    p.visible = p.status==='active';
-    const ok = await saveProducts();
-    if(!ok){ p.status = prevStatus; p.visible = prevVisible; }
-    renderAdminTable(); renderMenuGrid();
-  });
-  tbody.querySelectorAll('[data-dup]').forEach(b=>b.onclick=()=>duplicateProduct(b.dataset.dup));
-  tbody.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
-    if(confirm('Supprimer ce produit ?')){
-      const backup = PRODUCTS;
-      PRODUCTS = PRODUCTS.filter(x=>x.id!==b.dataset.del);
-      const ok = await saveProducts();
-      if(!ok){ PRODUCTS = backup; }
-      renderAdminTable(); renderMenuGrid(); renderCatFilters();
-      if(ok) toast('Produit supprimé');
-    }
-  });
-  tbody.querySelectorAll('[data-save]').forEach(b=>b.onclick=async ()=>{
-    const row = tbody.querySelector(`tr[data-id="${b.dataset.save}"]`);
-    const p = PRODUCTS.find(x=>x.id===b.dataset.save);
-    p.name = row.querySelector('[data-field="name"]').value.trim() || p.name;
-    p.cat = row.querySelector('[data-field="cat"]').value;
-    p.badge = row.querySelector('[data-field="badge"]').value;
-    p.desc = row.querySelector('[data-field="desc"]').value.trim() || p.desc;
-    p.price = parseFloat(row.querySelector('[data-field="price"]').value) || p.price;
-    const op = row.querySelector('[data-field="oldPrice"]').value;
-    p.oldPrice = op ? parseFloat(op) : null;
-    p.stock = parseInt(row.querySelector('[data-field="stock"]').value) || 0;
-    const ok = await saveProducts();
-    renderAdminTable(); renderMenuGrid(); renderCatFilters();
-    if(ok) toast('Enregistré');
-  });
-}
-async function duplicateProduct(id){
-  const src = PRODUCTS.find(x=>x.id===id);
-  if(!src) return;
-  const copy = {...src, id: nextProductId(), name: src.name + ' (copie)', status:'draft', visible:false};
-  PRODUCTS.unshift(copy);
-  const ok = await saveProducts();
-  if(!ok){ PRODUCTS = PRODUCTS.filter(x=>x.id!==copy.id); }
-  renderAdminTable(); renderMenuGrid(); renderCatFilters();
-  if(ok) toast('Produit dupliqué');
-}
-async function addNewProduct(){
-  const cat = catNames()[0];
-  const name = 'Nouveau produit';
-  const newProduct = {
-    id: nextProductId(), cat, name, price:99, oldPrice:null, discount:0, badge:'',
-    stock:50, status:'active', visible:true,
-    desc: genDesc(cat, name), longDesc: genLongDesc(cat, name), img: catFallbackImg(cat)
-  };
-  PRODUCTS.unshift(newProduct);
-  const ok = await saveProducts();
-  if(!ok){ PRODUCTS = PRODUCTS.filter(x=>x.id!==newProduct.id); }
-  renderAdminTable(); renderMenuGrid(); renderCatFilters();
-  return ok;
-}
-
-/* ---------- Category Manager ---------- */
-function openCategoryManager(){
-  renderCatList();
-  document.getElementById('catManagerOverlay').classList.add('open');
-}
-function closeCategoryManager(){ document.getElementById('catManagerOverlay').classList.remove('open'); }
-function renderCatList(){
-  const list = document.getElementById('catList');
-  list.innerHTML = CATEGORIES.map(c=>`
-    <div class="cat-row" data-id="${c.id}">
-      <input type="text" value="${c.name}" data-cname="${c.id}">
-      <button class="mini-btn danger" data-catdel="${c.id}">🗑</button>
-    </div>`).join('');
-  list.querySelectorAll('[data-cname]').forEach(inp=>{
-    inp.addEventListener('change', ()=>{
-      const cat = CATEGORIES.find(x=>x.id===inp.dataset.cname);
-      const oldName = cat.name;
-      const newName = inp.value.trim();
-      if(!newName) { inp.value = oldName; return; }
-      cat.name = newName;
-      PRODUCTS.forEach(p=>{ if(p.cat===oldName) p.cat = newName; });
-      saveCategories(); saveProducts();
-      renderCatFilters(); renderMenuGrid(); renderAdminTable();
-      toast('Catégorie renommée');
-    });
-  });
-  list.querySelectorAll('[data-catdel]').forEach(b=>{
-    b.onclick = ()=>{
-      if(CATEGORIES.length<=1){ toast('Impossible de supprimer la dernière catégorie'); return; }
-      const cat = CATEGORIES.find(x=>x.id===b.dataset.catdel);
-      const inUse = PRODUCTS.some(p=>p.cat===cat.name);
-      if(inUse && !confirm(`"${cat.name}" contient des produits. Les produits seront déplacés vers la première catégorie. Continuer ?`)) return;
-      const fallback = CATEGORIES.find(x=>x.id!==cat.id);
-      PRODUCTS.forEach(p=>{ if(p.cat===cat.name) p.cat = fallback.name; });
-      CATEGORIES = CATEGORIES.filter(x=>x.id!==cat.id);
-      saveCategories(); saveProducts();
-      renderCatList(); renderCatFilters(); renderMenuGrid(); renderAdminTable();
-      toast('Catégorie supprimée');
-    };
-  });
-}
-function addCategory(){
-  const input = document.getElementById('catNewName');
-  const name = input.value.trim();
-  if(!name) return;
-  if(catNames().includes(name)){ toast('Cette catégorie existe déjà'); return; }
-  CATEGORIES.push({id:'c'+Date.now(), name, img: DEFAULT_CATEGORIES[0].img});
-  input.value = '';
-  saveCategories();
-  renderCatList(); renderCatFilters(); renderAdminTable();
-  toast('Catégorie ajoutée');
-}
-
-
 function spawnHeroParticles(){
   const host = document.getElementById('heroParticles');
   if(!host) return;
@@ -2111,14 +1567,12 @@ async function init(){
   } else if(productsResult.status === 'empty'){
     // Supabase reachable and confirmed empty (genuine first run) -> safe to seed.
     PRODUCTS = seedProducts();
-    await storeSet('axoria_products', PRODUCTS, true);
   } else if(productsResult.status === 'cache'){
     // Supabase unreachable, but we have a last-known-good local copy -> use it, don't touch remote.
     PRODUCTS = productsResult.data;
   } else if(productsResult.status === 'nodb'){
     // No Supabase configured and no local cache -> local-only first run.
     PRODUCTS = seedProducts();
-    await storeSet('axoria_products', PRODUCTS, true);
   } else {
     // 'error': Supabase unreachable and nothing cached. Show something locally
     // so the site isn't blank, but NEVER write this fallback to Supabase.
@@ -2127,15 +1581,11 @@ async function init(){
   syncNextProductId();
 
   const storedCats = await storeGet('axoria_categories', true);
-  if(storedCats && storedCats.length){ CATEGORIES = storedCats; } else { await storeSet('axoria_categories', CATEGORIES, true); }
+  if(storedCats && storedCats.length){ CATEGORIES = storedCats; }
   const storedReviews = await storeGet('axoria_reviews', true);
-  if(storedReviews){ REVIEWS = storedReviews; } else { REVIEWS = DEFAULT_REVIEWS; await storeSet('axoria_reviews', REVIEWS, true); }
+  if(storedReviews){ REVIEWS = storedReviews; } else { REVIEWS = DEFAULT_REVIEWS; }
   CART = await storeGet('axoria_cart', false) || [];
   FAVS = await storeGet('axoria_favs', false) || [];
-  const storedPin = await storeGet('axoria_admin_pin', true);
-  if(storedPin){ ADMIN_PIN = storedPin; } else { await storeSet('axoria_admin_pin', ADMIN_PIN, true); }
-  const storedRecovery = await storeGet('axoria_admin_recovery', true);
-  if(storedRecovery){ ADMIN_RECOVERY_ANSWER = storedRecovery; } else { await storeSet('axoria_admin_recovery', ADMIN_RECOVERY_ANSWER, true); }
   const theme = await storeGet('axoria_theme', false);
   if(theme) document.documentElement.setAttribute('data-theme', theme);
 
@@ -2231,14 +1681,29 @@ function bindEvents(){
   document.getElementById('orderFormWaBtn').onclick = ()=>{ window.open(buildWhatsAppMessage(false), '_blank'); };
 
   document.getElementById('submitReview').onclick = async ()=>{
+    const t = I18N[currentLang];
     const name = document.getElementById('revName').value.trim();
     const comment = document.getElementById('revComment').value.trim();
-    if(!name || !comment){ toast(I18N[currentLang].fillFields); return; }
-    REVIEWS.unshift({name, loc:'', rating:selectedStars, comment});
-    await storeSet('axoria_reviews', REVIEWS, true);
-    renderReviews();
-    document.getElementById('revName').value=''; document.getElementById('revComment').value=''; selectedStars=5; renderStarInput();
-    toast(I18N[currentLang].reviewSent);
+    if(!name || !comment){ toast(t.fillFields); return; }
+    if(!sb){ toast(currentLang==='ar'?'تعذر إرسال الرأي الآن.':currentLang==='en'?'Unable to submit your review right now.':'Impossible d\'envoyer votre avis pour le moment.'); return; }
+    const btn = document.getElementById('submitReview');
+    btn.disabled = true;
+    try{
+      const { error } = await sb.from('review_submissions').insert({
+        name, rating:selectedStars, comment, status:'pending'
+      });
+      if(error) throw error;
+      document.getElementById('revName').value='';
+      document.getElementById('revComment').value='';
+      selectedStars=5;
+      renderStarInput();
+      toast(currentLang==='ar'?'شكراً! سيتم نشر رأيك بعد المراجعة.':currentLang==='en'?'Thank you! Your review will be published after moderation.':'Merci ! Votre avis sera publié après vérification.');
+    }catch(e){
+      console.error('review submission failed', e);
+      toast(currentLang==='ar'?'تعذر إرسال الرأي الآن.':currentLang==='en'?'Unable to submit your review right now.':'Impossible d\'envoyer votre avis pour le moment.');
+    }finally{
+      btn.disabled = false;
+    }
   };
 
   document.getElementById('newsBtn').onclick = (e)=>{ e.preventDefault(); const v=document.getElementById('newsEmail').value.trim(); if(v){ toast('Merci pour votre inscription !'); document.getElementById('newsEmail').value=''; } };
@@ -2257,75 +1722,6 @@ function bindEvents(){
 
   document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click', ripple));
 
-  let clicks=0, clickTimer;
-  document.getElementById('copyLine').addEventListener('click', ()=>{
-    clicks++;
-    clearTimeout(clickTimer);
-    clickTimer = setTimeout(()=>clicks=0, 1200);
-    if(clicks>=5){ clicks=0; openAdminGate('panel'); }
-  });
-  document.getElementById('pinCancel').onclick = closeAdminGate;
-  document.getElementById('pinSubmit').onclick = tryPin;
-  document.getElementById('pinInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryPin(); });
-  function tryPin(){
-    const v = document.getElementById('pinInput').value;
-    if(v === ADMIN_PIN){
-      adminUnlocked = true;
-      closeAdminGate();
-      document.getElementById('adminPanel').classList.add('open');
-      switchAdminTab('products');
-      renderAdminTable();
-      refreshNewOrdersBadgeFromDb();
-      if(gateMode === 'quick'){
-        addNewProduct().then(ok=>{ if(ok) toast('Nouveau produit ajouté — modifiez-le ci-dessous'); });
-      }
-    } else {
-      document.getElementById('pinError').textContent = 'Mot de passe incorrect.';
-      document.getElementById('pinInput').value = '';
-      document.getElementById('pinInput').focus();
-    }
-  }
-
-  document.getElementById('pinForgotLink').onclick = (e)=>{ e.preventDefault(); openRecoverBox(); };
-  document.getElementById('recoverCancelLink').onclick = (e)=>{ e.preventDefault(); closeRecoverBox(); };
-  document.getElementById('recoverAnswer').addEventListener('keydown', (e)=>{ if(e.key==='Enter') checkRecoverAnswer(); });
-  document.getElementById('recoverCheckBtn').onclick = checkRecoverAnswer;
-  function checkRecoverAnswer(){
-    const ans = document.getElementById('recoverAnswer').value.trim();
-    if(ans === ADMIN_RECOVERY_ANSWER){
-      document.getElementById('recoverError').textContent = '';
-      document.getElementById('recoverStep2').style.display = 'block';
-      document.getElementById('newPinInput').focus();
-    } else {
-      document.getElementById('recoverError').textContent = 'Réponse incorrecte.';
-      document.getElementById('recoverAnswer').value = '';
-      document.getElementById('recoverAnswer').focus();
-    }
-  }
-  document.getElementById('newPinInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') setNewPin(); });
-  document.getElementById('setNewPinBtn').onclick = setNewPin;
-  async function setNewPin(){
-    const np = document.getElementById('newPinInput').value.trim();
-    if(np.length < 4){
-      document.getElementById('recoverError').textContent = 'Le nouveau mot de passe doit contenir au moins 4 caractères.';
-      return;
-    }
-    ADMIN_PIN = np;
-    await storeSet('axoria_admin_pin', ADMIN_PIN, true);
-    closeRecoverBox();
-    toast('Mot de passe mis à jour. Vous pouvez vous connecter.');
-  }
-  document.getElementById('adminTinyBtn').onclick = ()=>openAdminGate('panel');
-  document.getElementById('adminCloseBtn').onclick = ()=>document.getElementById('adminPanel').classList.remove('open');
-  document.getElementById('adminAddBtn').onclick = addNewProduct;
-  document.getElementById('adminCatBtn').onclick = openCategoryManager;
-  document.getElementById('adminTabProducts').onclick = ()=>switchAdminTab('products');
-  document.getElementById('adminTabOrders').onclick = ()=>switchAdminTab('orders');
-
-  document.getElementById('catCloseBtn').onclick = closeCategoryManager;
-  document.getElementById('catAddBtn').onclick = addCategory;
-  document.getElementById('catNewName').addEventListener('keydown', (e)=>{ if(e.key==='Enter') addCategory(); });
-  document.getElementById('catManagerOverlay').addEventListener('click', (e)=>{ if(e.target.id==='catManagerOverlay') closeCategoryManager(); });
 }
 
 try{ init(); }catch(e){ console.error('init failed', e); const l=document.getElementById('loader'); if(l) l.classList.add('hidden'); }
