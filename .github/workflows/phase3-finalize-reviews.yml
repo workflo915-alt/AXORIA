@@ -1,0 +1,52 @@
+name: AXORIA Phase 3 Finalize Reviews
+
+on:
+  push:
+    branches:
+      - phase-3-review-moderation
+    paths:
+      - 'scripts/phase3_finalize_reviews.py'
+      - '.github/workflows/phase3-finalize-reviews.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Phase 3 branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-3-review-moderation
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply final review patch
+        run: python scripts/phase3_finalize_reviews.py
+
+      - name: Validate generated admin
+        shell: bash
+        run: |
+          git diff --check
+          grep -q 'data-review-delete=' admin.html
+          grep -q "sb.rpc('delete_review'" admin.html
+          grep -q "sb.rpc('moderate_review'" admin.html
+
+      - name: Commit generated changes
+        shell: bash
+        run: |
+          if git diff --quiet -- admin.html; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add admin.html
+          git commit -m "phase3: finalize review moderation actions"
+          git push origin HEAD:phase-3-review-moderation
