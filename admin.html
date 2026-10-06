@@ -302,10 +302,26 @@ function renderReviewSubmissions(){
     <td><div class="row-actions">
       <button class="btn primary" data-review-approve="${esc(r.id)}" ${r.status==='approved'?'disabled':''}>Approuver</button>
       <button class="btn danger" data-review-reject="${esc(r.id)}" ${r.status==='rejected'?'disabled':''}>Refuser</button>
+      <button class="btn ghost" style="color:var(--danger)" data-review-delete="${esc(r.id)}">Supprimer</button>
     </div></td>
   </tr>`).join('');
   body.querySelectorAll('[data-review-approve]').forEach(b=>b.onclick=()=>moderateReview(b.dataset.reviewApprove,'approve',b));
   body.querySelectorAll('[data-review-reject]').forEach(b=>b.onclick=()=>moderateReview(b.dataset.reviewReject,'reject',b));
+  body.querySelectorAll('[data-review-delete]').forEach(b=>b.onclick=()=>deleteReview(b.dataset.reviewDelete,b));
+}
+async function deleteReview(id,btn){
+  if(!confirm('Supprimer définitivement cet avis ?'))return;
+  btn.disabled=true;
+  try{
+    const {error}=await sb.rpc('delete_review',{p_review_id:id});
+    if(error)throw error;
+    await loadReviewSubmissions();
+    toast('Avis supprimé du tableau et du site');
+  }catch(e){
+    console.error(e);
+    toast('Échec de suppression de l’avis');
+    await loadReviewSubmissions();
+  }
 }
 async function moderateReview(id,action,btn){
   btn.disabled=true;
