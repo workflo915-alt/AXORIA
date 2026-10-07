@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AXORIA — Feel Better, Every Day</title>
-<meta name="description" content="AXORIA — correcteur de posture et ceinture amincissante premium. Marque marocaine de bien-être. Livraison partout au Maroc, paiement à la livraison.">
+<meta name="description" content="AXORIA — essentiels bien-être et confort au quotidien. Marque marocaine avec livraison partout au Maroc et paiement à la livraison.">
 <meta property="og:title" content="AXORIA — Feel Better, Every Day">
-<meta property="og:description" content="Correcteur de posture et ceinture amincissante premium. Livraison partout au Maroc, paiement à la livraison.">
+<meta property="og:description" content="Essentiels bien-être et confort au quotidien. Livraison partout au Maroc et paiement à la livraison.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
@@ -274,6 +274,9 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .qty-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;}
 .qty-val{font-family:var(--font-mono);font-weight:700;font-size:16px;min-width:20px;text-align:center;}
 .modal .mprice{font-family:var(--font-mono);font-weight:800;font-size:24px;margin-top:auto;}
+.modal-trust{display:grid;gap:8px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:var(--bg-alt);font-size:12.5px;color:var(--text-soft);}
+.modal-trust span{display:flex;align-items:center;gap:8px;line-height:1.35;}
+.modal-trust span::before{content:'✓';color:var(--teal);font-weight:800;}
 
 /* ---------- Cart Drawer ---------- */
 .cart-overlay{position:fixed;inset:0;background:rgba(8,14,12,.5);z-index:800;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;}
@@ -315,6 +318,7 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .review-slider{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 20px;}
 .review-slider::-webkit-scrollbar{height:6px;}
 .review-slider::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.review-empty{width:100%;padding:26px;border:1px dashed var(--line);border-radius:18px;background:var(--surface);color:var(--text-soft);font-size:14px;line-height:1.6;}
 .rcard{scroll-snap-align:start;flex:0 0 min(340px,84vw);background:var(--surface);border-radius:22px;padding:26px;box-shadow:var(--shadow-sm);border:1px solid var(--line);}
 .stars{display:flex;gap:3px;color:#FFC107;margin-bottom:12px;}
 .stars svg{width:15px;height:15px;}
@@ -700,6 +704,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
         <button class="qty-btn" id="qtyPlus">+</button>
       </div>
       <div class="mprice" id="modalPrice"></div>
+      <div class="modal-trust" id="modalTrust"></div>
       <button class="btn btn-primary" id="modalAddBtn" style="width:100%;justify-content:center;"></button>
     </div>
   </div>
@@ -786,7 +791,7 @@ const I18N = {
     aboutText1:"AXORIA est une marque marocaine de bien-être pensée pour rendre le quotidien plus confortable. Nous sélectionnons des accessoires simples, pratiques et agréables à utiliser pour accompagner vos moments de travail, de mouvement, de détente et de récupération.",
     aboutText2:"Chaque produit AXORIA est choisi avec attention pour son confort, sa qualité et sa facilité d'utilisation. Notre équipe reste disponible par WhatsApp avant et après votre commande, avec livraison partout au Maroc et paiement à la livraison.",
     pillars:['Qualité premium contrôlée','Livraison partout au Maroc','Paiement à la livraison','Support réactif 7j/7'],
-    statsLbl:["Clients satisfaits","Commandes livrées","Note moyenne clients","Villes livrées au Maroc"],
+    statsLbl:["Paiement à la livraison","Délai indicatif","Support WhatsApp","Livraison nationale"],
     revEyebrow:'Avis Clients', revTitle:'Ce que disent nos clients', revFormTitle:'Laissez votre avis',
     lblRating:'Note', lblName:'Nom', lblComment:'Commentaire', submitReview:'Envoyer mon avis',
     whyEyebrow:'Pourquoi AXORIA', whyTitle:'Une marque de confiance, pensée pour votre bien-être',
@@ -848,7 +853,7 @@ const I18N = {
     aboutText1:"AXORIA is a Moroccan wellness brand created to make everyday life more comfortable. We select simple, practical essentials that fit naturally into moments of work, movement, relaxation and recovery.",
     aboutText2:"Every AXORIA product is selected with care for comfort, quality and ease of use. Our team stays available on WhatsApp before and after your order, with delivery across Morocco and cash on delivery.",
     pillars:['Premium checked quality','Delivery across Morocco','Cash on delivery','Responsive 7/7 support'],
-    statsLbl:['Happy customers','Orders delivered','Average customer rating','Cities delivered in Morocco'],
+    statsLbl:['Cash on delivery','Typical delivery time','WhatsApp support','Nationwide delivery'],
     revEyebrow:'Customer Reviews', revTitle:'What our customers say', revFormTitle:'Leave your review',
     lblRating:'Rating', lblName:'Name', lblComment:'Comment', submitReview:'Submit Review',
     whyEyebrow:'Why AXORIA', whyTitle:'A trusted brand, designed for your wellbeing',
@@ -910,7 +915,7 @@ const I18N = {
     aboutText1:"أكسوريا علامة مغربية للعناية والرفاه اليومي، هدفها جعل روتينك أكثر راحة وبساطة. نختار منتجات عملية ومريحة ترافقك في العمل والحركة والاسترخاء والتعافي.",
     aboutText2:"نختار كل منتج من أكسوريا بعناية من حيث الراحة والجودة وسهولة الاستخدام. فريقنا متوفر عبر واتساب قبل وبعد طلبك، مع التوصيل لجميع مدن المغرب والدفع عند الاستلام.",
     pillars:['جودة فاخرة مُراقبة','توصيل لجميع مدن المغرب','الدفع عند الاستلام','دعم سريع الاستجابة 7/7'],
-    statsLbl:['عملاء راضون','طلبات تم توصيلها','متوسط تقييم العملاء','مدن مغربية تم التوصيل إليها'],
+    statsLbl:['الدفع عند الاستلام','مدة التوصيل التقريبية','دعم واتساب','توصيل داخل المغرب'],
     revEyebrow:'آراء العملاء', revTitle:'ماذا يقول عملاؤنا', revFormTitle:'اترك رأيك',
     lblRating:'التقييم', lblName:'الاسم', lblComment:'التعليق', submitReview:'إرسال الرأي',
     whyEyebrow:'لماذا أكسوريا', whyTitle:'علامة موثوقة، مصممة لراحتك وعافيتك',
@@ -997,7 +1002,7 @@ function genDesc(cat, name){
   const n = name.toLowerCase();
   const bits = {
     'posture corrector':'Redresse les épaules et soutient le dos pour une meilleure posture au quotidien, dès les premières minutes de port.',
-    'slimming waist belt':'Ceinture amincissante ajustable qui affine la taille, soutient le dos et accompagne vos séances de sport ou votre routine quotidienne.',
+    'slimming waist belt':'Ceinture ajustable pensée pour offrir maintien et confort pendant vos activités ou votre routine quotidienne.',
     'knee support':'Maintien souple du genou, idéal pendant le sport ou la récupération.',
     'wrist support':'Soutien du poignet pour soulager la tension liée aux gestes répétitifs.',
     'ankle support':'Stabilise la cheville, réduit les risques de gêne pendant l\'effort.',
@@ -1021,7 +1026,7 @@ function genDesc(cat, name){
   for(const k in bits){ if(n.includes(k)) return bits[k]; }
   const catDesc = {
     'Support & Récupération':'Soutien ciblé pour soulager et accompagner la récupération au quotidien.',
-    'Ceinture Amincissante':'Pensée pour affiner la silhouette tout en soutenant le dos.',
+    'Ceinture Amincissante':'Pensée pour apporter maintien, confort et ajustement au quotidien.',
     'Fitness & Mobilité':'Accessoire léger pour bouger, s\'étirer et se renforcer chez soi.',
     'Massage & Détente':'Pensé pour détendre les muscles et apaiser les tensions.',
     'Confort & Sommeil':'Petit geste de confort pour mieux vivre chaque journée.'
@@ -1124,13 +1129,7 @@ let currentCategory = 'all';
 let modalProduct = null;
 let modalQty = 1;
 
-const DEFAULT_REVIEWS = [
-  {name:'Yassine B.', loc:'Casablanca, Maroc', rating:5, comment:'Le correcteur de posture a changé ma façon de m\'asseoir au bureau. Moins de douleurs au dos après une semaine.'},
-  {name:'Sara M.', loc:'Rabat, Maroc', rating:5, comment:'La ceinture amincissante est confortable même portée plusieurs heures, et le résultat sur la taille se voit vite.'},
-  {name:'Imane T.', loc:'Marrakech, Maroc', rating:5, comment:'Très bonne qualité de fabrication, et le paiement à la livraison m\'a mise en confiance pour commander.'},
-  {name:'Karim L.', loc:'Tanger, Maroc', rating:4, comment:'Le correcteur de posture est efficace, juste un peu ferme les premiers jours. Le service client a bien conseillé sur le réglage.'},
-  {name:'Nadia R.', loc:'Agadir, Maroc', rating:5, comment:'Service client très réactif sur WhatsApp, livraison en 48h et produit conforme à la description.'}
-];
+const DEFAULT_REVIEWS = [];
 
 const ICONS = {
   sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>',
@@ -1210,7 +1209,7 @@ function applyStaticText(){
     const icns=[ICONS.leaf,ICONS.bolt,ICONS.shield,ICONS.chat];
     return `<div class="pillar">${icns[i]}<span>${p}</span></div>`;
   }).join('');
-  const statVals = ['5K+','12K+','4.8/5','20+'];
+  const statVals = ['COD','24–72h','7j/7','Maroc'];
   document.getElementById('statsRow').innerHTML = t.statsLbl.map((l,i)=>`<div class="stat"><div class="num" data-final="${statVals[i]}">0</div><div class="lbl">${l}</div></div>`).join('');
   document.getElementById('revEyebrow').textContent = t.revEyebrow;
   document.getElementById('revTitle').textContent = t.revTitle;
@@ -1249,6 +1248,8 @@ function applyStaticText(){
   document.getElementById('cartTitle').textContent = t.cartTitle;
   document.getElementById('totalLbl').textContent = t.totalLbl;
   document.getElementById('modalAddBtn').textContent = t.modalAdd;
+  const modalTrust = document.getElementById('modalTrust');
+  if(modalTrust) modalTrust.innerHTML = t.trustBadges.map(x=>`<span>${x}</span>`).join('');
   document.getElementById('socialRow').innerHTML = `<a href="https://www.instagram.com/axoria_store" target="_blank" rel="noopener" aria-label="Instagram">${ICONS.ig}</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp">${ICONS.whatsapp}</a>`;
   document.getElementById('infoCards').innerHTML = t.infoCards.map((c,i)=>{
     const icns=[ICONS.whatsapp,ICONS.phone,ICONS.ig,ICONS.truck];
@@ -1570,6 +1571,11 @@ async function submitOrder(){
 
 function renderReviews(){
   const slider = document.getElementById('reviewSlider');
+  if(!REVIEWS.length){
+    const emptyMsg = currentLang==='ar' ? 'ستظهر هنا آراء العملاء بعد مراجعتها والموافقة عليها.' : currentLang==='en' ? 'Approved customer reviews will appear here.' : 'Les avis clients approuvés apparaîtront ici.';
+    slider.innerHTML = `<div class="review-empty">${emptyMsg}</div>`;
+    return;
+  }
   slider.innerHTML = REVIEWS.map(r=>`
     <div class="rcard">
       <div class="stars">${Array.from({length:5}).map((_,i)=>`<span style="opacity:${i<r.rating?1:.25}">${ICONS.star}</span>`).join('')}</div>
