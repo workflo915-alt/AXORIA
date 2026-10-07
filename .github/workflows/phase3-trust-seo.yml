@@ -1,0 +1,57 @@
+name: AXORIA Phase 3 Trust SEO
+
+on:
+  push:
+    branches:
+      - phase-3-trust-seo
+    paths:
+      - 'scripts/phase3_trust_seo.py'
+      - '.github/workflows/phase3-trust-seo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Phase 3 branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-3-trust-seo
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply Reviews Trust and SEO patch
+        run: python scripts/phase3_trust_seo.py
+
+      - name: Validate generated files
+        shell: bash
+        run: |
+          git diff --check
+          grep -q 'id="reviewsPanel"' admin.html
+          grep -q "sb.rpc('moderate_review'" admin.html
+          grep -q "sb.rpc('delete_review'" admin.html
+          grep -q "from('review_submissions').select" index.html
+          grep -q 'rel="canonical" href="https://axoria.ma/"' index.html
+          grep -q 'https://axoria.ma/sitemap.xml' robots.txt
+          grep -q '<loc>https://axoria.ma/</loc>' sitemap.xml
+          if grep -q "REVIEWS = DEFAULT_REVIEWS" index.html; then exit 1; fi
+
+      - name: Commit generated changes
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html admin.html robots.txt sitemap.xml; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html admin.html robots.txt sitemap.xml
+          git commit -m "phase3: complete review moderation and SEO foundation"
+          git push origin HEAD:phase-3-trust-seo
