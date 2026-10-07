@@ -315,6 +315,15 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .cart-foot{padding:22px 24px 26px;border-top:1px solid var(--line);}
 .cart-total{display:flex;justify-content:space-between;font-family:var(--font-mono);font-weight:700;font-size:19px;margin-bottom:16px;}
 .cart-empty{text-align:center;padding:60px 20px;color:var(--text-soft);}
+.cart-upsell{margin-bottom:16px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--bg-alt);}
+.cart-upsell-title{font-size:12px;font-weight:800;margin-bottom:10px;color:var(--text);}
+.cart-upsell-row{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;}
+.cart-upsell-row img{width:52px;height:52px;border-radius:12px;object-fit:cover;}
+.cart-upsell-row h6{margin:0 0 4px;font-size:12px;line-height:1.25;}
+.cart-upsell-price{font-family:var(--font-mono);font-size:12px;color:var(--text-soft);}
+.cart-upsell-add{border:1px solid var(--teal);background:var(--surface);color:var(--teal);border-radius:999px;padding:8px 10px;font-size:11px;font-weight:800;white-space:nowrap;}
+.cart-upsell-add:hover{background:var(--teal);color:#fff;}
+.cart-save-note{margin-top:10px;text-align:center;font-size:11.5px;color:var(--text-soft);line-height:1.4;}
 
 /* ---------- About ---------- */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
@@ -678,8 +687,10 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot">
+    <div id="cartUpsell"></div>
     <div class="cart-total"><span id="totalLbl">Total</span><span id="cartTotalVal">0 DH</span></div>
     <button class="btn btn-green" id="waCartBtn" style="width:100%;justify-content:center;"></button>
+    <div class="cart-save-note" id="cartSaveNote"></div>
   </div>
 </aside>
 
@@ -853,7 +864,7 @@ const I18N = {
     fh1:'Liens rapides', fh2:'Informations', fh3:'Newsletter', newsDesc:"Recevez nos offres et nouveautés.", newsBtn:"S'abonner",
     footInfo:['Livraison & Retours','Confidentialité','Conditions générales'],
     copyLine:'© 2026 AXORIA. Tous droits réservés.',
-    cartTitle:'Votre panier', totalLbl:'Total', cartEmpty:'Votre panier est vide.',
+    cartTitle:'Votre panier', totalLbl:'Total', cartEmpty:'Votre panier est vide.', cartUpsellTitle:'Complétez votre panier', cartUpsellAdd:'Ajouter', cartSaved:'Votre panier est sauvegardé sur cet appareil.', cartRestored:'Votre panier a été restauré.',
     modalAdd:'Ajouter au panier', addedToast:'Ajouté au panier',
     reviewSent:'Merci pour votre avis !', fillFields:'Merci de remplir tous les champs.',
     orderFormTitle:'Finaliser ma commande', orderFormTotalLbl:'Total commande',
@@ -915,7 +926,7 @@ const I18N = {
     fh1:'Quick Links', fh2:'Information', fh3:'Newsletter', newsDesc:'Get our offers and news.', newsBtn:'Subscribe',
     footInfo:['Shipping & Returns','Privacy Policy','Terms & Conditions'],
     copyLine:'© 2026 AXORIA. All rights reserved.',
-    cartTitle:'Your Cart', totalLbl:'Total', cartEmpty:'Your cart is empty.',
+    cartTitle:'Your Cart', totalLbl:'Total', cartEmpty:'Your cart is empty.', cartUpsellTitle:'Complete your cart', cartUpsellAdd:'Add', cartSaved:'Your cart is saved on this device.', cartRestored:'Your cart has been restored.',
     modalAdd:'Add to Cart', addedToast:'Added to cart',
     reviewSent:'Thanks for your review!', fillFields:'Please fill all fields.',
     orderFormTitle:'Complete your order', orderFormTotalLbl:'Order total',
@@ -977,7 +988,7 @@ const I18N = {
     fh1:'روابط سريعة', fh2:'معلومات', fh3:'النشرة الإخبارية', newsDesc:'احصل على عروضنا وأخبارنا.', newsBtn:'اشترك',
     footInfo:['الشحن والإرجاع','سياسة الخصوصية','الشروط والأحكام'],
     copyLine:'© 2026 أكسوريا. جميع الحقوق محفوظة.',
-    cartTitle:'سلتك', totalLbl:'المجموع', cartEmpty:'سلتك فارغة.',
+    cartTitle:'سلتك', totalLbl:'المجموع', cartEmpty:'سلتك فارغة.', cartUpsellTitle:'أكمل سلتك', cartUpsellAdd:'أضف', cartSaved:'سلتك محفوظة على هذا الجهاز.', cartRestored:'تمت استعادة سلتك.',
     modalAdd:'أضف إلى السلة', addedToast:'أُضيف إلى السلة',
     reviewSent:'شكراً على رأيك!', fillFields:'يرجى ملء جميع الحقول.',
     orderFormTitle:'إتمام الطلب', orderFormTotalLbl:'مجموع الطلب',
@@ -1463,6 +1474,22 @@ function addToCart(id, qty){
   persistCart();
   renderCart();
 }
+function renderCartUpsell(){
+  const host=document.getElementById('cartUpsell');
+  const note=document.getElementById('cartSaveNote');
+  if(note) note.textContent=I18N[currentLang].cartSaved;
+  if(!host) return;
+  if(!CART.length){ host.innerHTML=''; return; }
+  const ids=new Set(CART.map(c=>String(c.id)));
+  const first=PRODUCTS.find(p=>String(p.id)===String(CART[0]?.id));
+  const available=PRODUCTS.filter(p=>p.visible && (p.stock===undefined || Number(p.stock)>0) && !ids.has(String(p.id)));
+  if(!available.length){ host.innerHTML=''; return; }
+  const p=available.find(x=>first?.cat && x.cat===first.cat) || available[0];
+  const t=I18N[currentLang];
+  host.innerHTML=`<div class="cart-upsell"><div class="cart-upsell-title">${t.cartUpsellTitle}</div><div class="cart-upsell-row"><img src="${p.img}" alt="${p.name}" loading="lazy"><div><h6>${p.name}</h6><div class="cart-upsell-price">${fmtPrice(p.price)}</div></div><button class="cart-upsell-add" type="button">${t.cartUpsellAdd}</button></div></div>`;
+  host.querySelector('.cart-upsell-add')?.addEventListener('click',()=>{ addToCart(p.id,1); toast(t.addedToast); });
+}
+
 function persistCart(){ storeSet('axoria_cart', CART, false); }
 function renderCart(){
   const t = I18N[currentLang];
@@ -1494,6 +1521,7 @@ function renderCart(){
   }
   const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
   document.getElementById('cartTotalVal').textContent = fmtPrice(total);
+  renderCartUpsell();
   updateStickyBar();
 }
 function updateStickyBar(){
@@ -1751,6 +1779,12 @@ async function init(){
 
   // Render exactly once, now that the real data is known.
   renderAll();
+  try{
+    if(CART.length && !sessionStorage.getItem('axoria_cart_restored_notified')){
+      sessionStorage.setItem('axoria_cart_restored_notified','1');
+      setTimeout(()=>toast(I18N[currentLang].cartRestored),650);
+    }
+  }catch(e){}
   requestAnimationFrame(()=>setTimeout(()=>{ document.getElementById('loader').classList.add('hidden'); }, 120));
 
   const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } }); }, {threshold:.12});
