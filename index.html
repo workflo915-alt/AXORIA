@@ -1414,16 +1414,16 @@ function updateProductStructuredData(){
           '@type':'Product',
           '@id':`https://axoria.ma/#product-${encodeURIComponent(String(p.id))}`,
           name:String(p.name||''),
-          image:p.img?[String(p.img)]:undefined,
+          image:(p.img && /^https?:\/\//i.test(String(p.img)))?[String(p.img)]:undefined,
           description:String(p.longDesc||p.desc||''),
           brand:{'@type':'Brand',name:'AXORIA'},
-          url:'https://axoria.ma/#produits',
+          url:`https://axoria.ma/#product-${encodeURIComponent(String(p.id))}`,
           offers:{
             '@type':'Offer',
             priceCurrency:'MAD',
             price:Number(p.price||0),
             availability:Number(p.stock||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',
-            url:'https://axoria.ma/#produits',
+            url:`https://axoria.ma/#product-${encodeURIComponent(String(p.id))}`,
             seller:{'@type':'Organization',name:'AXORIA'}
           }
         }
