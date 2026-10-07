@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AXORIA — Feel Better, Every Day</title>
+<title>AXORIA Maroc — Feel Better, Every Day | Bien-être & Confort</title>
 <meta name="description" content="AXORIA — essentiels bien-être et confort au quotidien. Marque marocaine avec livraison partout au Maroc et paiement à la livraison.">
 <meta property="og:title" content="AXORIA — Feel Better, Every Day">
 <meta property="og:type" content="website">
@@ -18,7 +18,19 @@
   "@type": "Store",
   "name": "AXORIA",
   "telephone": "+212621575115",
-  "address": {"@type": "PostalAddress", "addressLocality": "Rabat-Salé", "addressCountry": "MA"}
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Rabat-Salé",
+    "addressCountry": "MA"
+  },
+  "url": "https://axoria.ma/",
+  "description": "Marque marocaine de bien-être et de confort au quotidien, avec livraison partout au Maroc et paiement à la livraison.",
+  "currenciesAccepted": "MAD",
+  "paymentAccepted": "Cash on Delivery",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Morocco"
+  }
 }
 </script>
 <style>
@@ -1320,7 +1332,49 @@ function renderCatFilters(){
   });
 }
 function fmtPrice(p){ return p + ' DH'; }
+
+/* ---------- SEO: live product structured data ---------- */
+function updateProductStructuredData(){
+  try{
+    const products=(Array.isArray(PRODUCTS)?PRODUCTS:[]).filter(p=>p && p.visible);
+    let node=document.getElementById('axoriaProductSchema');
+    if(!node){
+      node=document.createElement('script');
+      node.type='application/ld+json';
+      node.id='axoriaProductSchema';
+      document.head.appendChild(node);
+    }
+    const itemList={
+      '@type':'ItemList',
+      name:'Produits AXORIA',
+      itemListElement:products.map((p,i)=>({
+        '@type':'ListItem',
+        position:i+1,
+        item:{
+          '@type':'Product',
+          '@id':`https://axoria.ma/#product-${encodeURIComponent(String(p.id))}`,
+          name:String(p.name||''),
+          image:p.img?[String(p.img)]:undefined,
+          description:String(p.longDesc||p.desc||''),
+          brand:{'@type':'Brand',name:'AXORIA'},
+          url:'https://axoria.ma/#produits',
+          offers:{
+            '@type':'Offer',
+            priceCurrency:'MAD',
+            price:Number(p.price||0),
+            availability:Number(p.stock||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',
+            url:'https://axoria.ma/#produits',
+            seller:{'@type':'Organization',name:'AXORIA'}
+          }
+        }
+      }))
+    };
+    node.textContent=JSON.stringify({'@context':'https://schema.org','@graph':[itemList]});
+  }catch(e){ console.warn('SEO product schema unavailable',e); }
+}
+
 function renderMenuGrid(){
+  updateProductStructuredData();
   const grid = document.getElementById('menuGrid');
   const t = I18N[currentLang];
   const items = PRODUCTS.filter(p=>p.visible && (currentCategory==='all' || p.cat===currentCategory));
@@ -1334,7 +1388,7 @@ function renderMenuGrid(){
       : p.badge==='new' ? `<span class="badge promo" style="background:#3F8FC4;">NEW</span>`
       : p.badge==='bestseller' ? `<span class="badge promo" style="background:var(--coral);">BEST SELLER</span>` : '';
     return `
-    <div class="pcard reveal in" data-id="${p.id}">
+    <div class="pcard reveal in" id="product-${p.id}" data-id="${p.id}">
       <div class="imgwrap">
         <img src="${p.img}" alt="${p.name}" loading="lazy">
         ${badgeHtml}
