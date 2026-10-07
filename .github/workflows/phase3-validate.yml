@@ -1,0 +1,48 @@
+name: AXORIA Phase 3 Validation
+
+on:
+  push:
+    branches:
+      - phase-3-trust-seo
+    paths:
+      - '.github/workflows/phase3-validate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-3-trust-seo
+
+      - name: Validate inline JavaScript, JSON-LD and sitemap
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, re, subprocess, tempfile, xml.etree.ElementTree as ET
+
+          for filename in ('index.html', 'admin.html'):
+              html = Path(filename).read_text(encoding='utf-8')
+              for i, match in enumerate(re.finditer(r'<script([^>]*)>(.*?)</script>', html, re.S | re.I)):
+                  attrs, body = match.group(1), match.group(2).strip()
+                  if not body:
+                      continue
+                  if 'application/ld+json' in attrs.lower():
+                      json.loads(body)
+                      continue
+                  with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as f:
+                      f.write(body)
+                      path = f.name
+                  subprocess.run(['node', '--check', path], check=True)
+
+          ET.parse('sitemap.xml')
+          robots = Path('robots.txt').read_text(encoding='utf-8')
+          assert 'Sitemap: https://axoria.ma/sitemap.xml' in robots
+          print('Phase 3 syntax and SEO validation passed.')
+          PY
