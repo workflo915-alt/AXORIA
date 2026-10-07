@@ -1,0 +1,35 @@
+name: AXORIA SEO foundation
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - '.github/workflows/seo-foundation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply SEO foundation
+        run: python scripts/seo_foundation.py
+      - name: Commit SEO foundation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html robots.txt sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No SEO changes to commit"
+          else
+            git commit -m "seo: add search foundation and product structured data"
+            git push origin HEAD:phase-4-meta-tracking
+          fi
