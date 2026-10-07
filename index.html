@@ -463,6 +463,18 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--charcoal);color:#fff;padding:14px 22px;border-radius:12px;font-size:13.5px;font-weight:600;z-index:1000;opacity:0;visibility:hidden;transition:all .35s ease;box-shadow:var(--shadow-md);}
 .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+
+/* hero-safe-framing-v3 */
+@media (min-width:901px){
+  .hero-character{width:clamp(154px,18vw,268px);}
+  .hero-character.is-main{bottom:-1.2%;width:clamp(210px,23vw,342px);}
+  .hero-character.is-featured{bottom:-1.2%;width:clamp(210px,22.7vw,332px);}
+}
+@media (min-width:901px) and (max-height:780px){
+  .hero-character.is-main{width:clamp(198px,21vw,310px);}
+  .hero-character.is-featured{width:clamp(198px,20.5vw,304px);}
+}
+
 </style>
 </head>
 <body>
@@ -1990,7 +2002,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   // Keep the athlete duo visible from the start, then fan men left and women right.
   const desktopTargets=[62.5,71,55,78,49,82,43,86,37,89,32,92,27,95];
   const mobileTargets=[45,58,39,64,34,69,30,74,26,78,22,82,18,86];
-  const finalScale=[1.06,1.03,.98,.98,.96,.96,.94,.94,.92,.92,.90,.90,.88,.88];
+  const finalScale=[.94,.94,.98,.98,.96,.96,.94,.94,.92,.92,.90,.90,.88,.88];
   const finalAlpha=[1,1,.98,.98,.97,.97,.96,.96,.95,.95,.94,.94,.92,.92];
 
   chars.forEach((el,i)=>{
