@@ -1,0 +1,36 @@
+name: AXORIA hero light contrast
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - 'scripts/fix-hero-light-contrast.py'
+      - '.github/workflows/fix-hero-light-contrast.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fix light hero trust text contrast
+        run: python scripts/fix-hero-light-contrast.py
+      - name: Commit contrast fix
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "hero: fix light theme trust text contrast"
+          git push origin HEAD:phase-4-meta-tracking
