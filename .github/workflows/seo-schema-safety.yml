@@ -1,0 +1,35 @@
+name: AXORIA SEO schema safety
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - '.github/workflows/seo-schema-safety.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply product schema safety polish
+        run: python scripts/seo_schema_safety.py
+      - name: Commit schema polish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No schema changes to commit"
+          else
+            git commit -m "seo: harden product structured data"
+            git push origin HEAD:phase-4-meta-tracking
+          fi
