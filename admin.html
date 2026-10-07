@@ -57,6 +57,7 @@
       <button class="btn tab active" data-tab="products">Produits</button>
       <button class="btn tab ghost" data-tab="orders">Commandes</button>
       <button class="btn tab ghost" data-tab="reviews">Avis</button>
+      <button class="btn tab ghost" data-tab="tracking">Tracking</button>
       <button class="btn tab ghost" data-tab="categories">Catégories</button>
     </div>
 
@@ -96,6 +97,25 @@
       <div class="table-wrap"><table style="min-width:1050px"><thead><tr><th>Date</th><th>Client</th><th>Note</th><th>Commentaire</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="reviewsBody"></tbody></table></div>
     </section>
 
+
+    <section id="trackingPanel" class="card panel hidden">
+      <div class="bar">
+        <div><h2>Meta Pixel & Conversions API</h2><div class="sub">Le Pixel ID peut être public. Le token CAPI reste secret côté Supabase.</div></div>
+        <div class="actions"><button id="saveTracking" class="btn primary">Enregistrer</button></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:820px">
+        <div class="card" style="padding:14px">
+          <label style="display:flex;gap:10px;align-items:center;font-weight:700"><input id="trackingEnabled" type="checkbox" style="width:auto"> Activer Meta Pixel</label>
+          <div class="field"><label>Pixel ID</label><input id="trackingPixelId" inputmode="numeric" placeholder="Ex: 123456789012345"></div>
+        </div>
+        <div class="card" style="padding:14px">
+          <label style="display:flex;gap:10px;align-items:center;font-weight:700"><input id="trackingCapiEnabled" type="checkbox" style="width:auto"> Activer Conversions API</label>
+          <p class="sub" style="line-height:1.55">À activer seulement après configuration du secret Meta dans Supabase. Le token ne doit jamais être enregistré dans le navigateur.</p>
+        </div>
+      </div>
+      <div id="trackingStatus" class="notice" style="margin-top:14px;margin-bottom:0"></div>
+    </section>
+
     <section id="categoriesPanel" class="card panel hidden">
       <div class="bar"><h2>Catégories</h2><div class="actions"><input id="newCategory" placeholder="Nouvelle catégorie"><button id="addCategory" class="btn primary">Ajouter</button></div></div>
       <div id="categoriesList"></div>
@@ -110,7 +130,7 @@ const SUPABASE_URL='https://gdemgpkkrmpridqgjmtx.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const ORDER_STATUSES=['New','Contacted','Confirmed','Shipped','Delivered','Cancelled'];
-let PRODUCTS=[];let CATEGORIES=[];let ORDERS=[];let REVIEW_SUBMISSIONS=[];
+let PRODUCTS=[];let CATEGORIES=[];let ORDERS=[];let REVIEW_SUBMISSIONS=[];let TRACKING_CONFIG={enabled:false,pixelId:'',capiEnabled:false};
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function money(v){return `${Number(v||0)} DH`;}
@@ -123,7 +143,7 @@ function hideAuthViews(){['loginView','forgotView','passwordView'].forEach(id=>$
 function showLogin(message='',ok=false){hideAuthViews();$('appView').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginMsg').textContent=message;$('loginMsg').classList.toggle('ok',ok);}
 function showForgot(){hideAuthViews();$('appView').classList.add('hidden');$('forgotView').classList.remove('hidden');$('forgotMsg').textContent='';$('forgotMsg').classList.remove('ok');$('forgotEmail').value=$('loginEmail').value.trim();}
 function showPasswordEditor(mode='change'){passwordFlow=mode;hideAuthViews();$('appView').classList.add('hidden');$('passwordView').classList.remove('hidden');$('newPassword').value='';$('confirmPassword').value='';$('passwordMsg').textContent='';$('passwordMsg').classList.remove('ok');$('passwordViewTitle').textContent=mode==='recovery'?'Créer un nouveau mot de passe':'Changer le mot de passe';$('passwordViewText').textContent=mode==='recovery'?'Le lien de récupération a été validé. Choisissez maintenant un nouveau mot de passe.':'Choisissez un nouveau mot de passe pour votre compte administrateur.';}
-async function requireSession(){const {data:{session}}=await sb.auth.getSession();if(recoveryMode){showPasswordEditor('recovery');return !!session;}if(!session){showLogin();return false;}hideAuthViews();$('appView').classList.remove('hidden');$('sessionLabel').textContent=session.user.email||'Session authentifiée';await loadProducts();await loadOrders();await loadReviewSubmissions();return true;}
+async function requireSession(){const {data:{session}}=await sb.auth.getSession();if(recoveryMode){showPasswordEditor('recovery');return !!session;}if(!session){showLogin();return false;}hideAuthViews();$('appView').classList.remove('hidden');$('sessionLabel').textContent=session.user.email||'Session authentifiée';await loadProducts();await loadOrders();await loadReviewSubmissions();await loadTrackingConfig();return true;}
 
 $('loginBtn').onclick=async()=>{const email=$('loginEmail').value.trim(),password=$('loginPassword').value;if(!email||!password){$('loginMsg').textContent='Email et mot de passe requis.';return;}const b=$('loginBtn');b.disabled=true;$('loginMsg').textContent='';$('loginMsg').classList.remove('ok');const {error}=await sb.auth.signInWithPassword({email,password});b.disabled=false;if(error){$('loginMsg').textContent='Connexion refusée.';return;}await requireSession();};
 $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click();});
@@ -137,7 +157,7 @@ $('confirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('savePa
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload();};
 sb.auth.onAuthStateChange((event,s)=>{if(event==='PASSWORD_RECOVERY'){recoveryMode=true;showPasswordEditor('recovery');return;}if(!s&&!recoveryMode)showLogin();});
 
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['products','orders','reviews','categories'].forEach(t=>$(t+'Panel').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='orders')loadOrders();if(b.dataset.tab==='reviews')loadReviewSubmissions();if(b.dataset.tab==='categories')renderCategories();});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['products','orders','reviews','tracking','categories'].forEach(t=>$(t+'Panel').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='orders')loadOrders();if(b.dataset.tab==='reviews')loadReviewSubmissions();if(b.dataset.tab==='tracking')loadTrackingConfig();if(b.dataset.tab==='categories')renderCategories();});
 
 async function loadProducts(){try{const [p,c]=await Promise.all([getStore('axoria_products'),getStore('axoria_categories')]);PRODUCTS=Array.isArray(p)?p:[];CATEGORIES=Array.isArray(c)?c:[];renderProducts();renderCategories();}catch(e){console.error(e);toast('Impossible de charger les produits. Vérifiez RLS/Auth.');}}
 function categoryOptions(selected){return CATEGORIES.map(c=>`<option value="${esc(c.name)}" ${c.name===selected?'selected':''}>${esc(c.name)}</option>`).join('');}
@@ -339,6 +359,32 @@ async function moderateReview(id,action,btn){
 $('reloadReviews').onclick=loadReviewSubmissions;
 $('reviewSearch').addEventListener('input',renderReviewSubmissions);
 $('reviewStatusFilter').addEventListener('change',renderReviewSubmissions);
+
+async function loadTrackingConfig(){
+  try{
+    const raw=await getStore('axoria_tracking');
+    TRACKING_CONFIG={enabled:!!raw?.enabled,pixelId:String(raw?.pixelId||'').trim(),capiEnabled:!!raw?.capiEnabled};
+    if($('trackingEnabled'))$('trackingEnabled').checked=TRACKING_CONFIG.enabled;
+    if($('trackingPixelId'))$('trackingPixelId').value=TRACKING_CONFIG.pixelId;
+    if($('trackingCapiEnabled'))$('trackingCapiEnabled').checked=TRACKING_CONFIG.capiEnabled;
+    if($('trackingStatus')){
+      const pixelReady=/^\d{5,30}$/.test(TRACKING_CONFIG.pixelId);
+      $('trackingStatus').textContent=TRACKING_CONFIG.enabled
+        ? (pixelReady?'Meta Pixel prêt côté site.':'Tracking activé mais Pixel ID invalide ou manquant.')
+        : 'Tracking Meta désactivé. Aucun événement Meta ne sera envoyé.';
+    }
+  }catch(e){console.error(e);if($('trackingStatus'))$('trackingStatus').textContent='Impossible de charger la configuration tracking.';}
+}
+async function saveTrackingConfig(){
+  const pixelId=String($('trackingPixelId')?.value||'').trim();
+  const enabled=!!$('trackingEnabled')?.checked;
+  const capiEnabled=!!$('trackingCapiEnabled')?.checked;
+  if(enabled && !/^\d{5,30}$/.test(pixelId)){toast('Pixel ID invalide');return;}
+  TRACKING_CONFIG={enabled,pixelId,capiEnabled};
+  try{await setStore('axoria_tracking',TRACKING_CONFIG);await loadTrackingConfig();toast('Configuration tracking enregistrée');}
+  catch(e){console.error(e);toast('Échec sauvegarde tracking');}
+}
+if($('saveTracking'))$('saveTracking').onclick=saveTrackingConfig;
 
 requireSession();
 </script>

@@ -723,6 +723,44 @@ const sb = (SUPABASE_URL.startsWith('http') && window.supabase)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 
+/* ---------- Phase 4: Meta Pixel + CAPI instrumentation ---------- */
+let META_TRACKING={enabled:false,pixelId:'',capiEnabled:false};
+let META_PIXEL_INITIALIZED=false;
+let META_PAGEVIEW_SENT=false;
+function validMetaPixelId(v){return /^\d{5,30}$/.test(String(v||'').trim());}
+function metaEventId(prefix='ax'){return `${prefix}-${Date.now()}-${(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2))}`;}
+function getCookieValue(name){const prefix=name+'=';return document.cookie.split(';').map(v=>v.trim()).find(v=>v.startsWith(prefix))?.slice(prefix.length)||'';}
+function ensureMetaPixel(){
+  if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return false;
+  if(!window.fbq){
+    const n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!window._fbq)window._fbq=n;
+    n.push=n;n.loaded=true;n.version='2.0';n.queue=[];
+    const s=document.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';
+    const first=document.getElementsByTagName('script')[0];first.parentNode.insertBefore(s,first);
+  }
+  if(!META_PIXEL_INITIALIZED){window.fbq('init',META_TRACKING.pixelId);META_PIXEL_INITIALIZED=true;}
+  return true;
+}
+async function loadTrackingConfig(){
+  try{
+    const raw=await storeGet('axoria_tracking',true);
+    META_TRACKING={enabled:!!raw?.enabled,pixelId:String(raw?.pixelId||'').trim(),capiEnabled:!!raw?.capiEnabled};
+    if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
+  }catch(e){console.warn('Meta tracking config unavailable',e);}
+}
+function trackCommerceEvent(eventName,customData={},userData={}){
+  if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return null;
+  const eventID=metaEventId(eventName.toLowerCase());
+  try{if(ensureMetaPixel()&&window.fbq)window.fbq('track',eventName,customData,{eventID});}catch(e){console.warn('Meta Pixel event failed',e);}
+  if(META_TRACKING.capiEnabled&&sb){
+    const body={pixel_id:META_TRACKING.pixelId,event_name:eventName,event_id:eventID,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,user_data:{...userData,fbp:getCookieValue('_fbp'),fbc:getCookieValue('_fbc')},custom_data:customData};
+    sb.functions.invoke('meta-capi',{body}).then(({error})=>{if(error)console.warn('Meta CAPI event failed',error);}).catch(e=>console.warn('Meta CAPI unavailable',e));
+  }
+  return eventID;
+}
+
+
 const I18N = {
   fr:{brand:'AXORIA', nav:['Accueil','Produits','À Propos','Avis','FAQ','Contact'],
     heroEyebrow:'AXORIA — Bien-être Premium', heroTitle:'Feel Better,<br>Every Day', heroSub:'Posture • Confort • Récupération',
@@ -1328,6 +1366,7 @@ function openModal(id){
   document.getElementById('modalDesc').textContent = p.longDesc || p.desc;
   document.getElementById('qtyVal').textContent = modalQty;
   updateModalPrice();
+  trackCommerceEvent('ViewContent',{content_ids:[String(p.id)],content_type:'product',content_name:p.name,value:Number(p.price||0),currency:'MAD'});
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('no-scroll');
 }
@@ -1340,6 +1379,7 @@ function addToCart(id, qty){
   const existing = CART.find(c=>c.id===id);
   if(existing) existing.qty += qty;
   else CART.push({key:id, id, name:p.name, price:p.price, img:p.img, qty});
+  trackCommerceEvent('AddToCart',{content_ids:[String(p.id)],content_type:'product',content_name:p.name,value:Number(p.price||0)*Number(qty||1),currency:'MAD',contents:[{id:String(p.id),quantity:Number(qty||1),item_price:Number(p.price||0)}]});
   persistCart();
   renderCart();
 }
@@ -1427,6 +1467,8 @@ function openOrderForm(){
   if(CART.length===0){ toast(I18N[currentLang].orderEmptyCart); return; }
   document.getElementById('orderFormError').textContent = '';
   renderOrderSummary();
+  const checkoutTotal=CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0);
+  trackCommerceEvent('InitiateCheckout',{value:checkoutTotal,currency:'MAD',num_items:CART.reduce((s,c)=>s+Number(c.qty||0),0),content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)}))});
   document.getElementById('orderFormOverlay').classList.add('open');
   document.body.classList.add('no-scroll');
 }
@@ -1467,6 +1509,8 @@ async function submitOrder(){
     });
     if(error) throw error;
     const placed = Array.isArray(data) ? data[0] : data;
+    const purchaseValue=Number(placed?.order_total||CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0));
+    trackCommerceEvent('Purchase',{value:purchaseValue,currency:'MAD',content_type:'product',content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)})),order_id:String(placed?.order_code||placed?.order_id||'')},{ph:phone,fn:name,ct:city,country:'ma',external_id:String(placed?.order_code||placed?.order_id||'')});
 
     // Stock changed server-side: refresh the visible catalog immediately.
     const fresh = await fetchProductsSafe();
@@ -1586,6 +1630,7 @@ function renderAll(){
 async function init(){
   document.getElementById('loaderLogo').innerHTML = badgeLogoSVG(120);
   spawnHeroParticles();
+  await loadTrackingConfig();
 
   /* Fix 1 + Fix 2: resolve the real product source of truth BEFORE any render,
      and never let a failed/empty read overwrite real Supabase data. */
