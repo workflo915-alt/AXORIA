@@ -4,9 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AXORIA — Feel Better, Every Day</title>
-<meta name="description" content="AXORIA — correcteur de posture et ceinture amincissante premium. Marque marocaine de bien-être. Livraison partout au Maroc, paiement à la livraison.">
+<meta name="description" content="AXORIA — correcteur de posture et accessoires de bien-être premium au Maroc. Confort au quotidien, livraison partout au Maroc et paiement à la livraison.">
+<link rel="canonical" href="https://axoria.ma/">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="author" content="AXORIA">
 <meta property="og:title" content="AXORIA — Feel Better, Every Day">
-<meta property="og:description" content="Correcteur de posture et ceinture amincissante premium. Livraison partout au Maroc, paiement à la livraison.">
+<meta property="og:description" content="Correcteur de posture et accessoires de bien-être premium. Livraison partout au Maroc, paiement à la livraison.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://axoria.ma/">
+<meta property="og:site_name" content="AXORIA">
+<meta property="og:locale" content="fr_MA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AXORIA — Feel Better, Every Day">
+<meta name="twitter:description" content="Correcteur de posture et accessoires de bien-être premium au Maroc.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
@@ -14,9 +24,19 @@
   "@context": "https://schema.org",
   "@type": "Store",
   "name": "AXORIA",
+  "url": "https://axoria.ma/",
   "telephone": "+212621575115",
   "priceRange": "149-179 MAD",
   "address": {"@type": "PostalAddress", "addressLocality": "Rabat-Salé", "addressCountry": "MA"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AXORIA",
+  "url": "https://axoria.ma/",
+  "inLanguage": ["fr-MA", "ar-MA", "en"]
 }
 </script>
 <style>
@@ -1508,13 +1528,16 @@ async function submitOrder(){
   }
 }
 
+function escapeReviewHtml(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
+
 function renderReviews(){
   const slider = document.getElementById('reviewSlider');
+  if(!REVIEWS.length){slider.innerHTML='<div class="rcard"><p class="quote">Les avis clients vérifiés apparaîtront ici après validation.</p></div>';return;}
   slider.innerHTML = REVIEWS.map(r=>`
     <div class="rcard">
       <div class="stars">${Array.from({length:5}).map((_,i)=>`<span style="opacity:${i<r.rating?1:.25}">${ICONS.star}</span>`).join('')}</div>
-      <p class="quote">"${r.comment}"</p>
-      <div class="who"><div class="avatar">${r.name.charAt(0)}</div><div><div class="nm">${r.name}</div><div class="loc">${r.loc}</div></div></div>
+      <p class="quote">"${escapeReviewHtml(r.comment)}"</p>
+      <div class="who"><div class="avatar">${escapeReviewHtml((r.name||'?').charAt(0))}</div><div><div class="nm">${escapeReviewHtml(r.name)}</div><div class="loc">${escapeReviewHtml(r.loc||'Maroc')}</div></div></div>
     </div>`).join('');
   let hovering = false;
   slider.onmouseenter = ()=>hovering=true;
@@ -1610,8 +1633,15 @@ async function init(){
 
   const storedCats = await storeGet('axoria_categories', true);
   if(storedCats && storedCats.length){ CATEGORIES = storedCats; }
-  const storedReviews = await storeGet('axoria_reviews', true);
-  if(storedReviews){ REVIEWS = storedReviews; } else { REVIEWS = DEFAULT_REVIEWS; }
+  let approvedReviews=[];
+  if(sb){
+    try{
+      const {data,error}=await sb.from('review_submissions').select('id,name,rating,comment,created_at').eq('status','approved').order('created_at',{ascending:false});
+      if(error)throw error;
+      approvedReviews=(Array.isArray(data)?data:[]).map(r=>({submission_id:r.id,name:r.name,rating:r.rating,comment:r.comment,loc:'Maroc',created_at:r.created_at}));
+    }catch(e){console.error('approved reviews load failed',e);}
+  }
+  REVIEWS=approvedReviews;
   CART = await storeGet('axoria_cart', false) || [];
   FAVS = await storeGet('axoria_favs', false) || [];
   const theme = await storeGet('axoria_theme', false);
