@@ -23,66 +23,6 @@ jobs:
           python-version: '3.12'
       - name: Apply Phase 4 tracking patch
         run: python scripts/phase4_meta_tracking.py
-      - name: Refresh storefront wellness copy
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('index.html'); s=p.read_text(encoding='utf-8')
-          reps=[
-          ("heroSub:'Posture • Confort • Récupération'","heroSub:'Confort • Bien-être • Équilibre'"),
-          ("heroTagline:\"Deux essentiels du bien-être, conçus pour corriger votre posture et redessiner votre silhouette, dès aujourd'hui.\"","heroTagline:\"Des essentiels bien-être pensés pour vous apporter plus de confort, de soutien et de sérénité au quotidien.\""),
-          ("menuDesc:'Deux produits lancés avec exigence : un correcteur de posture et une ceinture amincissante, choisis pour leur efficacité et leur confort au quotidien.'","menuDesc:'Des essentiels bien-être sélectionnés pour leur confort, leur qualité et leur simplicité au quotidien.'"),
-          ("aboutText1:\"AXORIA est une marque marocaine de bien-être fondée sur une conviction simple : une bonne posture et un dos soutenu changent tout, au bureau comme à la maison. Nous concevons des accessoires pensés pour accompagner le corps au quotidien — sans gadgets inutiles, sans compromis sur la qualité des matériaux.\"","aboutText1:\"AXORIA est une marque marocaine de bien-être pensée pour rendre le quotidien plus confortable. Nous sélectionnons des accessoires simples, pratiques et agréables à utiliser pour accompagner vos moments de travail, de mouvement, de détente et de récupération.\""),
-          ("aboutText2:\"Chaque produit AXORIA est testé pour son confort de port, sa durabilité et son efficacité réelle. Notre équipe reste disponible par WhatsApp avant et après votre commande, et nous livrons partout au Maroc avec paiement à la livraison.\"","aboutText2:\"Chaque produit AXORIA est choisi avec attention pour son confort, sa qualité et sa facilité d'utilisation. Notre équipe reste disponible par WhatsApp avant et après votre commande, avec livraison partout au Maroc et paiement à la livraison.\""),
-          ("whyEyebrow:'Pourquoi AXORIA', whyTitle:'Une marque de confiance, pensée pour votre corps'","whyEyebrow:'Pourquoi AXORIA', whyTitle:'Une marque de confiance, pensée pour votre bien-être'"),
-          ("['Qualité contrôlée','Chaque produit est testé avant expédition pour garantir confort, solidité et efficacité réelle.']","['Qualité contrôlée','Chaque produit est vérifié avant expédition pour garantir confort, solidité et qualité.']"),
-          ("howToEyebrow:'Mode d\\'emploi', howToTitle:'Comment bien utiliser votre produit'","howToEyebrow:'Mode d\\'emploi', howToTitle:'Profitez au mieux de votre produit'"),
-          ("['Ajustez','Réglez les sangles selon votre morphologie pour un maintien ferme mais confortable.']","['Adaptez-le','Positionnez ou réglez votre produit selon votre confort et votre routine.']"),
-          ("['Portez progressivement','Commencez par 20 à 30 minutes par jour, puis augmentez selon votre confort.']","['Commencez en douceur','Intégrez-le progressivement à votre journée, selon ce qui vous convient le mieux.']"),
-          ("['Restez actif','Portez le produit pendant vos tâches quotidiennes, au bureau, en marchant ou au sport.']","['Intégrez-le à votre routine','Utilisez-le au travail, à la maison, pendant vos activités ou vos moments de détente.']"),
-          ("['Observez les résultats','Constatez l\\'amélioration de votre posture ou de votre silhouette en quelques semaines.']","['Écoutez votre confort','Adaptez son utilisation à vos besoins pour profiter pleinement de votre expérience AXORIA.']"),
-          ("finalCtaText:'Rejoignez des centaines de clients au Maroc qui font déjà confiance à AXORIA pour leur posture et leur confort.'","finalCtaText:'Rejoignez des centaines de clients au Maroc qui font déjà confiance à AXORIA pour plus de confort et de bien-être au quotidien.'"),
-          ("[\"Puis-je commander plusieurs produits ensemble ?\",\"Bien sûr — ajoutez le correcteur de posture et la ceinture amincissante au panier, tout sera regroupé dans une seule commande WhatsApp.\"]","[\"Puis-je commander plusieurs produits ensemble ?\",\"Bien sûr — ajoutez les produits AXORIA de votre choix au panier, ils seront regroupés dans une seule commande.\"]"),
-          ("footDesc:'Marque marocaine de bien-être : posture, confort et récupération, livrée partout au Maroc.'","footDesc:'Marque marocaine de bien-être et de confort au quotidien, livrée partout au Maroc.'"),
-          ("heroSub:'Posture • Comfort • Recovery'","heroSub:'Comfort • Wellness • Balance'"),
-          ("heroTagline:\"Two wellness essentials, designed to correct your posture and reshape your silhouette, starting today.\"","heroTagline:\"Wellness essentials designed to bring more comfort, support and ease to your everyday routine.\""),
-          ("menuDesc:'Two products launched with care: a posture corrector and a slimming waist belt, chosen for real effectiveness and everyday comfort.'","menuDesc:'Wellness essentials selected for comfort, quality and easy everyday use.'"),
-          ("aboutText1:\"AXORIA is a Moroccan wellness brand built on a simple belief: good posture and a well-supported back change everything, at the office and at home. We design accessories meant to support the body every day — no unnecessary gadgets, no compromise on material quality.\"","aboutText1:\"AXORIA is a Moroccan wellness brand created to make everyday life more comfortable. We select simple, practical essentials that fit naturally into moments of work, movement, relaxation and recovery.\""),
-          ("aboutText2:\"Every AXORIA product is tested for comfort, durability and real effectiveness. Our team stays available on WhatsApp before and after your order, and we deliver across Morocco with cash on delivery.\"","aboutText2:\"Every AXORIA product is selected with care for comfort, quality and ease of use. Our team stays available on WhatsApp before and after your order, with delivery across Morocco and cash on delivery.\""),
-          ("whyEyebrow:'Why AXORIA', whyTitle:'A trusted brand, designed for your body'","whyEyebrow:'Why AXORIA', whyTitle:'A trusted brand, designed for your wellbeing'"),
-          ("['Checked quality','Every product is tested before shipping for comfort, durability and real effectiveness.']","['Checked quality','Every product is checked before shipping for comfort, durability and quality.']"),
-          ("howToEyebrow:'How To Use', howToTitle:'How to use your product correctly'","howToEyebrow:'How To Use', howToTitle:'Get the best from your product'"),
-          ("['Adjust','Set the straps to your body shape for a firm yet comfortable fit.']","['Make it yours','Position or adjust your product to suit your comfort and routine.']"),
-          ("['Wear gradually','Start with 20–30 minutes a day, then increase as comfort allows.']","['Start gently','Introduce it gradually into your day, at a pace that feels right for you.']"),
-          ("['Stay active','Wear it through your daily tasks — at the office, walking, or during sport.']","['Fit it into your routine','Use it at work, at home, during activities or while relaxing.']"),
-          ("['See the results','Notice improved posture or silhouette within a few weeks.']","['Follow your comfort','Adapt how you use it to your needs and enjoy your AXORIA experience.']"),
-          ("finalCtaText:'Join hundreds of customers across Morocco who already trust AXORIA for their posture and comfort.'","finalCtaText:'Join hundreds of customers across Morocco who already trust AXORIA for everyday comfort and wellbeing.'"),
-          ("[\"Can I order several products together?\",\"Of course — add the posture corrector and the slimming waist belt to your cart, everything gets grouped into one WhatsApp order.\"]","[\"Can I order several products together?\",\"Of course — add the AXORIA products you want to your cart and they will be grouped into one order.\"]"),
-          ("footDesc:'Moroccan wellness brand: posture, comfort and recovery, delivered across Morocco.'","footDesc:'Moroccan wellness and everyday comfort brand, delivered across Morocco.'"),
-          ("heroSub:'قوام سليم • راحة • تعافي'","heroSub:'راحة • عناية • توازن'"),
-          ("heroTagline:\"منتجان أساسيان للعافية، مصممان لتصحيح قوامك وإعادة رسم قوامك، ابتداءً من اليوم.\"","heroTagline:\"أساسيات للعناية اليومية صُممت لتمنحك مزيداً من الراحة والدعم والسهولة في روتينك.\""),
-          ("menuDesc:'منتجان تم إطلاقهما بعناية: مصحح للقوام وحزام تنحيف للخصر، تم اختيارهما لفعاليتهما الحقيقية وراحتهما اليومية.'","menuDesc:'أساسيات للعناية والراحة تم اختيارها لجودتها وسهولة استخدامها في الحياة اليومية.'"),
-          ("aboutText1:\"أكسوريا علامة مغربية للعافية مبنية على قناعة بسيطة: القوام السليم والدعم الجيد للظهر يغيران كل شيء، في المكتب وفي المنزل. نصمم إكسسوارات مخصصة لدعم الجسم يومياً — دون أدوات غير ضرورية، ودون أي تنازل عن جودة المواد.\"","aboutText1:\"أكسوريا علامة مغربية للعناية والرفاه اليومي، هدفها جعل روتينك أكثر راحة وبساطة. نختار منتجات عملية ومريحة ترافقك في العمل والحركة والاسترخاء والتعافي.\""),
-          ("aboutText2:\"يتم اختبار كل منتج من أكسوريا من حيث الراحة والمتانة والفعالية الحقيقية. فريقنا متوفر دائماً عبر واتساب قبل وبعد طلبك، ونوصل لجميع مدن المغرب مع الدفع عند الاستلام.\"","aboutText2:\"نختار كل منتج من أكسوريا بعناية من حيث الراحة والجودة وسهولة الاستخدام. فريقنا متوفر عبر واتساب قبل وبعد طلبك، مع التوصيل لجميع مدن المغرب والدفع عند الاستلام.\""),
-          ("whyEyebrow:'لماذا أكسوريا', whyTitle:'علامة موثوقة، مصممة لجسمك'","whyEyebrow:'لماذا أكسوريا', whyTitle:'علامة موثوقة، مصممة لراحتك وعافيتك'"),
-          ("['جودة مُراقبة','يتم اختبار كل منتج قبل الشحن لضمان الراحة والمتانة والفعالية الحقيقية.']","['جودة مُراقبة','يتم فحص كل منتج قبل الشحن لضمان الراحة والمتانة والجودة.']"),
-          ("howToEyebrow:'طريقة الاستخدام', howToTitle:'كيفية استخدام منتجك بالشكل الصحيح'","howToEyebrow:'طريقة الاستخدام', howToTitle:'استفد من منتجك بأفضل طريقة'"),
-          ("['اضبطه','اضبط الأحزمة حسب قوام جسمك للحصول على دعم ثابت ومريح.']","['اضبطه حسب راحتك','ضع أو عدّل المنتج بالطريقة التي تناسب راحتك وروتينك.']"),
-          ("['ارتديه تدريجياً','ابدأ بـ 20 إلى 30 دقيقة يومياً، ثم زد المدة حسب راحتك.']","['ابدأ بهدوء','أدخله إلى روتينك تدريجياً حسب ما يناسبك.']"),
-          ("['ابقَ نشيطاً','ارتديه أثناء مهامك اليومية، في المكتب أو أثناء المشي أو الرياضة.']","['اجعله جزءاً من يومك','استخدمه في العمل أو المنزل أو أثناء النشاط أو وقت الاسترخاء.']"),
-          ("['لاحظ النتائج','لاحظ تحسن قوامك أو قوام خصرك خلال بضعة أسابيع.']","['استمع لراحتك','عدّل طريقة استخدامه حسب احتياجاتك لتستفيد من تجربة أكسوريا بأفضل شكل.']"),
-          ("finalCtaText:'انضم إلى مئات العملاء في المغرب الذين يثقون بالفعل في أكسوريا من أجل قوامهم وراحتهم.'","finalCtaText:'انضم إلى مئات العملاء في المغرب الذين يثقون في أكسوريا لمزيد من الراحة والعناية في حياتهم اليومية.'"),
-          ("[\"هل يمكنني طلب عدة منتجات معاً؟\",\"بالتأكيد — أضف مصحح القوام وحزام التنحيف للسلة، وسيتم تجميعها في طلب واتساب واحد.\"]","[\"هل يمكنني طلب عدة منتجات معاً؟\",\"بالتأكيد — أضف منتجات أكسوريا التي تريدها إلى السلة وسيتم تجميعها في طلب واحد.\"]"),
-          ("footDesc:'علامة مغربية للعافية: قوام سليم، راحة وتعافي، تُوصَّل لجميع مدن المغرب.'","footDesc:'علامة مغربية للعناية والراحة اليومية، تُوصَّل لجميع مدن المغرب.'")]
-          for old,new in reps:
-            if old in s:s=s.replace(old,new,1)
-            elif new not in s:raise SystemExit('Copy marker missing: '+old[:90])
-          old='background:linear-gradient(100deg, #fff 30%, var(--teal) 45%, #fff 55%, var(--teal) 70%, #fff 85%);'
-          new='background:linear-gradient(100deg, #2F80ED 10%, #20BFA9 50%, #2F80ED 90%);'
-          if old in s:s=s.replace(old,new,1)
-          elif new not in s:raise SystemExit('Hero color marker missing')
-          p.write_text(s,encoding='utf-8')
-          PY
       - name: Commit generated site changes
         run: |
           if git diff --quiet -- admin.html index.html; then
@@ -92,5 +32,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add admin.html index.html
-          git commit -m "copy: make AXORIA messaging more wellness-focused"
+          git commit -m "phase4: instrument Meta Pixel commerce events"
           git push origin HEAD:phase-4-meta-tracking
