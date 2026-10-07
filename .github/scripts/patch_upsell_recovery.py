@@ -1,0 +1,81 @@
+from pathlib import Path
+
+p = Path('index.html')
+s = p.read_text(encoding='utf-8')
+
+def rep(old, new, label):
+    global s
+    if old not in s:
+        raise SystemExit(f'missing target: {label}')
+    s = s.replace(old, new, 1)
+
+rep(
+    ".cart-empty{text-align:center;padding:60px 20px;color:var(--text-soft);}",
+    ".cart-empty{text-align:center;padding:60px 20px;color:var(--text-soft);}\n"
+    ".cart-upsell{margin-bottom:16px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--bg-alt);}\n"
+    ".cart-upsell-title{font-size:12px;font-weight:800;margin-bottom:10px;color:var(--text);}\n"
+    ".cart-upsell-row{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;}\n"
+    ".cart-upsell-row img{width:52px;height:52px;border-radius:12px;object-fit:cover;}\n"
+    ".cart-upsell-row h6{margin:0 0 4px;font-size:12px;line-height:1.25;}\n"
+    ".cart-upsell-price{font-family:var(--font-mono);font-size:12px;color:var(--text-soft);}\n"
+    ".cart-upsell-add{border:1px solid var(--teal);background:var(--surface);color:var(--teal);border-radius:999px;padding:8px 10px;font-size:11px;font-weight:800;white-space:nowrap;}\n"
+    ".cart-upsell-add:hover{background:var(--teal);color:#fff;}\n"
+    ".cart-save-note{margin-top:10px;text-align:center;font-size:11.5px;color:var(--text-soft);line-height:1.4;}",
+    'cart css'
+)
+
+rep(
+    "    cartTitle:'Votre panier', totalLbl:'Total', cartEmpty:'Votre panier est vide.',",
+    "    cartTitle:'Votre panier', totalLbl:'Total', cartEmpty:'Votre panier est vide.', cartUpsellTitle:'Complétez votre panier', cartUpsellAdd:'Ajouter', cartSaved:'Votre panier est sauvegardé sur cet appareil.', cartRestored:'Votre panier a été restauré.',",
+    'fr i18n'
+)
+rep(
+    "    cartTitle:'Your Cart', totalLbl:'Total', cartEmpty:'Your cart is empty.',",
+    "    cartTitle:'Your Cart', totalLbl:'Total', cartEmpty:'Your cart is empty.', cartUpsellTitle:'Complete your cart', cartUpsellAdd:'Add', cartSaved:'Your cart is saved on this device.', cartRestored:'Your cart has been restored.',",
+    'en i18n'
+)
+rep(
+    "    cartTitle:'سلتك', totalLbl:'المجموع', cartEmpty:'سلتك فارغة.',",
+    "    cartTitle:'سلتك', totalLbl:'المجموع', cartEmpty:'سلتك فارغة.', cartUpsellTitle:'أكمل سلتك', cartUpsellAdd:'أضف', cartSaved:'سلتك محفوظة على هذا الجهاز.', cartRestored:'تمت استعادة سلتك.',",
+    'ar i18n'
+)
+
+rep(
+    "  <div class=\"cart-foot\">\n    <div class=\"cart-total\"><span id=\"totalLbl\">Total</span><span id=\"cartTotalVal\">0 DH</span></div>\n    <button class=\"btn btn-green\" id=\"waCartBtn\" style=\"width:100%;justify-content:center;\"></button>\n  </div>",
+    "  <div class=\"cart-foot\">\n    <div id=\"cartUpsell\"></div>\n    <div class=\"cart-total\"><span id=\"totalLbl\">Total</span><span id=\"cartTotalVal\">0 DH</span></div>\n    <button class=\"btn btn-green\" id=\"waCartBtn\" style=\"width:100%;justify-content:center;\"></button>\n    <div class=\"cart-save-note\" id=\"cartSaveNote\"></div>\n  </div>",
+    'cart html'
+)
+
+marker = "function persistCart(){ storeSet('axoria_cart', CART, false); }"
+upsell = """function renderCartUpsell(){
+  const host=document.getElementById('cartUpsell');
+  const note=document.getElementById('cartSaveNote');
+  if(note) note.textContent=I18N[currentLang].cartSaved;
+  if(!host) return;
+  if(!CART.length){ host.innerHTML=''; return; }
+  const ids=new Set(CART.map(c=>String(c.id)));
+  const first=PRODUCTS.find(p=>String(p.id)===String(CART[0]?.id));
+  const available=PRODUCTS.filter(p=>p.visible && (p.stock===undefined || Number(p.stock)>0) && !ids.has(String(p.id)));
+  if(!available.length){ host.innerHTML=''; return; }
+  const p=available.find(x=>first?.cat && x.cat===first.cat) || available[0];
+  const t=I18N[currentLang];
+  host.innerHTML=`<div class=\"cart-upsell\"><div class=\"cart-upsell-title\">${t.cartUpsellTitle}</div><div class=\"cart-upsell-row\"><img src=\"${p.img}\" alt=\"${p.name}\" loading=\"lazy\"><div><h6>${p.name}</h6><div class=\"cart-upsell-price\">${fmtPrice(p.price)}</div></div><button class=\"cart-upsell-add\" type=\"button\">${t.cartUpsellAdd}</button></div></div>`;
+  host.querySelector('.cart-upsell-add')?.addEventListener('click',()=>{ addToCart(p.id,1); toast(t.addedToast); });
+}
+
+""" + marker
+rep(marker, upsell, 'upsell function')
+
+rep(
+    "  document.getElementById('cartTotalVal').textContent = fmtPrice(total);\n  updateStickyBar();",
+    "  document.getElementById('cartTotalVal').textContent = fmtPrice(total);\n  renderCartUpsell();\n  updateStickyBar();",
+    'render cart hook'
+)
+
+rep(
+    "  renderAll();\n  requestAnimationFrame(()=>setTimeout(()=>{ document.getElementById('loader').classList.add('hidden'); }, 120));",
+    "  renderAll();\n  try{\n    if(CART.length && !sessionStorage.getItem('axoria_cart_restored_notified')){\n      sessionStorage.setItem('axoria_cart_restored_notified','1');\n      setTimeout(()=>toast(I18N[currentLang].cartRestored),650);\n    }\n  }catch(e){}\n  requestAnimationFrame(()=>setTimeout(()=>{ document.getElementById('loader').classList.add('hidden'); }, 120));",
+    'restore toast'
+)
+
+p.write_text(s, encoding='utf-8')
