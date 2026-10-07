@@ -1,0 +1,66 @@
+name: AXORIA Phase 4 Review Source Fix
+
+on:
+  push:
+    branches:
+      - phase-4-reviews-source-safe
+    paths:
+      - 'scripts/phase4_reviews_source_patch.py'
+      - '.github/workflows/phase4-review-source-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-reviews-source-safe
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply storefront review source patch
+        run: python scripts/phase4_reviews_source_patch.py
+
+      - name: Validate scope and JavaScript
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          html=Path('index.html').read_text(encoding='utf-8')
+          assert "from('review_submissions').select" in html
+          assert "storeGet('axoria_reviews', true)" not in html
+          assert 'function escapeReviewHtml' in html
+          assert 'rel="canonical" href="https://axoria.ma/"' in html
+          assert 'assets/hero/axoria-hero-characters.webp' in html
+          assert 'Meta Pixel' in html or 'fbq' in html
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',html,re.S|re.I):
+              attrs,body=m.group(1),m.group(2).strip()
+              if not body or 'application/ld+json' in attrs.lower() or 'src=' in attrs.lower():
+                  continue
+              with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as f:
+                  f.write(body); path=f.name
+              subprocess.run(['node','--check',path],check=True)
+          print('Review source fix validated; SEO, hero and tracking anchors preserved.')
+          PY
+          git diff --check
+
+      - name: Commit generated index change
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index change to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "phase4: use approved Supabase reviews on storefront"
+          git push origin HEAD:phase-4-reviews-source-safe
