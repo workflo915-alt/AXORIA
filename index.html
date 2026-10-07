@@ -144,10 +144,10 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .hero-stage{position:absolute;inset:0;z-index:1;pointer-events:none;transform:translateZ(0);}
 .hero-stage::after{content:'';position:absolute;left:52%;bottom:4.5%;width:min(720px,58vw);height:70px;transform:translateX(-20%);border-radius:50%;background:radial-gradient(ellipse,rgba(3,10,18,.28) 0%,rgba(3,10,18,.08) 42%,transparent 72%);opacity:.7;}
 [data-theme="light"] .hero-stage::after{background:radial-gradient(ellipse,rgba(58,80,104,.18) 0%,rgba(58,80,104,.06) 44%,transparent 72%);opacity:.72;}
-.hero-character{position:absolute;left:66%;bottom:-1.8%;width:clamp(176px,21vw,318px);aspect-ratio:2/3;background-image:url('assets/hero/axoria-hero-characters.webp');background-repeat:no-repeat;background-size:400% 400%;background-position:var(--bp-x) var(--bp-y);transform-origin:50% 100%;will-change:transform,opacity;opacity:0;filter:drop-shadow(0 22px 24px rgba(0,0,0,.26));}
+.hero-character{position:absolute;left:64%;bottom:0;width:clamp(142px,16vw,240px);aspect-ratio:2/3;background-image:url('assets/hero/axoria-hero-characters.webp');background-repeat:no-repeat;background-size:400% 400%;background-position:var(--bp-x) var(--bp-y);transform-origin:50% 100%;will-change:transform,opacity;opacity:0;filter:drop-shadow(0 18px 20px rgba(0,0,0,.22));}
 [data-theme="light"] .hero-character{filter:drop-shadow(0 19px 22px rgba(35,54,76,.18));}
-.hero-character.is-main{opacity:1;width:clamp(238px,28vw,430px);z-index:22;}
-.hero-character.is-featured{width:clamp(226px,25.5vw,390px);z-index:21;}
+.hero-character.is-main{opacity:1;left:64%;bottom:0;width:clamp(210px,23vw,342px);z-index:22;}
+.hero-character.is-featured{left:64%;bottom:0;width:clamp(198px,21.5vw,318px);z-index:21;}
 .hero-atmosphere{position:absolute;inset:-8%;z-index:0;pointer-events:none;will-change:transform;background:radial-gradient(circle at 76% 34%,rgba(32,191,169,.12),transparent 27%),radial-gradient(circle at 58% 72%,rgba(47,128,237,.14),transparent 34%);filter:blur(24px);opacity:.72;}
 [data-theme="light"] .hero-atmosphere{background:radial-gradient(circle at 78% 36%,rgba(32,191,169,.08),transparent 27%),radial-gradient(circle at 58% 72%,rgba(47,128,237,.09),transparent 34%);filter:blur(20px);opacity:.62;}
 .hero::before,.hero::after{content:'';position:absolute;left:0;right:0;z-index:1;pointer-events:none;}
@@ -162,8 +162,8 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 [data-theme="light"] .hero .btn-outline{color:#0B1524;border-color:rgba(11,21,36,.28);background:rgba(255,255,255,.44);}
 [data-theme="light"] .hero .btn-outline:hover{background:#0B1524;color:#fff;border-color:#0B1524;}
 [data-theme="light"] .scrolldown{color:#314156;}
-@media (max-width:900px){.hero-character{left:60%;width:clamp(150px,29vw,250px);bottom:-1%;}.hero-character.is-main{width:clamp(210px,42vw,340px);}.hero-character.is-featured{width:clamp(195px,37vw,305px);}.hero-overlay{background:linear-gradient(180deg,rgba(4,12,22,.05) 0%,rgba(4,12,22,.18) 42%,rgba(4,12,22,.76) 78%,rgba(4,12,22,.90) 100%);}[data-theme="light"] .hero-overlay{background:linear-gradient(180deg,rgba(248,250,252,.02) 0%,rgba(248,250,252,.16) 40%,rgba(248,250,252,.80) 76%,rgba(248,250,252,.96) 100%);}.hero-stage::after{left:50%;bottom:4%;width:78vw;transform:translateX(-50%);}.hero-atmosphere{filter:blur(18px);}}
-@media (max-width:600px){.hero{min-height:690px;}.hero-character{left:50%;width:clamp(138px,38vw,205px);bottom:4%;}.hero-character.is-main{width:clamp(210px,58vw,300px);bottom:2.5%;}.hero-character.is-featured{width:clamp(190px,52vw,270px);bottom:3%;}.hero::after{height:40px;}}
+@media (max-width:900px){.hero-character{left:58%;width:clamp(118px,22vw,178px);bottom:1%;}.hero-character.is-main{left:57%;width:clamp(178px,32vw,260px);}.hero-character.is-featured{left:57%;width:clamp(166px,29vw,238px);}.hero-overlay{background:linear-gradient(180deg,rgba(4,12,22,.05) 0%,rgba(4,12,22,.18) 42%,rgba(4,12,22,.76) 78%,rgba(4,12,22,.90) 100%);}[data-theme="light"] .hero-overlay{background:linear-gradient(180deg,rgba(248,250,252,.02) 0%,rgba(248,250,252,.16) 40%,rgba(248,250,252,.80) 76%,rgba(248,250,252,.96) 100%);}.hero-stage::after{left:50%;bottom:4%;width:78vw;transform:translateX(-50%);}.hero-atmosphere{filter:blur(18px);}}
+@media (max-width:600px){.hero{min-height:690px;}.hero-character{left:50%;width:clamp(96px,23vw,138px);bottom:4%;}.hero-character.is-main{left:50%;width:clamp(158px,38vw,214px);bottom:3%;}.hero-character.is-featured{left:50%;width:clamp(148px,35vw,200px);bottom:3.2%;}.hero::after{height:40px;}}
 .hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
 .hero-particles span{position:absolute;bottom:-6vh;border-radius:50%;filter:blur(.5px);opacity:0;animation:emberUp linear infinite;}
 @keyframes emberUp{0%{transform:translateY(0) translateX(0) scale(.6);opacity:0;}8%{opacity:.85;}92%{opacity:.4;}100%{transform:translateY(-112vh) translateX(var(--drift,24px)) scale(1);opacity:0;}}
@@ -1986,9 +1986,9 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   // The first two cells are the athlete man + athlete woman.
   if(chars[1]) chars[1].classList.add('is-featured');
 
-  const desktopTargets=[66,80,52,88,44,90,58,84,37,89,48,82,31,74];
-  const finalScale=[1.04,.98,.82,.80,.73,.72,.71,.70,.67,.66,.65,.64,.62,.62];
-  const finalAlpha=[1,1,.94,.92,.90,.88,.86,.84,.82,.80,.78,.76,.74,.72];
+  const desktopTargets=[64,73,55,80,49,83,58,79,44,81,51,76,39,71];
+  const finalScale=[1.00,.98,.82,.80,.76,.75,.74,.73,.71,.70,.69,.68,.67,.66];
+  const finalAlpha=[1,1,.96,.94,.92,.90,.88,.86,.84,.82,.80,.78,.76,.74];
 
   chars.forEach((el,i)=>{
     if(!el.dataset.main) el.style.zIndex=el.dataset.z||String(20-i);
@@ -2000,21 +2000,21 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
     const mobile=window.innerWidth<700;
 
     // Reveal the fan early, before the hero has scrolled too far away.
-    const scrollP=clamp(-rect.top/(h*.42));
+    const scrollP=clamp(-rect.top/(h*.18));
     const p=Math.max(scrollP,interaction);
 
     // Shrink the whole group only as the visible hero height gets shorter,
     // so heads/feet stay inside the viewport instead of getting chopped.
-    const fit=clamp((rect.bottom-8)/(h*.92),.26,1);
-    const basePct=mobile?50:66;
+    const fit=clamp((rect.bottom-8)/(h*.92),.72,1);
+    const basePct=mobile?50:64;
 
     chars.forEach((el,i)=>{
       const delay=Number(el.dataset.delay||0);
       const local=i===0?1:ease(clamp((p-delay)/Math.max(.44-delay,.10)));
       const rawTarget=desktopTargets[i] ?? basePct;
-      const targetPct=mobile ? 50+(rawTarget-66)*.55 : rawTarget;
+      const targetPct=mobile ? 50+(rawTarget-64)*.48 : rawTarget;
       const xPct=basePct+(targetPct-basePct)*local;
-      const y=(1-local)*(mobile?20:28) - local*(mobile?0:4);
+      const y=(1-local)*(mobile?12:16) + local*(mobile?1:2);
       const scale=(finalScale[i] ?? .66)*fit;
       const opacity=i===0 ? 1 : (finalAlpha[i] ?? .78)*local;
 
