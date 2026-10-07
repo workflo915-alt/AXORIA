@@ -1858,7 +1858,35 @@ function bindEvents(){
     }
   };
 
-  document.getElementById('newsBtn').onclick = (e)=>{ e.preventDefault(); const v=document.getElementById('newsEmail').value.trim(); if(v){ toast('Merci pour votre inscription !'); document.getElementById('newsEmail').value=''; } };
+  document.getElementById('newsBtn').onclick = async (e)=>{
+    e.preventDefault();
+    const input=document.getElementById('newsEmail');
+    const btn=document.getElementById('newsBtn');
+    const email=input.value.trim().toLowerCase();
+    const valid=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    const msg={
+      fr:{invalid:'Entrez une adresse email valide.',ok:'Merci ! Votre inscription est confirmée.',exists:'Cette adresse est déjà inscrite.',fail:"Impossible de vous inscrire pour le moment."},
+      en:{invalid:'Enter a valid email address.',ok:'Thank you! Your subscription is confirmed.',exists:'This email is already subscribed.',fail:'Unable to subscribe right now.'},
+      ar:{invalid:'أدخل بريداً إلكترونياً صالحاً.',ok:'شكراً! تم تأكيد اشتراكك.',exists:'هذا البريد مشترك بالفعل.',fail:'تعذر الاشتراك حالياً.'}
+    }[currentLang] || {invalid:'Entrez une adresse email valide.',ok:'Merci ! Votre inscription est confirmée.',exists:'Cette adresse est déjà inscrite.',fail:"Impossible de vous inscrire pour le moment."};
+    if(!valid){ toast(msg.invalid); return; }
+    if(!sb){ toast(msg.fail); return; }
+    btn.disabled=true;
+    try{
+      const {error}=await sb.from('newsletter_subscribers').insert({email,locale:currentLang,source:'storefront'});
+      if(error){
+        if(error.code==='23505'){ toast(msg.exists); input.value=''; return; }
+        throw error;
+      }
+      input.value='';
+      toast(msg.ok);
+    }catch(err){
+      console.error('newsletter subscription failed',err);
+      toast(msg.fail);
+    }finally{
+      btn.disabled=false;
+    }
+  };
 
   window.addEventListener('scroll', ()=>{
     const y = window.scrollY;
