@@ -1,0 +1,36 @@
+name: AXORIA sales readiness stage 3
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - 'scripts/sales_readiness_stage3.py'
+      - '.github/workflows/sales-readiness-stage3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply stage 3 sales readiness fixes
+        run: python scripts/sales_readiness_stage3.py
+      - name: Commit stage 3 storefront fixes
+        run: |
+          if git diff --quiet -- index.html shipping-returns.html privacy.html terms.html; then
+            echo "No storefront changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html shipping-returns.html privacy.html terms.html
+          git commit -m "sales: improve mobile navigation performance and trust pages"
+          git push origin HEAD:phase-4-meta-tracking
