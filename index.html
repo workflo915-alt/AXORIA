@@ -498,7 +498,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
   <div class="wrap">
     <div class="about-grid">
       <div class="about-img reveal">
-        <img src="asest/batal1.png" alt="AXORIA — bien-être et posture" loading="lazy">
+        <img src="asest/batal1.png" alt="AXORIA — bien-être et confort" loading="lazy" onerror="this.onerror=null;this.src='https://images.pexels.com/photos/7222429/pexels-photo-7222429.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000';">
         <div class="zbadge" id="aboutBadge">★ AXORIA</div>
       </div>
       <div class="about-body reveal">
@@ -532,11 +532,11 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
     <div class="ba-wrap reveal">
       <div class="ba-card">
         <span class="ba-tag" id="baBeforeTag">Avant</span>
-        <img src="asest/b12.png" alt="Avant — mauvaise posture" loading="lazy">
+        <img src="asest/b12.png" alt="Avant" loading="lazy" onerror="const section=document.getElementById('beforeafter');if(section)section.hidden=true;">
       </div>
       <div class="ba-card">
         <span class="ba-tag after" id="baAfterTag">Après</span>
-        <img src="asest/b21.png" alt="Après — posture corrigée" loading="lazy">
+        <img src="asest/b21.png" alt="Après" loading="lazy" onerror="const section=document.getElementById('beforeafter');if(section)section.hidden=true;">
       </div>
     </div>
   </div>
@@ -763,11 +763,11 @@ async function loadTrackingConfig(){
     if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
   }catch(e){console.warn('Meta tracking config unavailable',e);}
 }
-function trackCommerceEvent(eventName,customData={},userData={}){
+function trackCommerceEvent(eventName,customData={},userData={},options={}){
   if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return null;
-  const eventID=metaEventId(eventName.toLowerCase());
+  const eventID=String(options?.eventID||'').trim() || metaEventId(eventName.toLowerCase());
   try{if(ensureMetaPixel()&&window.fbq)window.fbq('track',eventName,customData,{eventID});}catch(e){console.warn('Meta Pixel event failed',e);}
-  if(META_TRACKING.capiEnabled&&sb){
+  if(!options?.browserOnly && META_TRACKING.capiEnabled&&sb){
     const body={pixel_id:META_TRACKING.pixelId,event_name:eventName,event_id:eventID,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,user_data:{...userData,fbp:getCookieValue('_fbp'),fbc:getCookieValue('_fbc')},custom_data:customData};
     sb.functions.invoke('meta-capi',{body}).then(({error})=>{if(error)console.warn('Meta CAPI event failed',error);}).catch(e=>console.warn('Meta CAPI unavailable',e));
   }
@@ -1524,7 +1524,9 @@ async function submitOrder(){
     if(error) throw error;
     const placed = Array.isArray(data) ? data[0] : data;
     const purchaseValue=Number(placed?.order_total||CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0));
-    trackCommerceEvent('Purchase',{value:purchaseValue,currency:'MAD',content_type:'product',content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)})),order_id:String(placed?.order_code||placed?.order_id||'')},{ph:phone,fn:name,ct:city,country:'ma',external_id:String(placed?.order_code||placed?.order_id||'')});
+    const orderUuid=String(placed?.order_id||'').trim();
+    const purchaseEventID=orderUuid ? `purchase-${orderUuid}` : metaEventId('purchase');
+    trackCommerceEvent('Purchase',{value:purchaseValue,currency:'MAD',content_type:'product',content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)})),order_id:String(placed?.order_code||placed?.order_id||'')},{ph:phone,fn:name,ct:city,country:'ma',external_id:orderUuid||String(placed?.order_code||'')},{eventID:purchaseEventID,browserOnly:true});
 
     // Stock changed server-side: refresh the visible catalog immediately.
     const fresh = await fetchProductsSafe();
