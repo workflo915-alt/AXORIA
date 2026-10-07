@@ -1,0 +1,36 @@
+name: AXORIA wellness hero scroll
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - 'scripts/hero_scroll_wellness.py'
+      - '.github/workflows/hero-scroll-wellness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply wellness hero scroll patch
+        run: python scripts/hero_scroll_wellness.py
+      - name: Commit hero changes
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No hero changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "hero: add wellness scroll parallax and seamless blend"
+          git push origin HEAD:phase-4-meta-tracking
