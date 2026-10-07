@@ -1711,6 +1711,8 @@ async function submitOrder(){
   }
 }
 
+function escapeReviewHtml(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
+
 function renderReviews(){
   const slider = document.getElementById('reviewSlider');
   if(!REVIEWS.length){
@@ -1721,8 +1723,8 @@ function renderReviews(){
   slider.innerHTML = REVIEWS.map(r=>`
     <div class="rcard">
       <div class="stars">${Array.from({length:5}).map((_,i)=>`<span style="opacity:${i<r.rating?1:.25}">${ICONS.star}</span>`).join('')}</div>
-      <p class="quote">"${r.comment}"</p>
-      <div class="who"><div class="avatar">${r.name.charAt(0)}</div><div><div class="nm">${r.name}</div><div class="loc">${r.loc}</div></div></div>
+      <p class="quote">"${escapeReviewHtml(r.comment)}"</p>
+      <div class="who"><div class="avatar">${escapeReviewHtml((r.name||'?').charAt(0))}</div><div><div class="nm">${escapeReviewHtml(r.name)}</div><div class="loc">${escapeReviewHtml(r.loc||'Maroc')}</div></div></div>
     </div>`).join('');
   let hovering = false;
   slider.onmouseenter = ()=>hovering=true;
@@ -1819,8 +1821,24 @@ async function init(){
 
   const storedCats = await storeGet('axoria_categories', true);
   if(storedCats && storedCats.length){ CATEGORIES = storedCats; }
-  const storedReviews = await storeGet('axoria_reviews', true);
-  if(storedReviews){ REVIEWS = storedReviews; } else { REVIEWS = DEFAULT_REVIEWS; }
+  let approvedReviews=[];
+  if(sb){
+    try{
+      const {data,error}=await sb.from('review_submissions').select('id,name,rating,comment,created_at').eq('status','approved').order('created_at',{ascending:false});
+      if(error) throw error;
+      approvedReviews=(Array.isArray(data)?data:[]).map(r=>({
+        submission_id:r.id,
+        name:r.name,
+        rating:Number(r.rating)||0,
+        comment:r.comment,
+        loc:'Maroc',
+        created_at:r.created_at
+      }));
+    }catch(e){
+      console.error('Approved reviews load failed',e);
+    }
+  }
+  REVIEWS = approvedReviews;
   CART = await storeGet('axoria_cart', false) || [];
   FAVS = await storeGet('axoria_favs', false) || [];
   const theme = await storeGet('axoria_theme', false);
