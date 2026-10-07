@@ -1,185 +1,1803 @@
-<!doctype html>
-<html lang="fr" dir="ltr" data-theme="light">
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>AXORIA — Feel Better. Move Better.</title>
-  <meta name="description" content="AXORIA — essentiels de bien-être, maintien et confort pour le quotidien. Livraison partout au Maroc et paiement à la livraison.">
-  <meta name="theme-color" content="#07111f">
-  <meta property="og:title" content="AXORIA — Feel Better. Move Better.">
-  <meta property="og:description" content="Des essentiels wellness pensés pour votre confort au quotidien.">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://images.pexels.com" crossorigin>
-  <link rel="preload" as="image" href="https://images.pexels.com/photos/4853092/pexels-photo-4853092.jpeg?auto=compress&cs=tinysrgb&w=1800&fm=webp" fetchpriority="high">
-  <link rel="stylesheet" href="premium/site.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"AXORIA","telephone":"+212621575115","priceRange":"129-179 MAD","address":{"@type":"PostalAddress","addressCountry":"MA"},"currenciesAccepted":"MAD","paymentAccepted":"Cash on delivery"}</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="premium/site.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AXORIA — Feel Better, Every Day</title>
+<meta name="description" content="AXORIA — correcteur de posture et ceinture amincissante premium. Marque marocaine de bien-être. Livraison partout au Maroc, paiement à la livraison.">
+<meta property="og:title" content="AXORIA — Feel Better, Every Day">
+<meta property="og:description" content="Correcteur de posture et ceinture amincissante premium. Livraison partout au Maroc, paiement à la livraison.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "AXORIA",
+  "telephone": "+212621575115",
+  "priceRange": "149-179 MAD",
+  "address": {"@type": "PostalAddress", "addressLocality": "Rabat-Salé", "addressCountry": "MA"}
+}
+</script>
+<style>
+:root{
+  --teal:#0A4D9B;
+  --teal-deep:#073869;
+  --charcoal:#0B1524;
+  --white:#FFFFFF;
+  --mint:#EEF3FA;
+  --mint-line:#DCE6F2;
+  --coral:#C9A227;
+  --sky:#3F8FC4;
+  --bg:var(--white);
+  --bg-alt:var(--mint);
+  --surface:#FFFFFF;
+  --text:var(--charcoal);
+  --text-soft:#5C6A7C;
+  --line:var(--mint-line);
+  --shadow-sm: 0 2px 10px rgba(10,36,60,.06);
+  --shadow-md: 0 10px 30px rgba(10,36,60,.10);
+  --shadow-lg: 0 24px 60px rgba(10,36,60,.16);
+  --radius: 22px;
+  --font-display:'Unbounded', sans-serif;
+  --font-body:'Plus Jakarta Sans', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+[data-theme="dark"]{
+  --bg:#0A1220;
+  --bg-alt:#0E1A2C;
+  --surface:#101E33;
+  --text:#EAF1FB;
+  --text-soft:#9FB0C8;
+  --line:#1E2E47;
+  --shadow-sm: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-md: 0 10px 30px rgba(0,0,0,.45);
+  --shadow-lg: 0 24px 60px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .4s ease, color .4s ease;}
+body.no-scroll{overflow:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;line-height:1.08;}
+p{margin:0;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px;}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);font-weight:600;display:inline-flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--coral);display:inline-block;}
+.section{padding:110px 0;position:relative;}
+.section-head{max-width:640px;margin-bottom:56px;}
+.section-head h2{font-size:clamp(32px,4.5vw,52px);letter-spacing:-.01em;margin-top:14px;}
+.section-head p{margin-top:16px;font-size:17px;color:var(--text-soft);line-height:1.6;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--teal);color:#fff;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}}
+
+/* ---------- Loading screen ---------- */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--charcoal);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;transition:opacity .6s ease, visibility .6s ease;}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+#loader .badge-wrap{width:120px;height:120px;display:flex;align-items:center;justify-content:center;animation:loaderPulse 1.4s ease-in-out infinite;}
+@keyframes loaderPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+#loader .loadtext{font-family:var(--font-mono);color:var(--teal);font-size:12px;letter-spacing:.2em;text-transform:uppercase;}
+#loader .bar{width:180px;height:3px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
+#loader .bar span{display:block;height:100%;width:0%;background:var(--teal);animation:loadbar 1.6s ease forwards;}
+@keyframes loadbar{to{width:100%;}}
+
+/* ---------- Navbar ---------- */
+header.nav{position:sticky;top:0;z-index:500;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:background .4s ease, border-color .4s ease;}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;max-width:1240px;margin:0 auto;gap:18px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:19px;}
+.brand img{width:58px;height:58px;flex-shrink:0;border-radius:50%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-size:14.5px;font-weight:600;}
+.nav-links a{position:relative;padding:6px 0;color:var(--text);}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--coral);transition:width .3s ease;}
+.nav-links a:hover::after{width:100%;}
+.nav-tools{display:flex;align-items:center;gap:10px;}
+.clockbox{font-family:var(--font-mono);font-size:12px;color:var(--text-soft);border:1px solid var(--line);border-radius:999px;padding:7px 12px;display:flex;gap:6px;align-items:center;white-space:nowrap;}
+.clockbox .dotstate{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text);transition:transform .25s ease, background .25s ease;position:relative;}
+.iconbtn:hover{transform:translateY(-2px);background:var(--teal);color:#fff;border-color:var(--teal);}
+.iconbtn svg{width:18px;height:18px;}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--coral);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);}
+select.langsel{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 30px 8px 14px;font-size:13px;font-weight:600;font-family:var(--font-body);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C6B65' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:14px;cursor:pointer;}
+.burger-btn{display:none;}
+@media (max-width:960px){.nav-links{display:none;}.clockbox{display:none;}.burger-btn{display:flex;}}
+@media (max-width:480px){
+  .nav-inner{padding:10px 14px;gap:8px;}
+  .brand{gap:6px;font-size:15px;}
+  .brand img{width:38px !important;height:38px !important;}
+  .nav-tools{gap:6px;}
+  .iconbtn{width:32px;height:32px;}
+  .iconbtn svg{width:15px;height:15px;}
+  .langsel{padding:6px 22px 6px 10px;font-size:11.5px;}
+}
+@media (max-width:360px){
+  .brand span{display:none;}
+  .brand img{width:34px !important;height:34px !important;}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;height:100vh;min-height:640px;display:flex;align-items:flex-end;overflow:hidden;color:#fff;background:radial-gradient(120% 100% at 30% 0%, #0f3a6e 0%, #060d18 65%);}
+[data-theme="light"] .hero{background:radial-gradient(120% 100% at 30% 0%, #123f78 0%, #060d18 65%);}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.05);animation:heroZoom 22s ease-in-out infinite alternate;}
+@keyframes heroZoom{from{transform:scale(1.0);}to{transform:scale(1.14);}}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(8,16,28,.35) 0%, rgba(7,14,24,.58) 55%, rgba(4,8,14,.9) 100%);transition:background 1s ease;}
+[data-theme="light"] .hero-overlay{background:linear-gradient(175deg, rgba(10,77,155,.30) 0%, rgba(9,35,60,.55) 45%, rgba(4,8,14,.92) 100%);}
+.hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
+.hero-particles span{position:absolute;bottom:-6vh;border-radius:50%;filter:blur(.5px);opacity:0;animation:emberUp linear infinite;}
+@keyframes emberUp{0%{transform:translateY(0) translateX(0) scale(.6);opacity:0;}8%{opacity:.85;}92%{opacity:.4;}100%{transform:translateY(-112vh) translateX(var(--drift,24px)) scale(1);opacity:0;}}
+.hero-content{position:relative;z-index:2;padding:0 28px 90px;max-width:1240px;margin:0 auto;width:100%;}
+.hero-content .eyebrow{color:var(--teal);}
+.hero-content .eyebrow::before{background:var(--teal);}
+.hero h1{
+  font-size:clamp(42px,8vw,96px);font-weight:900;letter-spacing:-.02em;margin-top:16px;
+  background:linear-gradient(100deg, #fff 30%, var(--teal) 45%, #fff 55%, var(--teal) 70%, #fff 85%);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 6px 40px rgba(0,0,0,.35);animation:shineText 7s linear infinite;
+}
+@keyframes shineText{0%{background-position:200% 0;}100%{background-position:-80% 0;}}
+.hero .subtitle{font-family:var(--font-mono);font-size:clamp(14px,2vw,19px);letter-spacing:.08em;color:var(--teal);margin-top:14px;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;}
+.hero .subtitle .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:ckpulse 1.6s ease-in-out infinite;}
+@keyframes ckpulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.hero .tagline{margin-top:18px;max-width:460px;font-size:15.5px;line-height:1.65;color:rgba(255,255,255,.85);font-weight:500;}
+.hero-ctas{display:flex;gap:16px;margin-top:38px;flex-wrap:wrap;}
+.trust-badges{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;}
+.trust-badges span{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:rgba(255,255,255,.92);font-family:var(--font-body);}
+.trust-badges span svg{width:16px;height:16px;color:var(--teal);flex-shrink:0;}
+.sticky-buybar{position:fixed;left:0;right:0;bottom:0;z-index:390;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 26px rgba(10,36,60,.14);padding:12px 16px;display:none;align-items:center;gap:14px;transform:translateY(100%);transition:transform .35s ease;}
+.sticky-buybar.show{display:flex;transform:translateY(0);}
+.sticky-buybar img{width:44px;height:44px;border-radius:12px;object-fit:cover;flex-shrink:0;}
+.sticky-buybar .sb-info{flex:1;min-width:0;}
+.sticky-buybar .sb-info h5{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sticky-buybar .sb-info .sb-price{font-family:var(--font-mono);font-size:12.5px;color:var(--teal);font-weight:700;}
+.sticky-buybar .btn{padding:11px 18px;font-size:13px;white-space:nowrap;}
+@media (min-width:860px){.sticky-buybar{display:none !important;}}
+.quickbuy{position:absolute;bottom:12px;right:12px;z-index:3;background:var(--white);color:var(--charcoal);border:none;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;box-shadow:var(--shadow-sm);opacity:0;transform:translateY(6px);transition:opacity .25s ease, transform .25s ease;}
+.pcard:hover .quickbuy{opacity:1;transform:translateY(0);}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin-top:10px;}
+.why-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow-sm);transition:transform .35s ease, box-shadow .35s ease;}
+.why-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);}
+.why-card .wi{width:50px;height:50px;border-radius:14px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--teal);}
+.why-card .wi svg{width:24px;height:24px;}
+.why-card h4{font-size:16.5px;font-weight:700;margin-bottom:8px;}
+.why-card p{font-size:13.5px;color:var(--text-soft);line-height:1.6;}
+.steps-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;counter-reset:stepnum;}
+.step-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 22px;box-shadow:var(--shadow-sm);}
+.step-card .stepnum{font-family:var(--font-mono);font-size:34px;font-weight:800;color:var(--line);line-height:1;margin-bottom:10px;}
+.step-card h4{font-size:15.5px;font-weight:700;margin-bottom:6px;}
+.step-card p{font-size:13px;color:var(--text-soft);line-height:1.55;}
+.ba-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media (max-width:720px){.ba-wrap{grid-template-columns:1fr;}}
+.ba-card{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-md);aspect-ratio:4/3;}
+.ba-card img{width:100%;height:100%;object-fit:cover;}
+.ba-tag{position:absolute;top:14px;left:14px;background:var(--charcoal);color:#fff;font-family:var(--font-mono);font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:.04em;}
+.ba-tag.after{background:var(--teal);}
+.guarantee-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:10px;}
+.g-card{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm);}
+.g-card .gi{width:44px;height:44px;border-radius:12px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0;}
+.g-card .gi svg{width:22px;height:22px;}
+.g-card h5{font-size:14px;font-weight:700;margin-bottom:2px;}
+.g-card p{font-size:12px;color:var(--text-soft);line-height:1.4;}
+.final-cta{background:linear-gradient(120deg, var(--teal-deep) 0%, var(--teal) 100%);border-radius:28px;padding:56px 44px;text-align:center;color:#fff;position:relative;overflow:hidden;}
+.final-cta h2{font-size:clamp(26px,4vw,40px);color:#fff;margin-bottom:14px;}
+.final-cta p{color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 28px;font-size:15.5px;line-height:1.6;}
+.final-cta .btn-primary{background:#fff;color:var(--teal-deep);box-shadow:0 10px 26px rgba(0,0,0,.2);}
+.final-cta .btn-primary:hover{box-shadow:0 16px 34px rgba(0,0,0,.28);}
+.cat-empty{padding:60px 20px;text-align:center;color:var(--text-soft);border:1.5px dashed var(--line);border-radius:20px;font-size:14.5px;}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:999px;font-weight:700;font-size:15px;border:2px solid transparent;transition:transform .25s ease, box-shadow .25s ease, background .25s ease;position:relative;overflow:hidden;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 10px 26px rgba(31,158,138,.35);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(31,158,138,.45);}
+.btn-outline{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.55);backdrop-filter:blur(6px);}
+.btn-outline:hover{background:#fff;color:var(--charcoal);transform:translateY(-3px);}
+.btn-dark{background:var(--charcoal);color:#fff;}
+.btn-dark:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.btn-coral{background:var(--coral);color:#fff;}
+.btn-coral:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(255,107,74,.4);}
+.btn-green{background:#25D366;color:#fff;}
+.btn-green:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(37,211,102,.4);}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s ease-out;pointer-events:none;}
+@keyframes rip{to{transform:scale(3.4);opacity:0;}}
+.scrolldown{position:absolute;bottom:26px;right:28px;z-index:2;color:#fff;opacity:.75;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;}
+.scrolldown .line{width:1px;height:34px;background:rgba(255,255,255,.6);position:relative;overflow:hidden;}
+.scrolldown .line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--teal);animation:scrolldn 1.8s ease-in-out infinite;}
+@keyframes scrolldn{0%{top:-100%;}60%{top:100%;}100%{top:100%;}}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* ---------- Products (Menu) ---------- */
+.menu-section{background:var(--bg-alt);}
+.cat-filters{display:flex;gap:10px;overflow-x:auto;padding-bottom:14px;margin-bottom:44px;scrollbar-width:thin;}
+.cat-filters::-webkit-scrollbar{height:5px;}
+.cat-filters::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.cat-chip{flex:0 0 auto;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.02em;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--text-soft);transition:all .25s ease;white-space:nowrap;}
+.cat-chip:hover{border-color:var(--teal-deep);color:var(--text);}
+.cat-chip.active{background:var(--charcoal);color:var(--teal);border-color:var(--charcoal);}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:26px;}
+.pcard{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--line);position:relative;transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;display:flex;flex-direction:column;}
+.pcard:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+.pcard .imgwrap{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--mint);}
+.pcard .imgwrap img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease, rotate .55s ease;}
+.pcard:hover .imgwrap img{transform:scale(1.12) rotate(-1.5deg);}
+.pcard .imgwrap::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);transform:translateX(-120%);transition:transform .7s ease;}
+.pcard:hover .imgwrap::after{transform:translateX(120%);}
+.badge{position:absolute;top:12px;left:12px;background:var(--teal);color:#fff;font-family:var(--font-mono);font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;box-shadow:var(--shadow-sm);z-index:2;}
+.badge.promo{background:var(--coral);color:#fff;}
+.favbtn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);border:none;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:var(--shadow-sm);transition:transform .2s ease;}
+.favbtn:hover{transform:scale(1.12);}
+.favbtn svg{width:17px;height:17px;stroke:var(--coral);fill:none;transition:fill .2s ease;}
+.favbtn.active svg{fill:var(--coral);}
+.pcard-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.pcard-body h4{font-size:16.5px;font-weight:700;font-family:var(--font-body);}
+.pcard-body .desc{font-size:13px;color:var(--text-soft);line-height:1.5;min-height:34px;}
+.price-row{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;}
+.price-tag{font-family:var(--font-mono);font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px;}
+.price-old{font-size:12.5px;color:var(--text-soft);text-decoration:line-through;font-weight:500;}
+.addbtn{width:38px;height:38px;border-radius:50%;background:var(--charcoal);color:var(--teal);border:none;display:flex;align-items:center;justify-content:center;transition:transform .2s ease, background .2s ease;}
+.addbtn:hover{background:var(--coral);color:#fff;transform:scale(1.1) rotate(90deg);}
+.addbtn svg{width:16px;height:16px;}
+.pcard-add{border:2px dashed var(--line);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:260px;color:var(--text-soft);text-align:center;padding:24px;box-shadow:none;}
+.pcard-add:hover{border-color:var(--teal);color:var(--text);transform:translateY(-6px);background:var(--surface);}
+.pcard-add .add-circle{width:52px;height:52px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;transition:background .25s ease, transform .25s ease;}
+.pcard-add .add-circle svg{width:22px;height:22px;color:var(--text-soft);}
+.pcard-add:hover .add-circle{background:var(--teal);transform:rotate(90deg);}
+.pcard-add:hover .add-circle svg{color:#fff;}
+.pcard-add .add-label{font-weight:700;font-size:14.5px;}
+.pcard-add .add-sub{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;}
+
+/* ---------- Modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,14,12,.6);backdrop-filter:blur(4px);z-index:900;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal{background:var(--surface);border-radius:28px;max-width:760px;width:100%;max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg);transform:translateY(30px) scale(.97);transition:transform .4s cubic-bezier(.2,.8,.2,1);display:grid;grid-template-columns:1fr 1fr;}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);}
+@media (max-width:680px){.modal{grid-template-columns:1fr;}}
+.modal .mimg{position:relative;min-height:240px;}
+.modal .mimg img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.modal .mbody{padding:30px;display:flex;flex-direction:column;gap:14px;}
+.modal .mclose{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);border:none;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:var(--shadow-sm);}
+.qty-row{display:flex;align-items:center;gap:14px;margin-top:6px;}
+.qty-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;}
+.qty-val{font-family:var(--font-mono);font-weight:700;font-size:16px;min-width:20px;text-align:center;}
+.modal .mprice{font-family:var(--font-mono);font-weight:800;font-size:24px;margin-top:auto;}
+
+/* ---------- Cart Drawer ---------- */
+.cart-overlay{position:fixed;inset:0;background:rgba(8,14,12,.5);z-index:800;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;}
+.cart-overlay.open{opacity:1;visibility:visible;}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:801;box-shadow:-20px 0 50px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;}
+.cart-drawer.open{transform:translateX(0);}
+.cart-head{padding:24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.cart-items{flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:16px;}
+.cart-item{display:flex;gap:12px;align-items:center;padding-bottom:16px;border-bottom:1px dashed var(--line);}
+.cart-item img{width:64px;height:64px;border-radius:14px;object-fit:cover;flex-shrink:0;}
+.cart-item .ci-info{flex:1;min-width:0;}
+.cart-item .ci-info h5{font-size:14px;font-weight:700;margin-bottom:4px;}
+.cart-item .ci-price{font-family:var(--font-mono);font-size:13px;color:var(--text-soft);}
+.cart-qty{display:flex;align-items:center;gap:8px;}
+.cart-qty button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-weight:700;}
+.trashbtn{color:var(--coral);background:none;border:none;padding:6px;}
+.cart-foot{padding:22px 24px 26px;border-top:1px solid var(--line);}
+.cart-total{display:flex;justify-content:space-between;font-family:var(--font-mono);font-weight:700;font-size:19px;margin-bottom:16px;}
+.cart-empty{text-align:center;padding:60px 20px;color:var(--text-soft);}
+
+/* ---------- About ---------- */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+@media (max-width:860px){.about-grid{grid-template-columns:1fr;gap:36px;}}
+.about-img{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/5;box-shadow:var(--shadow-lg);}
+.about-img img{width:100%;height:100%;object-fit:cover;}
+.about-img .zbadge{position:absolute;bottom:18px;left:18px;background:var(--teal);padding:14px 18px;border-radius:16px;font-family:var(--font-mono);font-weight:700;font-size:13px;color:#fff;box-shadow:var(--shadow-md);}
+.about-body h2{font-size:clamp(30px,4vw,44px);margin-top:14px;}
+.about-body p{color:var(--text-soft);margin-top:18px;line-height:1.7;font-size:16px;}
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px;}
+.pillar{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;font-weight:600;background:var(--bg-alt);padding:14px;border-radius:14px;}
+.pillar svg{width:20px;height:20px;flex-shrink:0;color:var(--coral);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:38px;}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr);}}
+.stat .num{font-family:var(--font-display);font-weight:800;font-size:clamp(26px,3.4vw,38px);color:var(--teal-deep);}
+.stat .lbl{font-size:12px;color:var(--text-soft);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;}
+
+/* ---------- Reviews ---------- */
+.reviews-section{background:var(--bg-alt);}
+.review-slider{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 20px;}
+.review-slider::-webkit-scrollbar{height:6px;}
+.review-slider::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.rcard{scroll-snap-align:start;flex:0 0 min(340px,84vw);background:var(--surface);border-radius:22px;padding:26px;box-shadow:var(--shadow-sm);border:1px solid var(--line);}
+.stars{display:flex;gap:3px;color:#FFC107;margin-bottom:12px;}
+.stars svg{width:15px;height:15px;}
+.rcard p.quote{font-size:14.5px;line-height:1.6;color:var(--text);}
+.rcard .who{display:flex;align-items:center;gap:10px;margin-top:16px;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;}
+.who .nm{font-weight:700;font-size:13.5px;}
+.who .loc{font-size:11.5px;color:var(--text-soft);}
+.review-form{background:var(--surface);border-radius:24px;padding:30px;margin-top:44px;box-shadow:var(--shadow-sm);border:1px solid var(--line);max-width:560px;}
+.form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.form-row label{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-soft);}
+input, textarea{font-family:var(--font-body);padding:13px 16px;border-radius:13px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);font-size:14.5px;transition:border-color .2s ease;}
+input:focus, textarea:focus{border-color:var(--teal);outline:none;}
+.star-input{display:flex;gap:6px;}
+.star-input button{background:none;border:none;padding:2px;}
+.star-input svg{width:26px;height:26px;stroke:#FFC107;fill:none;transition:fill .15s ease;}
+.star-input button.on svg{fill:#FFC107;}
+
+/* ---------- FAQ ---------- */
+.faq-list{max-width:760px;}
+.faq-item{border-bottom:1px solid var(--line);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:22px 4px;font-weight:700;font-size:16px;width:100%;background:none;border:none;text-align:left;color:var(--text);}
+.faq-q svg{width:20px;height:20px;flex-shrink:0;transition:transform .3s ease;}
+.faq-item.open .faq-q svg{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.faq-a p{padding:0 4px 22px;color:var(--text-soft);line-height:1.65;font-size:14.5px;max-width:600px;}
+
+/* ---------- Contact ---------- */
+.contact-section{background:var(--bg-alt);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:stretch;}
+@media (max-width:900px){.contact-grid{grid-template-columns:1fr;}}
+.info-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:500px){.info-cards{grid-template-columns:1fr;}}
+.info-card{background:var(--surface);border-radius:18px;padding:18px;border:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow-sm);}
+.info-card svg{width:22px;height:22px;color:var(--coral);flex-shrink:0;}
+.info-card h5{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+.info-card p, .info-card a{font-size:12.5px;color:var(--text-soft);}
+.mapbox{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-md);border:6px solid var(--surface);min-height:340px;display:block;transition:transform .35s ease, box-shadow .35s ease;}
+.mapbox:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.map-glass{position:absolute;top:16px;left:16px;z-index:3;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.65);border-radius:14px;padding:10px 16px;font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--charcoal);box-shadow:var(--shadow-sm);}
+.map-visual{position:relative;width:100%;height:100%;min-height:340px;background:linear-gradient(135deg, #E1F0EA 0%, #D3E8DE 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.map-grid{position:absolute;inset:-20%;background-image:repeating-linear-gradient(0deg, rgba(21,36,32,.06) 0, rgba(21,36,32,.06) 1px, transparent 1px, transparent 46px),repeating-linear-gradient(90deg, rgba(21,36,32,.06) 0, rgba(21,36,32,.06) 1px, transparent 1px, transparent 46px);transform:rotate(-4deg);}
+.map-pin{position:relative;z-index:2;width:56px;height:56px;border-radius:50% 50% 50% 0;background:var(--coral);transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(255,107,74,.4);animation:pinBob 2.4s ease-in-out infinite;}
+.map-pin svg{width:26px;height:26px;color:#fff;transform:rotate(-45deg);stroke-width:2.3;}
+@keyframes pinBob{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(-8px);}}
+.map-pin-ring{position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle, rgba(255,107,74,.28) 0%, rgba(255,107,74,0) 70%);animation:pinRing 2.4s ease-in-out infinite;}
+@keyframes pinRing{0%,100%{transform:scale(.85);opacity:.6;}50%{transform:scale(1.15);opacity:.9;}}
+.map-cta{position:absolute;bottom:16px;right:16px;z-index:3;background:var(--charcoal);color:#fff;font-size:12.5px;font-weight:700;padding:11px 18px;border-radius:999px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-sm);transition:background .25s ease, transform .25s ease;}
+.mapbox:hover .map-cta{background:var(--coral);transform:translateX(-2px);}
+.map-cta::after{content:'→';}
+.contact-form-wrap{background:var(--surface);border-radius:24px;padding:30px;box-shadow:var(--shadow-sm);border:1px solid var(--line);display:flex;flex-direction:column;}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:500px){.formgrid{grid-template-columns:1fr;}}
+
+/* ---------- Footer ---------- */
+footer{background:var(--charcoal);color:#E9F2EE;padding:70px 0 0;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:36px;padding-bottom:50px;border-bottom:1px solid rgba(255,255,255,.1);}
+@media (max-width:820px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:500px){.footer-grid{grid-template-columns:1fr;}}
+footer h5{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:16px;}
+footer .fbrand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:20px;margin-bottom:14px;color:#fff;}
+footer .fbrand img{width:58px;height:58px;border-radius:50%;}
+footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
+.flinks{display:flex;flex-direction:column;gap:10px;list-style:none;padding:0;margin:0;font-size:13.5px;}
+.flinks a{color:#C6D6CF;transition:color .2s ease;}
+.flinks a:hover{color:var(--teal);}
+.social-row{display:flex;gap:10px;margin-top:16px;}
+.social-row a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:background .2s ease, transform .2s ease;}
+.social-row a:hover{background:var(--teal);color:#fff;transform:translateY(-3px);}
+.social-row svg{width:16px;height:16px;}
+.newsform{display:flex;gap:8px;margin-top:6px;}
+.newsform input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;}
+.footer-bottom{padding:22px 0;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;font-size:12.5px;color:#8FA69E;}
+.footer-bottom .flinks{flex-direction:row;gap:18px;}
+.totop{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;}
+
+/* ---------- Floating buttons ---------- */
+.floatbtns{position:fixed;right:22px;bottom:22px;z-index:400;display:flex;flex-direction:column;gap:14px;align-items:center;}
+.fab{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);border:none;transition:transform .25s ease;}
+.fab:hover{transform:scale(1.08);}
+.fab.wa{background:#25D366;color:#fff;}
+.fab.wa svg{width:28px;height:28px;}
+.fab.top{background:var(--surface);color:var(--text);border:1px solid var(--line);width:44px;height:44px;opacity:0;visibility:hidden;transform:translateY(10px);}
+.fab.top.show{opacity:1;visibility:visible;transform:translateY(0);}
+.fab.top svg{width:18px;height:18px;}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;animation:pulsering 2s ease-out infinite;}
+@keyframes pulsering{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.7);opacity:0;}}
+
+.form-error{color:#D34747;font-size:12.5px;font-weight:600;min-height:16px;margin-bottom:6px;}
+
+/* ---- Modal shell (Category Manager) ---- */
+.modal-overlay{position:fixed;inset:0;background:rgba(6,12,20,.65);backdrop-filter:blur(8px);z-index:980;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{width:min(640px,96vw);max-height:90vh;overflow:auto;background:var(--surface);border-radius:26px;box-shadow:var(--shadow-lg);border:1px solid var(--line);animation:modalPop .3s cubic-bezier(.2,.8,.3,1);}
+@keyframes modalPop{from{opacity:0;transform:translateY(18px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-head{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface);z-index:2;}
+.modal-head h3{font-size:18px;font-weight:800;}
+.modal-body{padding:24px 26px 28px;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--charcoal);color:#fff;padding:14px 22px;border-radius:12px;font-size:13.5px;font-weight:600;z-index:1000;opacity:0;visibility:hidden;transition:all .35s ease;box-shadow:var(--shadow-md);}
+.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+</style>
 </head>
 <body>
-  <div class="top-progress" aria-hidden="true"></div>
 
-  <header id="nav" class="nav glass" aria-label="Navigation principale">
-    <a class="brand" href="#home" aria-label="AXORIA accueil"><span class="brand-mark">A</span><span>AXORIA</span></a>
-    <nav class="nav-links" aria-label="Sections">
-      <a class="nav-link" href="#home">Accueil</a>
-      <a class="nav-link" href="#products">Produits</a>
-      <a class="nav-link" href="#about">À propos</a>
-      <a class="nav-link" href="#reviews">Avis</a>
-      <a class="nav-link" href="#faq">FAQ</a>
-    </nav>
-    <div class="nav-actions">
-      <select id="langSel" class="pill-btn" aria-label="Langue"><option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option></select>
-      <button id="themeBtn" class="icon-btn" type="button" aria-label="Changer le thème">◐</button>
-      <button id="mobileMenuBtn" class="icon-btn mobile-menu" type="button" aria-label="Voir les produits">⌄</button>
-      <button id="cartBtn" class="icon-btn nav-cart" type="button" aria-label="Panier">⌑<span class="cart-count">0</span></button>
-    </div>
-  </header>
+<div id="loader">
+  <div class="badge-wrap" id="loaderLogo"></div>
+  <div class="loadtext" id="loaderText">Chargement…</div>
+  <div class="bar"><span></span></div>
+</div>
 
-  <main>
-    <section id="home" class="hero">
-      <div class="hero-media" aria-hidden="true">
-        <img src="https://images.pexels.com/photos/4853092/pexels-photo-4853092.jpeg?auto=compress&cs=tinysrgb&w=1800&fm=webp" alt="" fetchpriority="high" decoding="async">
-        <div class="hero-grain"></div>
-      </div>
-      <div class="shell hero-inner">
-        <div class="hero-copy">
-          <span class="eyebrow" data-i18n="eyebrow">AXORIA · WELLNESS ESSENTIALS</span>
-          <h1 class="display" data-i18n="hero">Feel better.<br>Move better.</h1>
-          <p class="hero-lead" data-i18n="lead">Des essentiels de bien-être pensés pour le confort, le maintien et vos journées actives.</p>
-          <div class="hero-actions">
-            <a class="cta primary" href="#products" data-i18n="explore">Découvrir les produits</a>
-            <button class="cta secondary" type="button" onclick="document.getElementById('cartBtn').click()" data-i18n="shop">Commander</button>
-          </div>
-          <div class="hero-proof" aria-label="Avantages">
-            <span><i></i> Paiement à la livraison</span><span><i></i> Livraison au Maroc</span><span><i></i> Support AXORIA</span>
-          </div>
-        </div>
-        <aside class="hero-side" aria-label="Produits AXORIA">
-          <div class="hero-side-head"><span>Daily wellness</span><span>01 / 02</span></div>
-          <div class="hero-product-stack">
-            <div id="heroCard1" class="hero-product" data-label="AXORIA"><img id="heroProduct1" alt="" decoding="async"></div>
-            <div id="heroCard2" class="hero-product" data-label="AXORIA"><img id="heroProduct2" alt="" decoding="async"></div>
-          </div>
-        </aside>
-      </div>
-      <a class="scroll-cue" href="#products" aria-label="Descendre">↓</a>
-    </section>
+<div class="toast" id="toast"></div>
 
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span class="marquee-item"><b>AXORIA</b> CONFORT QUOTIDIEN</span><span class="marquee-item"><b>AXORIA</b> MAINTIEN & MOBILITÉ</span><span class="marquee-item"><b>AXORIA</b> LIVRAISON MAROC</span><span class="marquee-item"><b>AXORIA</b> PAIEMENT À LA LIVRAISON</span>
-        <span class="marquee-item"><b>AXORIA</b> CONFORT QUOTIDIEN</span><span class="marquee-item"><b>AXORIA</b> MAINTIEN & MOBILITÉ</span><span class="marquee-item"><b>AXORIA</b> LIVRAISON MAROC</span><span class="marquee-item"><b>AXORIA</b> PAIEMENT À LA LIVRAISON</span>
-      </div>
-    </div>
-
-    <section id="products" class="section shop">
-      <div class="shell">
-        <header class="section-head" data-reveal>
-          <span class="eyebrow" data-i18n="why">Pourquoi AXORIA</span>
-          <h2 class="section-title" data-i18n="products">Les essentiels du quotidien.</h2>
-          <p class="section-copy" data-i18n="productsCopy">Des solutions simples, confortables et faciles à intégrer à votre routine.</p>
-        </header>
-        <div id="filters" class="filter-row" aria-label="Catégories"></div>
-        <div id="productGrid" class="product-grid" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <section class="story below-fold" aria-label="Expérience AXORIA">
-      <div id="storyPin" class="story-pin">
-        <div class="story-stage">
-          <div class="story-copy">
-            <span class="eyebrow" data-i18n="story">Pensé pour bouger avec vous.</span>
-            <article class="story-step active"><span class="num">01</span><h3 data-i18n="s1">Confort</h3><p data-i18n="s1p">Des matières respirantes et réglables pour rester à l’aise au quotidien.</p></article>
-            <article class="story-step"><span class="num">02</span><h3 data-i18n="s2">Maintien</h3><p data-i18n="s2p">Un soutien ciblé qui accompagne votre posture et votre mobilité sans compliquer votre routine.</p></article>
-            <article class="story-step"><span class="num">03</span><h3 data-i18n="s3">Quotidien</h3><p data-i18n="s3p">Au travail, à la maison ou pendant vos activités : AXORIA s’intègre naturellement à votre journée.</p></article>
-          </div>
-          <div class="story-visual"><div class="story-card"><img id="storyImage" alt="Produit AXORIA" loading="lazy" decoding="async"></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section below-fold">
-      <div class="shell">
-        <header class="section-head" data-reveal><span class="eyebrow">AXORIA STANDARD</span><h2 class="section-title" data-i18n="trust">Achetez en toute confiance.</h2></header>
-        <div class="trust-grid">
-          <article class="trust-card" data-reveal><div class="trust-icon">✓</div><div><h3>Cash on delivery</h3><p>Payez à la réception de votre commande.</p></div></article>
-          <article class="trust-card" data-reveal><div class="trust-icon">⌂</div><div><h3>Partout au Maroc</h3><p>Une expérience pensée pour nos clients au Maroc.</p></div></article>
-          <article class="trust-card" data-reveal><div class="trust-icon">◎</div><div><h3>Choix simple</h3><p>Des produits utiles, avec des informations claires.</p></div></article>
-          <article class="trust-card" data-reveal><div class="trust-icon">↗</div><div><h3>Support humain</h3><p>Une question avant ou après la commande ? AXORIA reste disponible.</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="section below-fold">
-      <div class="shell about-grid">
-        <figure class="about-media" data-reveal><img src="https://images.pexels.com/photos/4852716/pexels-photo-4852716.jpeg?auto=compress&cs=tinysrgb&w=1200&fm=webp" alt="Mode de vie actif et bien-être" loading="lazy" decoding="async"></figure>
-        <article class="about-panel glass" data-reveal>
-          <div><span class="eyebrow">OUR APPROACH</span><h2 data-i18n="about">Le bien-être, sans complication.</h2><p data-i18n="aboutp">AXORIA sélectionne des essentiels accessibles et pratiques pour vous aider à vous sentir mieux dans votre quotidien, avec une expérience d’achat claire et rassurante.</p></div>
-          <div class="stats"><div class="stat"><b>100%</b><span>Experience AXORIA</span></div><div class="stat"><b>MA</b><span>Livraison Maroc</span></div><div class="stat"><b>COD</b><span>Paiement réception</span></div><div class="stat"><b>7/7</b><span>Commande en ligne</span></div></div>
-        </article>
-      </div>
-    </section>
-
-    <section id="reviews" class="section reviews below-fold">
-      <div class="shell">
-        <header class="section-head" data-reveal><span class="eyebrow">REAL EXPERIENCES</span><h2 class="section-title" data-i18n="reviews">Ce que nos clients en disent.</h2></header>
-        <div id="reviewStrip" class="review-strip"></div>
-        <div class="review-form glass" data-reveal>
-          <h3 style="font:500 30px Georgia,serif" data-i18n="reviewTitle">Partager votre expérience</h3>
-          <div id="starInput" class="rating" style="margin-top:16px" aria-label="Note"><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button></div>
-          <div class="field"><label data-i18n="name">Nom complet</label><input id="reviewName" maxlength="80" autocomplete="name"></div>
-          <div class="field"><label data-i18n="comment">Votre avis</label><textarea id="reviewComment" rows="4" maxlength="600"></textarea></div>
-          <button id="submitReview" class="submit" type="button" data-i18n="send">Envoyer mon avis</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq" class="section below-fold">
-      <div class="shell faq-wrap">
-        <header data-reveal><span class="eyebrow">NEED TO KNOW</span><h2 class="section-title" data-i18n="faq">Questions fréquentes.</h2><p class="section-copy">Les réponses essentielles avant votre commande.</p></header>
-        <div class="faq-list" data-reveal>
-          <article class="faq-item"><button class="faq-q" type="button"><b>Comment passer une commande ?</b><span>+</span></button><div class="faq-a"><div><p>Ajoutez votre produit au panier, renseignez vos coordonnées puis confirmez. Votre commande est enregistrée immédiatement.</p></div></div></article>
-          <article class="faq-item"><button class="faq-q" type="button"><b>Comment se fait le paiement ?</b><span>+</span></button><div class="faq-a"><div><p>Le paiement se fait à la livraison. Vous n’avez pas besoin de saisir une carte bancaire sur le site.</p></div></div></article>
-          <article class="faq-item"><button class="faq-q" type="button"><b>Livrez-vous partout au Maroc ?</b><span>+</span></button><div class="faq-a"><div><p>Oui, AXORIA prend en charge les commandes dans les différentes villes du Maroc selon la couverture du service de livraison.</p></div></div></article>
-          <article class="faq-item"><button class="faq-q" type="button"><b>Comment choisir et régler le produit ?</b><span>+</span></button><div class="faq-a"><div><p>Consultez la fiche produit et ses informations d’usage. Les modèles AXORIA proposés sont conçus pour être facilement ajustables selon le produit.</p></div></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section final below-fold">
-      <div class="shell"><div class="final-card" data-reveal><div class="final-content"><span class="eyebrow" style="color:#b8d8ff">AXORIA · EVERY DAY</span><h2 data-i18n="final">Votre routine.<br>En mieux.</h2><p data-i18n="finalp">Découvrez les essentiels AXORIA et choisissez ce qui vous accompagne au quotidien.</p><a class="cta primary" href="#products" data-i18n="explore">Découvrir les produits</a></div></div></div>
-    </section>
-  </main>
-
-  <footer class="below-fold"><div class="shell footer-row"><div>© 2026 AXORIA · Feel Better, Every Day</div><div class="footer-links"><a href="#products">Produits</a><a href="#reviews">Avis</a><a href="#faq">FAQ</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener">WhatsApp</a></div></div></footer>
-
-  <div id="cartOverlay" class="overlay" aria-hidden="false">
-    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-      <div class="drawer-head"><h2 id="cartTitle" style="font:500 30px Georgia,serif" data-i18n="cart">Votre panier</h2><button id="closeCart" class="icon-btn" type="button" aria-label="Fermer">×</button></div>
-      <div id="cartItems" class="drawer-body"></div>
-      <div class="drawer-foot"><div class="total"><span data-i18n="total">Total</span><span id="cartTotal">0 DH</span></div><button id="checkoutBtn" class="cta" type="button" data-i18n="checkout">Finaliser la commande</button></div>
-    </aside>
-  </div>
-
-  <div id="checkoutOverlay" class="overlay modal-wrap">
-    <form id="checkoutForm" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
-      <div class="modal-head"><div><span class="eyebrow">SECURE ORDER</span><h2 id="checkoutTitle" style="font:500 34px Georgia,serif;margin-top:8px" data-i18n="checkout">Finaliser la commande</h2></div><button id="closeCheckout" class="icon-btn" type="button" aria-label="Fermer">×</button></div>
-      <div class="modal-grid"><div class="field"><label data-i18n="name">Nom complet</label><input id="ofName" required autocomplete="name"></div><div class="field"><label data-i18n="phone">Téléphone</label><input id="ofPhone" required inputmode="tel" autocomplete="tel"></div></div>
-      <div class="modal-grid"><div class="field"><label data-i18n="city">Ville</label><input id="ofCity" required autocomplete="address-level2"></div><div class="field"><label data-i18n="address">Adresse</label><input id="ofAddress" required autocomplete="street-address"></div></div>
-      <div class="field"><label data-i18n="notes">Remarques (optionnel)</label><textarea id="ofNotes" rows="3"></textarea></div>
-      <div style="display:flex;justify-content:space-between;gap:20px;align-items:center;margin-top:22px"><b><span data-i18n="total">Total</span> · <span id="checkoutTotal">0 DH</span></b><button id="submitOrder" class="submit" type="submit" data-i18n="order">Commander</button></div>
-      <div id="checkoutError" class="error" role="alert"></div>
-    </form>
-  </div>
-
-  <div id="productModal" class="overlay modal-wrap">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="productModalName">
-      <div class="modal-head"><span class="eyebrow">AXORIA PRODUCT</span><button id="productModalClose" class="icon-btn" type="button" aria-label="Fermer">×</button></div>
-      <div class="modal-grid" style="align-items:center"><div style="border-radius:24px;overflow:hidden;background:var(--bg2)"><img id="productModalImg" alt="" style="width:100%;aspect-ratio:1/1;object-fit:cover"></div><div><h2 id="productModalName" style="font:500 38px/.98 Georgia,serif"></h2><p id="productModalDesc" class="section-copy" style="font-size:14px;margin-top:14px"></p><div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px"><b id="productModalPrice" style="font-size:20px"></b><div class="qty"><button id="modalMinus" type="button">−</button><b id="modalQty">1</b><button id="modalPlus" type="button">+</button></div></div><button id="modalAdd" class="submit" type="button" style="width:100%;margin-top:20px" data-i18n="shop">Commander</button></div></div>
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#home" class="brand" id="brandLogoSlot"></a>
+    <ul class="nav-links" id="navLinks"></ul>
+    <div class="nav-tools">
+      <span class="clockbox" id="clockbox"></span>
+      <select class="langsel" id="langSel" aria-label="Language">
+        <option value="fr">FR</option>
+        <option value="en">EN</option>
+        <option value="ar">AR</option>
+      </select>
+      <button class="iconbtn" id="themeBtn" aria-label="Toggle theme"></button>
+      <button class="iconbtn" id="cartBtn" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-count" id="cartCount" style="display:none;">0</span>
+      </button>
+      <button class="iconbtn burger-btn" id="burgerBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </div>
   </div>
+</header>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<section class="hero" id="home">
+  <video autoplay muted loop playsinline poster="https://images.pexels.com/videos/5793440/pexels-photo-5793440.jpeg?auto=compress&cs=tinysrgb&w=1600">
+    <source src="https://videos.pexels.com/video-files/5793440/5793440-uhd_2560_1440_25fps.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-particles" id="heroParticles"></div>
+  <div class="hero-content">
+    <span class="eyebrow" id="heroEyebrow">AXORIA</span>
+    <h1 id="heroTitle">Feel Better,<br>Every Day</h1>
+    <p class="subtitle" id="heroSub"><span class="dot"></span>Confort • Bien-être • Qualité</p>
+    <p class="tagline" id="heroTagline"></p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" id="heroOrderBtn"></button>
+      <a href="#menu" class="btn btn-outline" id="heroMenuBtn"></a>
+    </div>
+    <div class="trust-badges" id="heroTrustBadges"></div>
+  </div>
+  <div class="scrolldown"><span id="scrollLbl">SCROLL</span><div class="line"></div></div>
+</section>
+
+<section class="section menu-section" id="menu">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="menuEyebrow">Nos Produits</span>
+      <h2 id="menuTitle">La boutique AXORIA</h2>
+      <p id="menuDesc">Accessoires bien-être et récupération, sélectionnés pour la qualité et le confort au quotidien.</p>
+    </div>
+    <div class="cat-filters" id="catFilters"></div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<section class="section why-section" id="why">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="whyEyebrow">Pourquoi AXORIA</span>
+      <h2 id="whyTitle">Une marque de confiance</h2>
+    </div>
+    <div class="why-grid" id="whyGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-img reveal">
+        <img src="asest/batal1.png" alt="AXORIA — bien-être et posture" loading="lazy">
+        <div class="zbadge" id="aboutBadge">★ AXORIA</div>
+      </div>
+      <div class="about-body reveal">
+        <span class="eyebrow" id="aboutEyebrow">À Propos</span>
+        <h2 id="aboutTitle">Notre mission</h2>
+        <p id="aboutText1"></p>
+        <p id="aboutText2"></p>
+        <div class="pillars" id="pillars"></div>
+        <div class="stats" id="statsRow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="howto" style="background:var(--bg-alt);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="howToEyebrow">Mode d'emploi</span>
+      <h2 id="howToTitle">Comment bien utiliser votre produit</h2>
+    </div>
+    <div class="steps-row" id="stepsRow"></div>
+  </div>
+</section>
+
+<section class="section" id="beforeafter">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="baEyebrow">Résultats</span>
+      <h2 id="baTitle">Avant / Après</h2>
+    </div>
+    <div class="ba-wrap reveal">
+      <div class="ba-card">
+        <span class="ba-tag" id="baBeforeTag">Avant</span>
+        <img src="asest/b12.png" alt="Avant — mauvaise posture" loading="lazy">
+      </div>
+      <div class="ba-card">
+        <span class="ba-tag after" id="baAfterTag">Après</span>
+        <img src="asest/b21.png" alt="Après — posture corrigée" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section guarantee-section" id="guarantee" style="background:var(--bg-alt);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="guaranteeEyebrow">Garanties</span>
+      <h2 id="guaranteeTitle">Acheter en toute confiance</h2>
+    </div>
+    <div class="guarantee-row" id="guaranteeRow"></div>
+  </div>
+</section>
+
+<section class="section reviews-section" id="avis">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow" id="revEyebrow">Avis</span>
+      <h2 id="revTitle">Ce que disent nos clients</h2>
+    </div>
+    <div class="review-slider" id="reviewSlider"></div>
+    <div class="review-form reveal" id="reviewForm">
+      <h3 style="font-size:19px;margin-bottom:18px;" id="revFormTitle">Laissez votre avis</h3>
+      <div class="form-row"><label id="lblRating">Note</label><div class="star-input" id="starInput"></div></div>
+      <div class="form-row"><label id="lblName">Nom</label><input type="text" id="revName" maxlength="60"></div>
+      <div class="form-row"><label id="lblComment">Commentaire</label><textarea id="revComment" rows="3" maxlength="300"></textarea></div>
+      <button class="btn btn-dark" id="submitReview" style="width:100%;justify-content:center;"></button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2 id="faqTitle">Questions fréquentes</h2>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+
+<section class="section contact-section" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Contact</span>
+      <h2 id="contactTitle">Parlons-en</h2>
+    </div>
+    <div class="info-cards reveal" id="infoCards" style="margin-bottom:28px;"></div>
+    <div class="contact-grid">
+      <a class="mapbox reveal" id="mapCard" href="https://www.google.com/maps?q=33.969167,-6.821228" target="_blank" rel="noopener">
+        <div class="map-glass" id="mapGlassLbl"></div>
+        <div class="map-visual">
+          <div class="map-grid"></div>
+          <div class="map-pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="map-pin-ring"></div>
+        </div>
+        <div class="map-cta" id="mapCtaBtn"></div>
+      </a>
+      <div class="contact-form-wrap reveal">
+        <div class="formgrid">
+          <div class="form-row"><label id="lblFullname">Nom complet</label><input type="text" id="cName"></div>
+          <div class="form-row"><label id="lblPhone">Téléphone</label><input type="tel" id="cPhone"></div>
+        </div>
+        <div class="formgrid">
+          <div class="form-row"><label id="lblEmail">Email</label><input type="email" id="cEmail"></div>
+          <div class="form-row"><label id="lblSubject">Sujet</label><input type="text" id="cSubject"></div>
+        </div>
+        <div class="form-row"><label id="lblMessage">Message</label><textarea id="cMessage" rows="4"></textarea></div>
+        <button class="btn btn-green" id="waOrderBtn" style="width:100%;justify-content:center;margin-top:6px;"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="finalcta">
+  <div class="wrap">
+    <div class="final-cta reveal">
+      <h2 id="finalCtaTitle">Prêt(e) à améliorer votre quotidien ?</h2>
+      <p id="finalCtaText"></p>
+      <button class="btn btn-primary" id="finalCtaBtn"></button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="fbrand" id="footBrandSlot"></div>
+        <p class="fdesc" id="footDesc"></p>
+        <div class="social-row" id="socialRow"></div>
+      </div>
+      <div><h5 id="fh1">Liens rapides</h5><ul class="flinks" id="footQuick"></ul></div>
+      <div><h5 id="fh2">Informations</h5><ul class="flinks" id="footInfo"></ul></div>
+      <div>
+        <h5 id="fh3">Newsletter</h5>
+        <p class="fdesc" id="newsDesc" style="margin-bottom:10px;"></p>
+        <div class="newsform"><input type="email" id="newsEmail" placeholder="votre@email.com"><button class="btn btn-coral" id="newsBtn" style="padding:12px 18px;"></button></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="copyLine">© 2026 AXORIA. Tous droits réservés.</span>
+      <ul class="flinks" id="footBottomLinks"></ul>
+      <button class="totop" id="totopFooter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+    </div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3 id="cartTitle" style="font-size:19px;"></h3>
+    <button class="iconbtn" id="closeCart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span id="totalLbl">Total</span><span id="cartTotalVal">0 DH</span></div>
+    <button class="btn btn-green" id="waCartBtn" style="width:100%;justify-content:center;"></button>
+  </div>
+</aside>
+
+<div class="modal-overlay" id="orderFormOverlay">
+  <div class="modal-box" style="width:min(560px,96vw);">
+    <div class="modal-head">
+      <h3 id="orderFormTitle" style="font-size:18px;"></h3>
+      <button class="iconbtn" id="orderFormCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div id="orderFormSummary"></div>
+      <div class="cart-total" style="margin:4px 0 18px;"><span id="orderFormTotalLbl"></span><span id="orderFormTotalVal">0 DH</span></div>
+      <div class="formgrid">
+        <div class="form-row"><label id="lblOrderName"></label><input type="text" id="ofName" autocomplete="name"></div>
+        <div class="form-row"><label id="lblOrderPhone"></label><input type="tel" id="ofPhone" autocomplete="tel"></div>
+      </div>
+      <div class="formgrid">
+        <div class="form-row"><label id="lblOrderCity"></label><input type="text" id="ofCity" autocomplete="address-level2"></div>
+        <div class="form-row"><label id="lblOrderAddress"></label><input type="text" id="ofAddress" autocomplete="street-address"></div>
+      </div>
+      <div class="form-row"><label id="lblOrderNotes"></label><textarea id="ofNotes" rows="3"></textarea></div>
+      <div class="form-error" id="orderFormError"></div>
+      <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;"></button>
+      <button class="btn btn-green" id="orderFormWaBtn" style="width:100%;justify-content:center;margin-top:10px;"></button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="mimg">
+      <button class="mclose" id="modalClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="mbody">
+      <h3 id="modalName" style="font-size:23px;"></h3>
+      <p id="modalDesc" style="color:var(--text-soft);font-size:14.5px;line-height:1.6;"></p>
+      <div class="qty-row">
+        <button class="qty-btn" id="qtyMinus">−</button>
+        <span class="qty-val" id="qtyVal">1</span>
+        <button class="qty-btn" id="qtyPlus">+</button>
+      </div>
+      <div class="mprice" id="modalPrice"></div>
+      <button class="btn btn-primary" id="modalAddBtn" style="width:100%;justify-content:center;"></button>
+    </div>
+  </div>
+</div>
+
+<div class="sticky-buybar" id="stickyBuybar">
+  <img id="sbImg" src="" alt="">
+  <div class="sb-info">
+    <h5 id="sbName"></h5>
+    <span class="sb-price" id="sbPrice"></span>
+  </div>
+  <button class="btn btn-primary" id="sbCartBtn"></button>
+</div>
+
+<div class="floatbtns">
+  <button class="fab top" id="topBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+  <a class="fab wa" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <span class="pulse-ring"></span>
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3zm-5.6 14a7.3 7.3 0 0 1-3.7-1l-.3-.2-2.8.8.8-2.7-.2-.3a7.3 7.3 0 1 1 6.2 3.4zm4-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.5.1s-.6.7-.8.9-.3.2-.6.1a6 6 0 0 1-1.8-1.1 6.6 6.6 0 0 1-1.2-1.5c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4c-.1-.1-.5-1.2-.7-1.6s-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.8 2 4.7 4.7 0 0 0 1 2.5 10.7 10.7 0 0 0 4.1 3.6c.6.2 1 .4 1.4.5a3.4 3.4 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c-.1-.1-.2-.2-.4-.3z"/></svg>
+  </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* ====== SUPABASE ======
+   The publishable key below is intentionally safe to expose in the browser.
+   Database security is enforced by Row Level Security (RLS): storefront visitors
+   can read catalog data and create orders, while administration requires an
+   authenticated Supabase session through admin.html.
+   ======================== */
+const SUPABASE_URL = 'https://gdemgpkkrmpridqgjmtx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD';
+const sb = (SUPABASE_URL.startsWith('http') && window.supabase)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+/* ---------- Phase 4: Meta Pixel + CAPI instrumentation ---------- */
+let META_TRACKING={enabled:false,pixelId:'',capiEnabled:false};
+let META_PIXEL_INITIALIZED=false;
+let META_PAGEVIEW_SENT=false;
+function validMetaPixelId(v){return /^\d{5,30}$/.test(String(v||'').trim());}
+function metaEventId(prefix='ax'){return `${prefix}-${Date.now()}-${(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2))}`;}
+function getCookieValue(name){const prefix=name+'=';return document.cookie.split(';').map(v=>v.trim()).find(v=>v.startsWith(prefix))?.slice(prefix.length)||'';}
+function ensureMetaPixel(){
+  if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return false;
+  if(!window.fbq){
+    const n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!window._fbq)window._fbq=n;
+    n.push=n;n.loaded=true;n.version='2.0';n.queue=[];
+    const s=document.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';
+    const first=document.getElementsByTagName('script')[0];first.parentNode.insertBefore(s,first);
+  }
+  if(!META_PIXEL_INITIALIZED){window.fbq('init',META_TRACKING.pixelId);META_PIXEL_INITIALIZED=true;}
+  return true;
+}
+async function loadTrackingConfig(){
+  try{
+    const raw=await storeGet('axoria_tracking',true);
+    META_TRACKING={enabled:!!raw?.enabled,pixelId:String(raw?.pixelId||'').trim(),capiEnabled:!!raw?.capiEnabled};
+    if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
+  }catch(e){console.warn('Meta tracking config unavailable',e);}
+}
+function trackCommerceEvent(eventName,customData={},userData={}){
+  if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return null;
+  const eventID=metaEventId(eventName.toLowerCase());
+  try{if(ensureMetaPixel()&&window.fbq)window.fbq('track',eventName,customData,{eventID});}catch(e){console.warn('Meta Pixel event failed',e);}
+  if(META_TRACKING.capiEnabled&&sb){
+    const body={pixel_id:META_TRACKING.pixelId,event_name:eventName,event_id:eventID,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,user_data:{...userData,fbp:getCookieValue('_fbp'),fbc:getCookieValue('_fbc')},custom_data:customData};
+    sb.functions.invoke('meta-capi',{body}).then(({error})=>{if(error)console.warn('Meta CAPI event failed',error);}).catch(e=>console.warn('Meta CAPI unavailable',e));
+  }
+  return eventID;
+}
+
+
+const I18N = {
+  fr:{brand:'AXORIA', nav:['Accueil','Produits','À Propos','Avis','FAQ','Contact'],
+    heroEyebrow:'AXORIA — Bien-être Premium', heroTitle:'Feel Better,<br>Every Day', heroSub:'Posture • Confort • Récupération',
+    heroTagline:"Deux essentiels du bien-être, conçus pour corriger votre posture et redessiner votre silhouette, dès aujourd'hui.",
+    heroOrder:'Commander maintenant', heroMenu:'Découvrir les produits', scroll:'DÉFILER',
+    trustBadges:['Livraison partout au Maroc','Paiement à la livraison','Garantie qualité'],
+    menuEyebrow:'Notre Sélection', menuTitle:'Les essentiels AXORIA', menuDesc:'Deux produits lancés avec exigence : un correcteur de posture et une ceinture amincissante, choisis pour leur efficacité et leur confort au quotidien.',
+    all:'Tout', comingSoon:'De nouveaux produits arrivent bientôt dans cette catégorie.', quickBuy:'Achat rapide', viewCart:'Voir le panier', aboutEyebrow:'À Propos d\'AXORIA', aboutTitle:'Le bien-être, pensé au Maroc',
+    aboutText1:"AXORIA est une marque marocaine de bien-être fondée sur une conviction simple : une bonne posture et un dos soutenu changent tout, au bureau comme à la maison. Nous concevons des accessoires pensés pour accompagner le corps au quotidien — sans gadgets inutiles, sans compromis sur la qualité des matériaux.",
+    aboutText2:"Chaque produit AXORIA est testé pour son confort de port, sa durabilité et son efficacité réelle. Notre équipe reste disponible par WhatsApp avant et après votre commande, et nous livrons partout au Maroc avec paiement à la livraison.",
+    pillars:['Qualité premium contrôlée','Livraison partout au Maroc','Paiement à la livraison','Support réactif 7j/7'],
+    statsLbl:["Clients satisfaits","Commandes livrées","Note moyenne clients","Villes livrées au Maroc"],
+    revEyebrow:'Avis Clients', revTitle:'Ce que disent nos clients', revFormTitle:'Laissez votre avis',
+    lblRating:'Note', lblName:'Nom', lblComment:'Commentaire', submitReview:'Envoyer mon avis',
+    whyEyebrow:'Pourquoi AXORIA', whyTitle:'Une marque de confiance, pensée pour votre corps',
+    whyCards:[
+      ['Qualité contrôlée','Chaque produit est testé avant expédition pour garantir confort, solidité et efficacité réelle.'],
+      ['Livraison rapide','Expédition partout au Maroc, avec suivi de commande et remise en main propre.'],
+      ['Paiement à la livraison','Vous payez uniquement à la réception de votre colis, en toute confiance.'],
+      ['Support humain','Une équipe joignable sur WhatsApp pour vous conseiller avant et après l\'achat.']
+    ],
+    benefitsEyebrow:'Bienfaits', benefitsTitle:'Comment nos produits agissent',
+    howToEyebrow:'Mode d\'emploi', howToTitle:'Comment bien utiliser votre produit',
+    howToSteps:[
+      ['Ajustez','Réglez les sangles selon votre morphologie pour un maintien ferme mais confortable.'],
+      ['Portez progressivement','Commencez par 20 à 30 minutes par jour, puis augmentez selon votre confort.'],
+      ['Restez actif','Portez le produit pendant vos tâches quotidiennes, au bureau, en marchant ou au sport.'],
+      ['Observez les résultats','Constatez l\'amélioration de votre posture ou de votre silhouette en quelques semaines.']
+    ],
+    baEyebrow:'Résultats', baTitle:'Avant / Après', baBefore:'Avant', baAfter:'Après',
+    guaranteeEyebrow:'Garanties', guaranteeTitle:'Acheter chez AXORIA, en toute confiance',
+    guarantees:[
+      ['Livraison Maroc','Expédition vers toutes les villes du royaume.'],
+      ['Retour facile','Un souci ? Contactez-nous sous 48h pour un échange.'],
+      ['Garantie qualité','Produits vérifiés avant chaque envoi.'],
+      ['Paiement sécurisé','Réglez en espèces à la réception de votre commande.']
+    ],
+    finalCtaTitle:'Prêt(e) à améliorer votre quotidien ?', finalCtaText:'Rejoignez des centaines de clients au Maroc qui font déjà confiance à AXORIA pour leur posture et leur confort.', finalCtaBtn:'Commander maintenant',
+    faqTitle:'Questions fréquentes',
+    faqs:[["Livrez-vous à domicile partout au Maroc ?","Oui, AXORIA livre à domicile dans toutes les villes du Maroc. Passez commande via WhatsApp ou notre panier en ligne."],
+      ["Quels moyens de paiement acceptez-vous ?","Paiement en espèces à la livraison (Cash on Delivery). D'autres moyens de paiement seront ajoutés prochainement."],
+      ["Les produits sont-ils garantis ?","Oui. Chaque produit est vérifié avant expédition et bénéficie d'une garantie qualité. En cas de défaut, contactez-nous sous 48h par WhatsApp."],
+      ["Quelle est votre politique de retour ?","Vous disposez de 48h après réception pour signaler un problème. Nous organisons alors un échange ou un remboursement rapide."],
+      ["Combien de temps prend la livraison ?","En général 24 à 72h selon votre ville. Contactez-nous par WhatsApp pour une estimation précise vers votre région."],
+      ["Puis-je commander plusieurs produits ensemble ?","Bien sûr — ajoutez le correcteur de posture et la ceinture amincissante au panier, tout sera regroupé dans une seule commande WhatsApp."]],
+    contactTitle:'Parlons-en',
+    infoCards:[["WhatsApp","06 21 57 51 15"],["Téléphone","06 21 57 51 15"],["Instagram","@axoria_store"],["Livraison","Partout au Maroc"]],
+    lblFullname:'Nom complet', lblPhone:'Téléphone', lblEmail:'Email', lblSubject:'Sujet', lblMessage:'Message',
+    waOrderBtn:'Commander via WhatsApp', waCartBtn:'Commander maintenant', mapCta:'Voir sur Google Maps',
+    footDesc:'Marque marocaine de bien-être : posture, confort et récupération, livrée partout au Maroc.',
+    fh1:'Liens rapides', fh2:'Informations', fh3:'Newsletter', newsDesc:"Recevez nos offres et nouveautés.", newsBtn:"S'abonner",
+    footInfo:['Livraison & Retours','Confidentialité','Conditions générales'],
+    copyLine:'© 2026 AXORIA. Tous droits réservés.',
+    cartTitle:'Votre panier', totalLbl:'Total', cartEmpty:'Votre panier est vide.',
+    modalAdd:'Ajouter au panier', addedToast:'Ajouté au panier',
+    reviewSent:'Merci pour votre avis !', fillFields:'Merci de remplir tous les champs.',
+    orderFormTitle:'Finaliser ma commande', orderFormTotalLbl:'Total commande',
+    lblOrderName:'Nom complet', lblOrderPhone:'Téléphone', lblOrderCity:'Ville', lblOrderAddress:'Adresse', lblOrderNotes:'Notes (optionnel)',
+    orderSubmitBtn:'Valider ma commande', orderHelpWa:"Besoin d'aide ? WhatsApp",
+    orderEmptyCart:'Votre panier est vide.', orderFillFields:'Merci de remplir le nom, téléphone, ville et adresse.',
+    orderSuccess:'Commande envoyée ! Nous vous contacterons bientôt.', orderFailed:"Erreur lors de l'envoi. Merci de réessayer ou de nous contacter sur WhatsApp.",
+    orderNoConnection:'Connexion indisponible. Merci de réessayer ou de nous contacter sur WhatsApp.'
+  },
+  en:{brand:'AXORIA', nav:['Home','Products','About','Reviews','FAQ','Contact'],
+    heroEyebrow:'AXORIA — Premium Wellness', heroTitle:'Feel Better,<br>Every Day', heroSub:'Posture • Comfort • Recovery',
+    heroTagline:"Two wellness essentials, designed to correct your posture and reshape your silhouette, starting today.",
+    heroOrder:'Order Now', heroMenu:'Discover Products', scroll:'SCROLL',
+    trustBadges:['Delivery across Morocco','Cash on delivery','Quality guarantee'],
+    menuEyebrow:'Our Selection', menuTitle:'The AXORIA essentials', menuDesc:'Two products launched with care: a posture corrector and a slimming waist belt, chosen for real effectiveness and everyday comfort.',
+    all:'All', comingSoon:'New products are coming soon to this category.', quickBuy:'Quick Buy', viewCart:'View Cart', aboutEyebrow:'About AXORIA', aboutTitle:'Wellness, designed in Morocco',
+    aboutText1:"AXORIA is a Moroccan wellness brand built on a simple belief: good posture and a well-supported back change everything, at the office and at home. We design accessories meant to support the body every day — no unnecessary gadgets, no compromise on material quality.",
+    aboutText2:"Every AXORIA product is tested for comfort, durability and real effectiveness. Our team stays available on WhatsApp before and after your order, and we deliver across Morocco with cash on delivery.",
+    pillars:['Premium checked quality','Delivery across Morocco','Cash on delivery','Responsive 7/7 support'],
+    statsLbl:['Happy customers','Orders delivered','Average customer rating','Cities delivered in Morocco'],
+    revEyebrow:'Customer Reviews', revTitle:'What our customers say', revFormTitle:'Leave your review',
+    lblRating:'Rating', lblName:'Name', lblComment:'Comment', submitReview:'Submit Review',
+    whyEyebrow:'Why AXORIA', whyTitle:'A trusted brand, designed for your body',
+    whyCards:[
+      ['Checked quality','Every product is tested before shipping for comfort, durability and real effectiveness.'],
+      ['Fast delivery','Shipping across Morocco, with order tracking and hand delivery.'],
+      ['Cash on delivery','You only pay when your parcel arrives, with total peace of mind.'],
+      ['Human support','A team reachable on WhatsApp to advise you before and after purchase.']
+    ],
+    benefitsEyebrow:'Benefits', benefitsTitle:'How our products work',
+    howToEyebrow:'How To Use', howToTitle:'How to use your product correctly',
+    howToSteps:[
+      ['Adjust','Set the straps to your body shape for a firm yet comfortable fit.'],
+      ['Wear gradually','Start with 20–30 minutes a day, then increase as comfort allows.'],
+      ['Stay active','Wear it through your daily tasks — at the office, walking, or during sport.'],
+      ['See the results','Notice improved posture or silhouette within a few weeks.']
+    ],
+    baEyebrow:'Results', baTitle:'Before / After', baBefore:'Before', baAfter:'After',
+    guaranteeEyebrow:'Guarantees', guaranteeTitle:'Shop AXORIA with total confidence',
+    guarantees:[
+      ['Morocco delivery','Shipping to every city in the kingdom.'],
+      ['Easy returns','An issue? Contact us within 48h for an exchange.'],
+      ['Quality guarantee','Products checked before every shipment.'],
+      ['Secure payment','Pay in cash when your order arrives.']
+    ],
+    finalCtaTitle:'Ready to feel better every day?', finalCtaText:'Join hundreds of customers across Morocco who already trust AXORIA for their posture and comfort.', finalCtaBtn:'Order Now',
+    faqTitle:'Frequently Asked Questions',
+    faqs:[["Do you deliver across Morocco?","Yes, AXORIA delivers to homes in every city in Morocco. Order via WhatsApp or our online cart."],
+      ["What payment methods do you accept?","Cash on delivery. More payment options will be added soon."],
+      ["Are the products guaranteed?","Yes. Every product is checked before shipping and covered by a quality guarantee. If there's a defect, contact us within 48h on WhatsApp."],
+      ["What is your return policy?","You have 48h after receiving your order to report an issue. We then arrange a fast exchange or refund."],
+      ["How long does delivery take?","Usually 24 to 72 hours depending on your city. Contact us on WhatsApp for an accurate estimate for your region."],
+      ["Can I order several products together?","Of course — add the posture corrector and the slimming waist belt to your cart, everything gets grouped into one WhatsApp order."]],
+    contactTitle:"Let's talk",
+    infoCards:[["WhatsApp","06 21 57 51 15"],["Phone","06 21 57 51 15"],["Instagram","@axoria_store"],["Delivery","Across Morocco"]],
+    lblFullname:'Full Name', lblPhone:'Phone', lblEmail:'Email', lblSubject:'Subject', lblMessage:'Message',
+    waOrderBtn:'Order via WhatsApp', waCartBtn:'Order Now', mapCta:'View on Google Maps',
+    footDesc:'Moroccan wellness brand: posture, comfort and recovery, delivered across Morocco.',
+    fh1:'Quick Links', fh2:'Information', fh3:'Newsletter', newsDesc:'Get our offers and news.', newsBtn:'Subscribe',
+    footInfo:['Shipping & Returns','Privacy Policy','Terms & Conditions'],
+    copyLine:'© 2026 AXORIA. All rights reserved.',
+    cartTitle:'Your Cart', totalLbl:'Total', cartEmpty:'Your cart is empty.',
+    modalAdd:'Add to Cart', addedToast:'Added to cart',
+    reviewSent:'Thanks for your review!', fillFields:'Please fill all fields.',
+    orderFormTitle:'Complete your order', orderFormTotalLbl:'Order total',
+    lblOrderName:'Full name', lblOrderPhone:'Phone number', lblOrderCity:'City', lblOrderAddress:'Address', lblOrderNotes:'Notes (optional)',
+    orderSubmitBtn:'Place my order', orderHelpWa:'Need help? WhatsApp',
+    orderEmptyCart:'Your cart is empty.', orderFillFields:'Please fill in your name, phone, city and address.',
+    orderSuccess:"Order sent! We'll contact you soon.", orderFailed:'Something went wrong sending your order. Please try again or contact us on WhatsApp.',
+    orderNoConnection:'Connection unavailable. Please try again or contact us on WhatsApp.'
+  },
+  ar:{brand:'أكسوريا', nav:['الرئيسية','المنتجات','من نحن','الآراء','الأسئلة الشائعة','اتصل بنا'],
+    heroEyebrow:'أكسوريا — عافية فاخرة', heroTitle:'Feel Better,<br>Every Day', heroSub:'قوام سليم • راحة • تعافي',
+    heroTagline:"منتجان أساسيان للعافية، مصممان لتصحيح قوامك وإعادة رسم قوامك، ابتداءً من اليوم.",
+    heroOrder:'اطلب الآن', heroMenu:'اكتشف المنتجات', scroll:'مرر للأسفل',
+    trustBadges:['توصيل لجميع مدن المغرب','الدفع عند الاستلام','ضمان الجودة'],
+    menuEyebrow:'اختيارنا', menuTitle:'أساسيات أكسوريا', menuDesc:'منتجان تم إطلاقهما بعناية: مصحح للقوام وحزام تنحيف للخصر، تم اختيارهما لفعاليتهما الحقيقية وراحتهما اليومية.',
+    all:'الكل', comingSoon:'منتجات جديدة قادمة قريباً في هذه الفئة.', quickBuy:'شراء سريع', viewCart:'عرض السلة', aboutEyebrow:'عن أكسوريا', aboutTitle:'العافية، بتصميم مغربي',
+    aboutText1:"أكسوريا علامة مغربية للعافية مبنية على قناعة بسيطة: القوام السليم والدعم الجيد للظهر يغيران كل شيء، في المكتب وفي المنزل. نصمم إكسسوارات مخصصة لدعم الجسم يومياً — دون أدوات غير ضرورية، ودون أي تنازل عن جودة المواد.",
+    aboutText2:"يتم اختبار كل منتج من أكسوريا من حيث الراحة والمتانة والفعالية الحقيقية. فريقنا متوفر دائماً عبر واتساب قبل وبعد طلبك، ونوصل لجميع مدن المغرب مع الدفع عند الاستلام.",
+    pillars:['جودة فاخرة مُراقبة','توصيل لجميع مدن المغرب','الدفع عند الاستلام','دعم سريع الاستجابة 7/7'],
+    statsLbl:['عملاء راضون','طلبات تم توصيلها','متوسط تقييم العملاء','مدن مغربية تم التوصيل إليها'],
+    revEyebrow:'آراء العملاء', revTitle:'ماذا يقول عملاؤنا', revFormTitle:'اترك رأيك',
+    lblRating:'التقييم', lblName:'الاسم', lblComment:'التعليق', submitReview:'إرسال الرأي',
+    whyEyebrow:'لماذا أكسوريا', whyTitle:'علامة موثوقة، مصممة لجسمك',
+    whyCards:[
+      ['جودة مُراقبة','يتم اختبار كل منتج قبل الشحن لضمان الراحة والمتانة والفعالية الحقيقية.'],
+      ['توصيل سريع','شحن لجميع مدن المغرب، مع تتبع الطلب وتسليم مباشر.'],
+      ['الدفع عند الاستلام','تدفع فقط عند وصول طردك، بثقة تامة.'],
+      ['دعم بشري','فريق متاح عبر واتساب لتقديم النصح قبل الشراء وبعده.']
+    ],
+    benefitsEyebrow:'الفوائد', benefitsTitle:'كيف تعمل منتجاتنا',
+    howToEyebrow:'طريقة الاستخدام', howToTitle:'كيفية استخدام منتجك بالشكل الصحيح',
+    howToSteps:[
+      ['اضبطه','اضبط الأحزمة حسب قوام جسمك للحصول على دعم ثابت ومريح.'],
+      ['ارتديه تدريجياً','ابدأ بـ 20 إلى 30 دقيقة يومياً، ثم زد المدة حسب راحتك.'],
+      ['ابقَ نشيطاً','ارتديه أثناء مهامك اليومية، في المكتب أو أثناء المشي أو الرياضة.'],
+      ['لاحظ النتائج','لاحظ تحسن قوامك أو قوام خصرك خلال بضعة أسابيع.']
+    ],
+    baEyebrow:'النتائج', baTitle:'قبل / بعد', baBefore:'قبل', baAfter:'بعد',
+    guaranteeEyebrow:'الضمانات', guaranteeTitle:'تسوق من أكسوريا بثقة تامة',
+    guarantees:[
+      ['توصيل للمغرب','شحن لكل مدن المملكة.'],
+      ['إرجاع سهل','مشكلة؟ تواصل معنا خلال 48 ساعة للاستبدال.'],
+      ['ضمان الجودة','منتجات يتم فحصها قبل كل شحنة.'],
+      ['دفع آمن','ادفع نقداً عند وصول طلبك.']
+    ],
+    finalCtaTitle:'مستعد لتشعر بتحسن كل يوم؟', finalCtaText:'انضم إلى مئات العملاء في المغرب الذين يثقون بالفعل في أكسوريا من أجل قوامهم وراحتهم.', finalCtaBtn:'اطلب الآن',
+    faqTitle:'الأسئلة الشائعة',
+    faqs:[["هل توصلون لجميع مدن المغرب؟","نعم، أكسوريا توصل إلى المنازل في جميع مدن المغرب. اطلب عبر واتساب أو عربة التسوق."],
+      ["ما هي وسائل الدفع المقبولة؟","الدفع نقداً عند التوصيل. سيتم إضافة وسائل أخرى قريباً."],
+      ["هل المنتجات مضمونة؟","نعم. يتم فحص كل منتج قبل الشحن ويستفيد من ضمان الجودة. في حال وجود عيب، تواصل معنا خلال 48 ساعة عبر واتساب."],
+      ["ما هي سياسة الإرجاع؟","لديك 48 ساعة بعد الاستلام للإبلاغ عن أي مشكلة. سننظم حينها استبدالاً أو استرداداً سريعاً."],
+      ["كم من الوقت يستغرق التوصيل؟","عادة من 24 إلى 72 ساعة حسب مدينتك؛ تواصل معنا عبر واتساب لتقدير دقيق لمنطقتك."],
+      ["هل يمكنني طلب عدة منتجات معاً؟","بالتأكيد — أضف مصحح القوام وحزام التنحيف للسلة، وسيتم تجميعها في طلب واتساب واحد."]],
+    contactTitle:'تواصل معنا',
+    infoCards:[["واتساب","06 21 57 51 15"],["الهاتف","06 21 57 51 15"],["انستغرام","@axoria_store"],["التوصيل","لجميع مدن المغرب"]],
+    lblFullname:'الاسم الكامل', lblPhone:'الهاتف', lblEmail:'البريد الإلكتروني', lblSubject:'الموضوع', lblMessage:'الرسالة',
+    waOrderBtn:'اطلب عبر واتساب', waCartBtn:'اطلب الآن', mapCta:'شاهد على خرائط جوجل',
+    footDesc:'علامة مغربية للعافية: قوام سليم، راحة وتعافي، تُوصَّل لجميع مدن المغرب.',
+    fh1:'روابط سريعة', fh2:'معلومات', fh3:'النشرة الإخبارية', newsDesc:'احصل على عروضنا وأخبارنا.', newsBtn:'اشترك',
+    footInfo:['الشحن والإرجاع','سياسة الخصوصية','الشروط والأحكام'],
+    copyLine:'© 2026 أكسوريا. جميع الحقوق محفوظة.',
+    cartTitle:'سلتك', totalLbl:'المجموع', cartEmpty:'سلتك فارغة.',
+    modalAdd:'أضف إلى السلة', addedToast:'أُضيف إلى السلة',
+    reviewSent:'شكراً على رأيك!', fillFields:'يرجى ملء جميع الحقول.',
+    orderFormTitle:'إتمام الطلب', orderFormTotalLbl:'مجموع الطلب',
+    lblOrderName:'الاسم الكامل', lblOrderPhone:'رقم الهاتف', lblOrderCity:'المدينة', lblOrderAddress:'العنوان', lblOrderNotes:'ملاحظات (اختياري)',
+    orderSubmitBtn:'تأكيد الطلب', orderHelpWa:'تحتاج مساعدة؟ واتساب',
+    orderEmptyCart:'سلتك فارغة.', orderFillFields:'يرجى ملء الاسم والهاتف والمدينة والعنوان.',
+    orderSuccess:'تم إرسال طلبك! سنتواصل معك قريباً.', orderFailed:'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.',
+    orderNoConnection:'الاتصال غير متوفر. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.'
+  }
+};
+let currentLang = 'fr';
+
+/* Category system: fully dynamic. Categories are data (name + fallback image),
+   editable at runtime from the Category Manager (unlimited, add/edit/delete).
+   New products added later automatically appear inside their category —
+   no code changes required. */
+const DEFAULT_CATEGORIES = [
+  {id:'c1', name:'Support & Récupération', img:4506106},
+  {id:'c2', name:'Ceinture Amincissante', img:5629203},
+  {id:'c3', name:'Fitness & Mobilité', img:4397831},
+  {id:'c4', name:'Massage & Détente', img:6207527},
+  {id:'c5', name:'Confort & Sommeil', img:6541176}
+];
+let CATEGORIES = DEFAULT_CATEGORIES.map(c=>({...c}));
+function catNames(){ return CATEGORIES.map(c=>c.name); }
+function catFallbackImg(catName){
+  const c = CATEGORIES.find(x=>x.name===catName);
+  return pexelsUrl(c ? c.img : DEFAULT_CATEGORIES[0].img);
+}
+/* Explicit, product-specific photography (never reused between products) */
+const PRODUCT_IMG = {
+  'posture corrector':'https://images.pexels.com/photos/4506106/pexels-photo-4506106.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'slimming waist belt':'https://images.pexels.com/photos/5629203/pexels-photo-5629203.jpeg?auto=compress&cs=tinysrgb&w=900'
+};
+function pexelsUrl(id){return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800`;}
+function productImg(name, cat){
+  const key = name.toLowerCase();
+  return PRODUCT_IMG[key] || catFallbackImg(cat);
+}
+
+function genDesc(cat, name){
+  const n = name.toLowerCase();
+  const bits = {
+    'posture corrector':'Redresse les épaules et soutient le dos pour une meilleure posture au quotidien, dès les premières minutes de port.',
+    'slimming waist belt':'Ceinture amincissante ajustable qui affine la taille, soutient le dos et accompagne vos séances de sport ou votre routine quotidienne.',
+    'knee support':'Maintien souple du genou, idéal pendant le sport ou la récupération.',
+    'wrist support':'Soutien du poignet pour soulager la tension liée aux gestes répétitifs.',
+    'ankle support':'Stabilise la cheville, réduit les risques de gêne pendant l\'effort.',
+    'elbow support':'Compression légère pour soulager la douleur au coude.',
+    'back support belt':'Ceinture lombaire ajustable pour soutenir le bas du dos.',
+    'neck support pillow':'Coussin ergonomique qui soulage les tensions de la nuque.',
+    'lumbar cushion':'Coussin lombaire pour une assise plus confortable, au bureau ou en voiture.',
+    'resistance bands':'Bandes élastiques pour renforcer et étirer en douceur, à la maison.',
+    'hand grip exerciser':'Renforce la poigne et les avant-bras en quelques minutes par jour.',
+    'yoga stretch strap':'Sangle d\'étirement pour améliorer la souplesse en toute sécurité.',
+    'finger exercise band':'Bande d\'exercice pour renforcer les doigts et prévenir les tensions.',
+    'foot massage ball':'Balle de massage plantaire pour détendre la voûte du pied.',
+    'massage roller':'Rouleau de massage pour dénouer les muscles après l\'effort.',
+    'mini massage ball set':'Set de petites balles de massage pour cibler les points de tension.',
+    'reusable ice/hot pack':'Compresse réutilisable chaude ou froide pour soulager rapidement.',
+    'gel heel cups':'Coussinets en gel qui amortissent le talon à chaque pas.',
+    'compression socks':'Chaussettes de compression pour stimuler la circulation et réduire la fatigue des jambes.',
+    'silicone heel protectors':'Protège-talons en silicone contre les frottements et ampoules.',
+    'sleep eye mask premium':'Masque de sommeil doux qui bloque la lumière pour un repos profond.'
+  };
+  for(const k in bits){ if(n.includes(k)) return bits[k]; }
+  const catDesc = {
+    'Support & Récupération':'Soutien ciblé pour soulager et accompagner la récupération au quotidien.',
+    'Ceinture Amincissante':'Pensée pour affiner la silhouette tout en soutenant le dos.',
+    'Fitness & Mobilité':'Accessoire léger pour bouger, s\'étirer et se renforcer chez soi.',
+    'Massage & Détente':'Pensé pour détendre les muscles et apaiser les tensions.',
+    'Confort & Sommeil':'Petit geste de confort pour mieux vivre chaque journée.'
+  };
+  return catDesc[cat] || 'Un accessoire bien-être pensé pour votre confort au quotidien.';
+}
+function genLongDesc(cat, name){
+  return genDesc(cat, name) + " Fabriqué avec des matériaux résistants et respirants, ce produit AXORIA est conçu pour un usage quotidien prolongé, que ce soit au bureau, à la maison ou pendant le sport. Réglable et ajustable pour s'adapter à toutes les morphologies.";
+}
+
+/* Sequential product IDs starting at 1965, never reused (stored as strings for safe DOM dataset comparisons). */
+let NEXT_PRODUCT_ID = 1965;
+function nextProductId(){ return String(NEXT_PRODUCT_ID++); }
+function syncNextProductId(){
+  const maxId = PRODUCTS.reduce((m,p)=>{ const n = parseInt(p.id,10); return (!isNaN(n) && n>=m) ? n+1 : m; }, 1965);
+  NEXT_PRODUCT_ID = Math.max(NEXT_PRODUCT_ID, maxId);
+}
+
+function seedProducts(){
+  const seed = [
+    {name:'Posture Corrector', cat:'Support & Récupération', price:149, badge:'bestseller'},
+    {name:'Slimming Waist Belt', cat:'Ceinture Amincissante', price:179, badge:'new'}
+  ];
+  return seed.map(s=>({
+    id: nextProductId(), cat:s.cat, name:s.name, price:s.price, oldPrice:null,
+    discount:0, badge:s.badge, stock:50, status:'active', visible:true,
+    desc: genDesc(s.cat, s.name), longDesc: genLongDesc(s.cat, s.name),
+    img: productImg(s.name, s.cat)
+  }));
+}
+
+async function storeGet(key, shared){
+  if(shared && sb){
+    try{
+      const { data, error } = await sb.from('axoria_store').select('value').eq('key', key).maybeSingle();
+      if(error) throw error;
+      if(data){ try{ localStorage.setItem(key, JSON.stringify(data.value)); }catch(e){} return data.value; }
+      return null;
+    }catch(e){
+      console.error('storeGet (supabase) failed, using local cache', e);
+      try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }catch(e2){ return null; }
+    }
+  }
+  try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
+}
+async function storeSet(key, value, shared){
+  if(shared && sb){
+    try{
+      const { error } = await sb.from('axoria_store').upsert({ key, value, updated_at: new Date().toISOString() });
+      if(error) throw error;
+      try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+      return true;
+    }catch(e){
+      console.error('storeSet (supabase) failed', e);
+      try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e2){}
+      return false;
+    }
+  }
+  try{ localStorage.setItem(key, JSON.stringify(value)); return true; }catch(e){ console.error(e); return false; }
+}
+
+/* Fix 2: dedicated, safe product loader.
+   Returns one of four clear states so init() never has to guess:
+   - 'ok'    : Supabase reachable, real product data found -> use it.
+   - 'empty' : Supabase reachable, table confirmed empty (first run) -> safe to seed + save.
+   - 'cache' : Supabase unreachable, but a last-known-good local copy exists -> use it, never touch remote.
+   - 'error' / 'nodb' : nothing reachable and nothing cached -> show a local-only fallback, NEVER write to Supabase. */
+async function fetchProductsSafe(){
+  if(!sb){
+    try{
+      const raw = localStorage.getItem('axoria_products');
+      if(raw) return { status:'cache', data: JSON.parse(raw) };
+    }catch(e){}
+    return { status:'nodb', data: null };
+  }
+  try{
+    const { data, error } = await sb.from('axoria_store').select('value').eq('key', 'axoria_products').maybeSingle();
+    if(error) throw error;
+    if(data && Array.isArray(data.value) && data.value.length){
+      try{ localStorage.setItem('axoria_products', JSON.stringify(data.value)); }catch(e){}
+      return { status:'ok', data: data.value };
+    }
+    // Either no row at all, or a row with an empty array: Supabase answered, catalog is genuinely empty.
+    return { status:'empty', data: [] };
+  }catch(e){
+    console.error('fetchProductsSafe: Supabase fetch failed, will NOT write to Supabase', e);
+    try{
+      const raw = localStorage.getItem('axoria_products');
+      if(raw) return { status:'cache', data: JSON.parse(raw) };
+    }catch(e2){}
+    return { status:'error', data: null };
+  }
+}
+
+let PRODUCTS = [];
+let REVIEWS = [];
+let CART = [];
+let FAVS = [];
+let currentCategory = 'all';
+let modalProduct = null;
+let modalQty = 1;
+
+const DEFAULT_REVIEWS = [
+  {name:'Yassine B.', loc:'Casablanca, Maroc', rating:5, comment:'Le correcteur de posture a changé ma façon de m\'asseoir au bureau. Moins de douleurs au dos après une semaine.'},
+  {name:'Sara M.', loc:'Rabat, Maroc', rating:5, comment:'La ceinture amincissante est confortable même portée plusieurs heures, et le résultat sur la taille se voit vite.'},
+  {name:'Imane T.', loc:'Marrakech, Maroc', rating:5, comment:'Très bonne qualité de fabrication, et le paiement à la livraison m\'a mise en confiance pour commander.'},
+  {name:'Karim L.', loc:'Tanger, Maroc', rating:4, comment:'Le correcteur de posture est efficace, juste un peu ferme les premiers jours. Le service client a bien conseillé sur le réglage.'},
+  {name:'Nadia R.', loc:'Agadir, Maroc', rating:5, comment:'Service client très réactif sur WhatsApp, livraison en 48h et produit conforme à la description.'}
+];
+
+const ICONS = {
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.9-6.2 3.9 1.6-7L2 9.2l7.1-.6z"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>',
+  truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="14" height="10" rx="1.5"/><path d="M15 10h4l3 3.5V17h-7z"/><circle cx="6" cy="19" r="1.8"/><circle cx="17.5" cy="19" r="1.8"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 4C10 4 4 10 4 20c10 0 16-6 16-16z"/><path d="M4 20L14 10"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4A8.5 8.5 0 0 1 4 18l-1 3 3-1a8.5 8.5 0 1 1 15-8.5z"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/></svg>',
+  heart:'<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 4 13V6a1 1 0 0 1 1-1h1a7 7 0 0 1 7 7v8"/><path d="M4 13l16-9"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4A8.5 8.5 0 0 1 4 15l-1 5 5-1a8.5 8.5 0 0 1-.5-3.5A8.4 8.4 0 0 1 16 3.6a8.3 8.3 0 0 1 5 7.9z"/></svg>',
+  whatsapp:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3z"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2-.5c1 .3 2 .5 3 .7a2 2 0 0 1 1.7 2z"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg>',
+  ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>'
+};
+const AXORIA_LOGO_B64 = "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";
+function badgeLogoSVG(size){
+  return `<img src="data:image/png;base64,${AXORIA_LOGO_B64}" alt="AXORIA" width="${size}" height="${size}" style="width:${size}px;height:${size}px;object-fit:contain;display:block;border-radius:50%;" loading="eager">`;
+}
+
+function applyStaticText(){
+  const t = I18N[currentLang];
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('brandLogoSlot').innerHTML = badgeLogoSVG(58) + `<span>${t.brand}</span>`;
+  document.getElementById('footBrandSlot').innerHTML = badgeLogoSVG(58) + `<span>${t.brand}</span>`;
+  const ids = ['#home','#menu','#about','#avis','#faq','#contact'];
+  document.getElementById('navLinks').innerHTML = t.nav.map((label,i)=>`<li><a href="${ids[i]}">${label}</a></li>`).join('');
+  document.getElementById('footQuick').innerHTML = t.nav.map((label,i)=>`<li><a href="${ids[i]}">${label}</a></li>`).join('');
+  document.getElementById('heroEyebrow').textContent = t.heroEyebrow;
+  document.getElementById('heroTitle').innerHTML = t.heroTitle;
+  document.getElementById('heroSub').innerHTML = '<span class="dot"></span>' + t.heroSub;
+  document.getElementById('heroTagline').textContent = t.heroTagline;
+  document.getElementById('heroOrderBtn').textContent = t.heroOrder;
+  document.getElementById('heroMenuBtn').textContent = t.heroMenu;
+  const checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  document.getElementById('heroTrustBadges').innerHTML = t.trustBadges.map(b=>`<span>${checkIcon}${b}</span>`).join('');
+  document.getElementById('scrollLbl').textContent = t.scroll;
+  document.getElementById('menuEyebrow').textContent = t.menuEyebrow;
+  document.getElementById('menuTitle').textContent = t.menuTitle;
+  document.getElementById('menuDesc').textContent = t.menuDesc;
+  document.getElementById('aboutEyebrow').textContent = t.aboutEyebrow;
+  document.getElementById('aboutTitle').textContent = t.aboutTitle;
+  document.getElementById('aboutText1').textContent = t.aboutText1;
+  document.getElementById('aboutText2').textContent = t.aboutText2;
+  document.getElementById('aboutBadge').textContent = '★ ' + t.brand;
+  document.getElementById('whyEyebrow').textContent = t.whyEyebrow;
+  document.getElementById('whyTitle').textContent = t.whyTitle;
+  const whyIcons = [ICONS.shield, ICONS.truck, ICONS.leaf, ICONS.chat];
+  document.getElementById('whyGrid').innerHTML = t.whyCards.map((c,i)=>`
+    <div class="why-card reveal in"><div class="wi">${whyIcons[i]||ICONS.shield}</div><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join('');
+  document.getElementById('howToEyebrow').textContent = t.howToEyebrow;
+  document.getElementById('howToTitle').textContent = t.howToTitle;
+  document.getElementById('stepsRow').innerHTML = t.howToSteps.map((s,i)=>`
+    <div class="step-card reveal in"><div class="stepnum">0${i+1}</div><h4>${s[0]}</h4><p>${s[1]}</p></div>`).join('');
+  document.getElementById('baEyebrow').textContent = t.baEyebrow;
+  document.getElementById('baTitle').textContent = t.baTitle;
+  document.getElementById('baBeforeTag').textContent = t.baBefore;
+  document.getElementById('baAfterTag').textContent = t.baAfter;
+  document.getElementById('guaranteeEyebrow').textContent = t.guaranteeEyebrow;
+  document.getElementById('guaranteeTitle').textContent = t.guaranteeTitle;
+  const gIcons = [ICONS.truck, ICONS.trash, ICONS.shield, ICONS.chat];
+  document.getElementById('guaranteeRow').innerHTML = t.guarantees.map((g,i)=>`
+    <div class="g-card reveal in"><div class="gi">${gIcons[i]||ICONS.shield}</div><div><h5>${g[0]}</h5><p>${g[1]}</p></div></div>`).join('');
+  document.getElementById('finalCtaTitle').textContent = t.finalCtaTitle;
+  document.getElementById('finalCtaText').textContent = t.finalCtaText;
+  document.getElementById('finalCtaBtn').textContent = t.finalCtaBtn;
+  document.getElementById('pillars').innerHTML = t.pillars.map((p,i)=>{
+    const icns=[ICONS.leaf,ICONS.bolt,ICONS.shield,ICONS.chat];
+    return `<div class="pillar">${icns[i]}<span>${p}</span></div>`;
+  }).join('');
+  const statVals = ['5K+','12K+','4.8/5','20+'];
+  document.getElementById('statsRow').innerHTML = t.statsLbl.map((l,i)=>`<div class="stat"><div class="num" data-final="${statVals[i]}">0</div><div class="lbl">${l}</div></div>`).join('');
+  document.getElementById('revEyebrow').textContent = t.revEyebrow;
+  document.getElementById('revTitle').textContent = t.revTitle;
+  document.getElementById('revFormTitle').textContent = t.revFormTitle;
+  document.getElementById('lblRating').textContent = t.lblRating;
+  document.getElementById('lblName').textContent = t.lblName;
+  document.getElementById('lblComment').textContent = t.lblComment;
+  document.getElementById('submitReview').textContent = t.submitReview;
+  document.getElementById('faqTitle').textContent = t.faqTitle;
+  document.getElementById('contactTitle').textContent = t.contactTitle;
+  document.getElementById('lblFullname').textContent = t.lblFullname;
+  document.getElementById('lblPhone').textContent = t.lblPhone;
+  document.getElementById('lblEmail').textContent = t.lblEmail;
+  document.getElementById('lblSubject').textContent = t.lblSubject;
+  document.getElementById('lblMessage').textContent = t.lblMessage;
+  document.getElementById('waOrderBtn').textContent = t.waOrderBtn;
+  document.getElementById('waCartBtn').textContent = t.waCartBtn;
+  document.getElementById('orderFormTitle').textContent = t.orderFormTitle;
+  document.getElementById('orderFormTotalLbl').textContent = t.orderFormTotalLbl;
+  document.getElementById('lblOrderName').textContent = t.lblOrderName;
+  document.getElementById('lblOrderPhone').textContent = t.lblOrderPhone;
+  document.getElementById('lblOrderCity').textContent = t.lblOrderCity;
+  document.getElementById('lblOrderAddress').textContent = t.lblOrderAddress;
+  document.getElementById('lblOrderNotes').textContent = t.lblOrderNotes;
+  document.getElementById('orderFormSubmitBtn').textContent = t.orderSubmitBtn;
+  document.getElementById('orderFormWaBtn').textContent = t.orderHelpWa;
+  document.getElementById('footDesc').textContent = t.footDesc;
+  document.getElementById('newsDesc').textContent = t.newsDesc;
+  document.getElementById('newsBtn').textContent = t.newsBtn;
+  document.getElementById('fh1').textContent = t.fh1;
+  document.getElementById('fh2').textContent = t.fh2;
+  document.getElementById('fh3').textContent = t.fh3;
+  document.getElementById('footInfo').innerHTML = t.footInfo.map(l=>`<li><a href="#">${l}</a></li>`).join('');
+  document.getElementById('footBottomLinks').innerHTML = `<li><a href="#faq">FAQ</a></li><li><a href="#">${t.footInfo[1]}</a></li><li><a href="#">${t.footInfo[2]}</a></li>`;
+  document.getElementById('copyLine').textContent = t.copyLine;
+  document.getElementById('cartTitle').textContent = t.cartTitle;
+  document.getElementById('totalLbl').textContent = t.totalLbl;
+  document.getElementById('modalAddBtn').textContent = t.modalAdd;
+  document.getElementById('socialRow').innerHTML = `<a href="https://www.instagram.com/axoria_store" target="_blank" rel="noopener" aria-label="Instagram">${ICONS.ig}</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp">${ICONS.whatsapp}</a>`;
+  document.getElementById('infoCards').innerHTML = t.infoCards.map((c,i)=>{
+    const icns=[ICONS.whatsapp,ICONS.phone,ICONS.ig,ICONS.truck];
+    return `<div class="info-card">${icns[i]}<div><h5>${c[0]}</h5><p>${c[1]}</p></div></div>`;
+  }).join('');
+  const mapLbl = document.getElementById('mapGlassLbl');
+  if(mapLbl) mapLbl.innerHTML = `📍 ${t.brand}`;
+  const mapCta = document.getElementById('mapCtaBtn');
+  if(mapCta) mapCta.textContent = t.mapCta;
+  document.getElementById('faqList').innerHTML = t.faqs.map((f,i)=>`
+    <div class="faq-item" data-idx="${i}">
+      <button class="faq-q">${f[0]} ${ICONS.plus}</button>
+      <div class="faq-a"><p>${f[1]}</p></div>
+    </div>`).join('');
+  attachFaqEvents();
+  animateStats();
+}
+function attachFaqEvents(){
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    q.onclick = ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i=>{i.classList.remove('open'); i.querySelector('.faq-a').style.maxHeight=null;});
+      if(!isOpen){ item.classList.add('open'); const a=item.querySelector('.faq-a'); a.style.maxHeight = a.scrollHeight+'px'; }
+    };
+  });
+}
+function animateStats(){
+  document.querySelectorAll('.stat .num').forEach(el=>{
+    const final = el.getAttribute('data-final');
+    const numMatch = final.match(/[\d.]+/);
+    if(!numMatch) { el.textContent = final; return; }
+    const num = parseFloat(numMatch[0]);
+    const suffix = final.replace(numMatch[0],'');
+    let started = false;
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting && !started){
+          started = true;
+          let cur = 0; const step = Math.max(num/40,0.1);
+          const iv = setInterval(()=>{ cur += step; if(cur>=num){cur=num; clearInterval(iv);} el.textContent = (num%1!==0? cur.toFixed(1): Math.floor(cur)) + suffix; }, 30);
+        }
+      });
+    }, {threshold:.4});
+    io.observe(el);
+  });
+}
+
+function renderCatFilters(){
+  const t = I18N[currentLang];
+  const cats = catNames();
+  const wrap = document.getElementById('catFilters');
+  wrap.innerHTML = `<button class="cat-chip ${currentCategory==='all'?'active':''}" data-cat="all">${t.all}</button>` +
+    cats.map(c=>`<button class="cat-chip ${currentCategory===c?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  wrap.querySelectorAll('.cat-chip').forEach(b=>{
+    b.onclick = ()=>{ currentCategory = b.dataset.cat; renderCatFilters(); renderMenuGrid(); };
+  });
+}
+function fmtPrice(p){ return p + ' DH'; }
+function renderMenuGrid(){
+  const grid = document.getElementById('menuGrid');
+  const t = I18N[currentLang];
+  const items = PRODUCTS.filter(p=>p.visible && (currentCategory==='all' || p.cat===currentCategory));
+  if(items.length===0 && currentCategory!=='all'){
+    grid.innerHTML = `<div class="cat-empty" style="grid-column:1/-1;">${t.comingSoon}</div>`;
+    return;
+  }
+  grid.innerHTML = items.map(p=>{
+    const outOfStock = (p.stock!==undefined && p.stock<=0);
+    const badgeHtml = p.badge==='promo' ? `<span class="badge promo">PROMO</span>`
+      : p.badge==='new' ? `<span class="badge promo" style="background:#3F8FC4;">NEW</span>`
+      : p.badge==='bestseller' ? `<span class="badge promo" style="background:var(--coral);">BEST SELLER</span>` : '';
+    return `
+    <div class="pcard reveal in" data-id="${p.id}">
+      <div class="imgwrap">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        ${badgeHtml}
+        <button class="favbtn ${FAVS.includes(p.id)?'active':''}" data-fav="${p.id}">${ICONS.heart}</button>
+        ${outOfStock ? '' : `<button class="quickbuy" data-quickbuy="${p.id}">${t.quickBuy}</button>`}
+      </div>
+      <div class="pcard-body">
+        <h4>${p.name}</h4>
+        <p class="desc">${p.desc}</p>
+        <div class="price-row">
+          <span class="price-tag">${p.oldPrice? `<span class="price-old">${fmtPrice(p.oldPrice)}</span>`:''}${fmtPrice(p.price)}</span>
+          ${outOfStock
+            ? `<span style="font-size:11.5px;font-weight:700;color:#D34747;">${currentLang==='ar'?'نفذ من المخزون':currentLang==='en'?'Out of stock':'Rupture de stock'}</span>`
+            : `<button class="addbtn" data-add="${p.id}">${ICONS.plus}</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.pcard:not(.pcard-add)').forEach(card=>{
+    card.addEventListener('click', (e)=>{
+      if(e.target.closest('.favbtn') || e.target.closest('.addbtn')) return;
+      openModal(card.dataset.id);
+    });
+  });
+  grid.querySelectorAll('[data-fav]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); toggleFav(b.dataset.fav); };
+  });
+  grid.querySelectorAll('[data-add]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); addToCart(b.dataset.add, 1); toast(I18N[currentLang].addedToast); ripple(e); };
+  });
+  grid.querySelectorAll('[data-quickbuy]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); quickBuy(b.dataset.quickbuy); };
+  });
+}
+function quickBuy(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const t = I18N[currentLang];
+  const lines = [`${t.brand} — ${t.quickBuy}`, `${p.name} x1 — ${fmtPrice(p.price)}`, ''];
+  window.open('https://wa.me/212621575115?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+}
+function toggleFav(id){
+  if(FAVS.includes(id)) FAVS = FAVS.filter(f=>f!==id); else FAVS.push(id);
+  storeSet('axoria_favs', FAVS, false);
+  renderMenuGrid();
+}
+
+function openModal(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  modalProduct = p; modalQty = 1;
+  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalImg').alt = p.name;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalDesc').textContent = p.longDesc || p.desc;
+  document.getElementById('qtyVal').textContent = modalQty;
+  updateModalPrice();
+  trackCommerceEvent('ViewContent',{content_ids:[String(p.id)],content_type:'product',content_name:p.name,value:Number(p.price||0),currency:'MAD'});
+  document.getElementById('productModal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function updateModalPrice(){ document.getElementById('modalPrice').textContent = fmtPrice(modalProduct.price * modalQty); }
+function closeModal(){ document.getElementById('productModal').classList.remove('open'); document.body.classList.remove('no-scroll'); }
+
+function addToCart(id, qty){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const existing = CART.find(c=>c.id===id);
+  if(existing) existing.qty += qty;
+  else CART.push({key:id, id, name:p.name, price:p.price, img:p.img, qty});
+  trackCommerceEvent('AddToCart',{content_ids:[String(p.id)],content_type:'product',content_name:p.name,value:Number(p.price||0)*Number(qty||1),currency:'MAD',contents:[{id:String(p.id),quantity:Number(qty||1),item_price:Number(p.price||0)}]});
+  persistCart();
+  renderCart();
+}
+function persistCart(){ storeSet('axoria_cart', CART, false); }
+function renderCart(){
+  const t = I18N[currentLang];
+  const wrap = document.getElementById('cartItems');
+  const countEl = document.getElementById('cartCount');
+  const totalCount = CART.reduce((s,c)=>s+c.qty,0);
+  countEl.textContent = totalCount;
+  countEl.style.display = totalCount>0 ? 'flex':'none';
+  if(CART.length===0){
+    wrap.innerHTML = `<div class="cart-empty">${t.cartEmpty}</div>`;
+  } else {
+    wrap.innerHTML = CART.map(c=>`
+      <div class="cart-item" data-key="${c.key}">
+        <img src="${c.img}" alt="${c.name}">
+        <div class="ci-info">
+          <h5>${c.name}</h5>
+          <div class="ci-price">${fmtPrice(c.price)}</div>
+          <div class="cart-qty">
+            <button data-dec="${c.key}">−</button>
+            <span>${c.qty}</span>
+            <button data-inc="${c.key}">+</button>
+          </div>
+        </div>
+        <button class="trashbtn" data-del="${c.key}">${ICONS.trash}</button>
+      </div>`).join('');
+    wrap.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>{ const it=CART.find(c=>c.key===b.dataset.inc); it.qty++; persistCart(); renderCart(); });
+    wrap.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const it=CART.find(c=>c.key===b.dataset.dec); it.qty--; if(it.qty<=0) CART=CART.filter(c=>c.key!==it.key); persistCart(); renderCart(); });
+    wrap.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ CART=CART.filter(c=>c.key!==b.dataset.del); persistCart(); renderCart(); });
+  }
+  const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
+  document.getElementById('cartTotalVal').textContent = fmtPrice(total);
+  updateStickyBar();
+}
+function updateStickyBar(){
+  const t = I18N[currentLang];
+  const bar = document.getElementById('stickyBuybar');
+  if(!bar) return;
+  const totalCount = CART.reduce((s,c)=>s+c.qty,0);
+  const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
+  if(totalCount===0){ bar.classList.remove('show'); return; }
+  const last = CART[CART.length-1];
+  document.getElementById('sbImg').src = last.img;
+  document.getElementById('sbImg').alt = last.name;
+  document.getElementById('sbName').textContent = totalCount>1 ? `${totalCount} ${t.cartTitle}` : last.name;
+  document.getElementById('sbPrice').textContent = fmtPrice(total);
+  document.getElementById('sbCartBtn').textContent = t.viewCart;
+  if(window.scrollY>380) bar.classList.add('show');
+}
+function buildWhatsAppMessage(fromContactForm){
+  let msg = `Bonjour AXORIA! Je souhaite commander:%0A%0A`;
+  if(CART.length){
+    CART.forEach(c=>{ msg += `• ${c.name} x${c.qty} — ${fmtPrice(c.price*c.qty)}%0A`; });
+    const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
+    msg += `%0ATotal: ${fmtPrice(total)}%0A`;
+  }
+  if(fromContactForm){
+    const n = document.getElementById('cName').value, ph = document.getElementById('cPhone').value,
+      em = document.getElementById('cEmail').value, sub = document.getElementById('cSubject').value, me = document.getElementById('cMessage').value;
+    if(n||ph||em||sub||me){ msg += `%0A--- Infos contact ---%0ANom: ${n}%0ATél: ${ph}%0AEmail: ${em}%0ASujet: ${sub}%0AMessage: ${me}`; }
+  }
+  return `https://wa.me/212621575115?text=${msg}`;
+}
+
+/* ---------- Order Form (internal order system, replaces WhatsApp-only checkout) ----------
+   Cart logic (CART, addToCart, renderCart, persistCart) is untouched above.
+   This only reads CART to build a summary + the order payload; it never mutates
+   cart items directly except clearing it after a confirmed, successful save. */
+function renderOrderSummary(){
+  const wrap = document.getElementById('orderFormSummary');
+  wrap.innerHTML = CART.map(c=>`
+    <div class="cart-item">
+      <img src="${c.img}" alt="${c.name}">
+      <div class="ci-info">
+        <h5>${c.name}</h5>
+        <div class="ci-price">${c.qty} × ${fmtPrice(c.price)}</div>
+      </div>
+    </div>`).join('');
+  const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
+  document.getElementById('orderFormTotalVal').textContent = fmtPrice(total);
+}
+function openOrderForm(){
+  if(CART.length===0){ toast(I18N[currentLang].orderEmptyCart); return; }
+  document.getElementById('orderFormError').textContent = '';
+  renderOrderSummary();
+  const checkoutTotal=CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0);
+  trackCommerceEvent('InitiateCheckout',{value:checkoutTotal,currency:'MAD',num_items:CART.reduce((s,c)=>s+Number(c.qty||0),0),content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)}))});
+  document.getElementById('orderFormOverlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function closeOrderForm(){
+  document.getElementById('orderFormOverlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+async function submitOrder(){
+  const t = I18N[currentLang];
+  const errEl = document.getElementById('orderFormError');
+  errEl.textContent = '';
+
+  if(CART.length===0){ errEl.textContent = t.orderEmptyCart; return; }
+
+  const name = document.getElementById('ofName').value.trim();
+  const phone = document.getElementById('ofPhone').value.trim();
+  const city = document.getElementById('ofCity').value.trim();
+  const address = document.getElementById('ofAddress').value.trim();
+  const notes = document.getElementById('ofNotes').value.trim();
+
+  if(!name || !phone || !city || !address){ errEl.textContent = t.orderFillFields; return; }
+  if(!sb){ errEl.textContent = t.orderNoConnection; return; }
+
+  // Only product IDs and quantities leave the browser. Prices, availability and
+  // stock are resolved atomically on the server by the place_order RPC.
+  const rpcItems = CART.map(c=>({ product_id:c.id, qty:c.qty }));
+
+  const btn = document.getElementById('orderFormSubmitBtn');
+  btn.disabled = true;
+  try{
+    const { data, error } = await sb.rpc('place_order', {
+      p_customer_name:name,
+      p_phone:phone,
+      p_city:city,
+      p_address:address,
+      p_notes:notes || null,
+      p_items:rpcItems
+    });
+    if(error) throw error;
+    const placed = Array.isArray(data) ? data[0] : data;
+    const purchaseValue=Number(placed?.order_total||CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0));
+    trackCommerceEvent('Purchase',{value:purchaseValue,currency:'MAD',content_type:'product',content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)})),order_id:String(placed?.order_code||placed?.order_id||'')},{ph:phone,fn:name,ct:city,country:'ma',external_id:String(placed?.order_code||placed?.order_id||'')});
+
+    // Stock changed server-side: refresh the visible catalog immediately.
+    const fresh = await fetchProductsSafe();
+    if(fresh.status==='ok' && Array.isArray(fresh.data)){
+      PRODUCTS = fresh.data;
+      syncNextProductId();
+      renderCatFilters();
+      renderMenuGrid();
+    }
+    CART = [];
+    persistCart();
+    renderCart();
+    document.getElementById('ofName').value = '';
+    document.getElementById('ofPhone').value = '';
+    document.getElementById('ofCity').value = '';
+    document.getElementById('ofAddress').value = '';
+    document.getElementById('ofNotes').value = '';
+    closeOrderForm();
+    const ref = placed?.order_code ? ` #${placed.order_code}` : '';
+    toast(t.orderSuccess + ref);
+  }catch(e){
+    console.error('submitOrder failed', e);
+    const msg = String(e?.message || '');
+    if(msg.includes('Insufficient stock') || msg.includes('Product unavailable') || msg.includes('Product not found')){
+      errEl.textContent = currentLang==='ar'
+        ? 'الكمية المطلوبة غير متوفرة حالياً. حدّث الصفحة وحاول من جديد.'
+        : currentLang==='en'
+          ? 'The requested quantity is no longer available. Refresh and try again.'
+          : 'La quantité demandée n’est plus disponible. Actualisez puis réessayez.';
+      const fresh = await fetchProductsSafe();
+      if(fresh.status==='ok' && Array.isArray(fresh.data)){
+        PRODUCTS=fresh.data; syncNextProductId(); renderCatFilters(); renderMenuGrid(); renderCart();
+      }
+    }else{
+      errEl.textContent = t.orderFailed;
+    }
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function renderReviews(){
+  const slider = document.getElementById('reviewSlider');
+  slider.innerHTML = REVIEWS.map(r=>`
+    <div class="rcard">
+      <div class="stars">${Array.from({length:5}).map((_,i)=>`<span style="opacity:${i<r.rating?1:.25}">${ICONS.star}</span>`).join('')}</div>
+      <p class="quote">"${r.comment}"</p>
+      <div class="who"><div class="avatar">${r.name.charAt(0)}</div><div><div class="nm">${r.name}</div><div class="loc">${r.loc}</div></div></div>
+    </div>`).join('');
+  let hovering = false;
+  slider.onmouseenter = ()=>hovering=true;
+  slider.onmouseleave = ()=>hovering=false;
+  if(!slider.dataset.autoplaySet){
+    slider.dataset.autoplaySet='1';
+    setInterval(()=>{
+      if(hovering) return;
+      const max = slider.scrollWidth - slider.clientWidth;
+      if(slider.scrollLeft >= max - 5) slider.scrollTo({left:0, behavior:'smooth'});
+      else slider.scrollBy({left:300, behavior:'smooth'});
+    }, 4000);
+  }
+}
+let selectedStars = 5;
+function renderStarInput(){
+  const wrap = document.getElementById('starInput');
+  wrap.innerHTML = Array.from({length:5}).map((_,i)=>`<button type="button" data-s="${i+1}" class="${i<selectedStars?'on':''}">${ICONS.star}</button>`).join('');
+  wrap.querySelectorAll('button').forEach(b=>{ b.onclick = ()=>{ selectedStars = parseInt(b.dataset.s); renderStarInput(); }; });
+}
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2400);
+}
+function ripple(e){
+  const btn = e.currentTarget || e.target;
+  const rect = btn.getBoundingClientRect();
+  const span = document.createElement('span');
+  span.className='ripple';
+  span.style.left = (e.clientX-rect.left)+'px';
+  span.style.top = (e.clientY-rect.top)+'px';
+  btn.style.position = btn.style.position || 'relative';
+  btn.appendChild(span);
+  setTimeout(()=>span.remove(), 650);
+}
+
+function spawnHeroParticles(){
+  const host = document.getElementById('heroParticles');
+  if(!host) return;
+  const n = window.innerWidth < 700 ? 10 : 18;
+  const colors = ['#0A4D9B','#0A4D9B','#C9A227','#3F8FC4'];
+  let html = '';
+  for(let i=0;i<n;i++){
+    const size = 3 + Math.random()*7;
+    const left = Math.random()*100;
+    const dur = 9 + Math.random()*10;
+    const delay = Math.random()*12;
+    const drift = (Math.random()*80-40).toFixed(0)+'px';
+    const c = colors[i % colors.length];
+    html += `<span style="left:${left}%;width:${size}px;height:${size}px;background:radial-gradient(circle,${c},${c}00 70%);--drift:${drift};animation-duration:${dur}s;animation-delay:${delay}s;"></span>`;
+  }
+  host.innerHTML = html;
+}
+
+function renderAll(){
+  applyStaticText();
+  renderCatFilters();
+  renderMenuGrid();
+  renderReviews();
+  renderStarInput();
+  renderCart();
+  updateThemeIcon();
+}
+
+async function init(){
+  document.getElementById('loaderLogo').innerHTML = badgeLogoSVG(120);
+  spawnHeroParticles();
+  await loadTrackingConfig();
+
+  /* Fix 1 + Fix 2: resolve the real product source of truth BEFORE any render,
+     and never let a failed/empty read overwrite real Supabase data. */
+  const productsResult = await fetchProductsSafe();
+  if(productsResult.status === 'ok'){
+    PRODUCTS = productsResult.data;
+  } else if(productsResult.status === 'empty'){
+    // Supabase reachable and confirmed empty (genuine first run) -> safe to seed.
+    PRODUCTS = seedProducts();
+  } else if(productsResult.status === 'cache'){
+    // Supabase unreachable, but we have a last-known-good local copy -> use it, don't touch remote.
+    PRODUCTS = productsResult.data;
+  } else if(productsResult.status === 'nodb'){
+    // No Supabase configured and no local cache -> local-only first run.
+    PRODUCTS = seedProducts();
+  } else {
+    // 'error': Supabase unreachable and nothing cached. Show something locally
+    // so the site isn't blank, but NEVER write this fallback to Supabase.
+    PRODUCTS = seedProducts();
+  }
+  syncNextProductId();
+
+  const storedCats = await storeGet('axoria_categories', true);
+  if(storedCats && storedCats.length){ CATEGORIES = storedCats; }
+  const storedReviews = await storeGet('axoria_reviews', true);
+  if(storedReviews){ REVIEWS = storedReviews; } else { REVIEWS = DEFAULT_REVIEWS; }
+  CART = await storeGet('axoria_cart', false) || [];
+  FAVS = await storeGet('axoria_favs', false) || [];
+  const theme = await storeGet('axoria_theme', false);
+  if(theme) document.documentElement.setAttribute('data-theme', theme);
+
+  // Render exactly once, now that the real data is known.
+  renderAll();
+  setTimeout(()=>{ document.getElementById('loader').classList.add('hidden'); }, 1700);
+
+  const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } }); }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  initClientTimezone();
+  updateClock(); setInterval(updateClock, 1000);
+  bindEvents();
+}
+
+let CLIENT_TZ = 'Africa/Casablanca';
+function initClientTimezone(){
+  try{
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        ()=>{ try{ CLIENT_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Casablanca'; }catch(e){ CLIENT_TZ='Africa/Casablanca'; } },
+        ()=>{ CLIENT_TZ = 'Africa/Casablanca'; },
+        {timeout:5000, maximumAge:600000}
+      );
+    } else {
+      CLIENT_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Casablanca';
+    }
+  }catch(e){ CLIENT_TZ = 'Africa/Casablanca'; }
+}
+function updateClock(){
+  const now = new Date();
+  let parts;
+  try{
+    parts = new Intl.DateTimeFormat('en-GB', {timeZone: CLIENT_TZ, weekday:'short', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false}).formatToParts(now);
+  }catch(e){
+    parts = new Intl.DateTimeFormat('en-GB', {timeZone:'Africa/Casablanca', weekday:'short', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false}).formatToParts(now);
+  }
+  const get = (t)=>parts.find(p=>p.type===t)?.value || '00';
+  const days = {fr:{Sun:'Dim',Mon:'Lun',Tue:'Mar',Wed:'Mer',Thu:'Jeu',Fri:'Ven',Sat:'Sam'}, en:{Sun:'Sun',Mon:'Mon',Tue:'Tue',Wed:'Wed',Thu:'Thu',Fri:'Fri',Sat:'Sat'}, ar:{Sun:'أحد',Mon:'إثن',Tue:'ثلا',Wed:'أرب',Thu:'خمي',Fri:'جمع',Sat:'سبت'}};
+  const weekday = get('weekday');
+  const d = (days[currentLang] && days[currentLang][weekday]) || weekday;
+  const h = get('hour'), m = get('minute'), s = get('second');
+  const hourNum = parseInt(h,10);
+  const isOpen = hourNum>=7; // open 7:00 -> closes at midnight (00:00), closed 00:00-06:59
+  const statusTxt = { fr: isOpen?'Ouvert':'Fermé', en: isOpen?'Open':'Closed', ar: isOpen?'مفتوح':'مغلق' }[currentLang];
+  const box = document.getElementById('clockbox');
+  box.innerHTML = `<span class="dotstate" style="background:${isOpen?'#2FAE63':'#D34747'};"></span>${d} · ${h}:${m}:${s} · <b style="color:${isOpen?'#2FAE63':'#D34747'};">${statusTxt}</b>`;
+}
+function updateThemeIcon(){
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.getElementById('themeBtn').innerHTML = dark ? ICONS.sun : ICONS.moon;
+}
+
+function bindEvents(){
+  document.getElementById('langSel').onchange = (e)=>{
+    currentLang = e.target.value;
+    applyStaticText(); renderCatFilters(); renderMenuGrid(); renderReviews(); renderStarInput(); renderCart(); updateClock();
+  };
+  document.getElementById('themeBtn').onclick = ()=>{
+    const cur = document.documentElement.getAttribute('data-theme')==='dark' ? 'light':'dark';
+    document.documentElement.setAttribute('data-theme', cur);
+    storeSet('axoria_theme', cur, false);
+    updateThemeIcon();
+  };
+  document.getElementById('burgerBtn').onclick = ()=>{ document.getElementById('menu').scrollIntoView({behavior:'smooth'}); };
+  document.getElementById('cartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); };
+  document.getElementById('closeCart').onclick = closeCart;
+  document.getElementById('cartOverlay').onclick = closeCart;
+  function closeCart(){ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); }
+
+  document.getElementById('heroOrderBtn').onclick = (e)=>{ ripple(e); document.getElementById('menu').scrollIntoView({behavior:'smooth'}); };
+  document.getElementById('finalCtaBtn').onclick = (e)=>{ ripple(e); document.getElementById('menu').scrollIntoView({behavior:'smooth'}); };
+
+  document.getElementById('modalClose').onclick = closeModal;
+  document.getElementById('productModal').addEventListener('click', (e)=>{ if(e.target.id==='productModal') closeModal(); });
+  document.getElementById('qtyPlus').onclick = ()=>{ modalQty++; document.getElementById('qtyVal').textContent=modalQty; updateModalPrice(); };
+  document.getElementById('qtyMinus').onclick = ()=>{ if(modalQty>1) modalQty--; document.getElementById('qtyVal').textContent=modalQty; updateModalPrice(); };
+  document.getElementById('modalAddBtn').onclick = (e)=>{
+    addToCart(modalProduct.id, modalQty);
+    toast(I18N[currentLang].addedToast);
+    ripple(e);
+    closeModal();
+    document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open');
+  };
+
+  document.getElementById('waCartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); openOrderForm(); };
+  document.getElementById('waOrderBtn').onclick = ()=>{ window.open(buildWhatsAppMessage(true), '_blank'); };
+  document.getElementById('waFloat').href = 'https://wa.me/212621575115';
+
+  document.getElementById('orderFormCloseBtn').onclick = closeOrderForm;
+  document.getElementById('orderFormOverlay').addEventListener('click', (e)=>{ if(e.target.id==='orderFormOverlay') closeOrderForm(); });
+  document.getElementById('orderFormSubmitBtn').onclick = submitOrder;
+  document.getElementById('orderFormWaBtn').onclick = ()=>{ window.open(buildWhatsAppMessage(false), '_blank'); };
+
+  document.getElementById('submitReview').onclick = async ()=>{
+    const t = I18N[currentLang];
+    const name = document.getElementById('revName').value.trim();
+    const comment = document.getElementById('revComment').value.trim();
+    if(!name || !comment){ toast(t.fillFields); return; }
+    if(!sb){ toast(currentLang==='ar'?'تعذر إرسال الرأي الآن.':currentLang==='en'?'Unable to submit your review right now.':'Impossible d\'envoyer votre avis pour le moment.'); return; }
+    const btn = document.getElementById('submitReview');
+    btn.disabled = true;
+    try{
+      const { error } = await sb.from('review_submissions').insert({
+        name, rating:selectedStars, comment, status:'pending'
+      });
+      if(error) throw error;
+      document.getElementById('revName').value='';
+      document.getElementById('revComment').value='';
+      selectedStars=5;
+      renderStarInput();
+      toast(currentLang==='ar'?'شكراً! سيتم نشر رأيك بعد المراجعة.':currentLang==='en'?'Thank you! Your review will be published after moderation.':'Merci ! Votre avis sera publié après vérification.');
+    }catch(e){
+      console.error('review submission failed', e);
+      toast(currentLang==='ar'?'تعذر إرسال الرأي الآن.':currentLang==='en'?'Unable to submit your review right now.':'Impossible d\'envoyer votre avis pour le moment.');
+    }finally{
+      btn.disabled = false;
+    }
+  };
+
+  document.getElementById('newsBtn').onclick = (e)=>{ e.preventDefault(); const v=document.getElementById('newsEmail').value.trim(); if(v){ toast('Merci pour votre inscription !'); document.getElementById('newsEmail').value=''; } };
+
+  window.addEventListener('scroll', ()=>{
+    const y = window.scrollY;
+    document.getElementById('topBtn').classList.toggle('show', y>500);
+    const hc = document.querySelector('.hero-content');
+    if(hc){ hc.style.opacity = Math.max(1 - y/500, 0); }
+    const bar = document.getElementById('stickyBuybar');
+    if(bar && CART.reduce((s,c)=>s+c.qty,0)>0){ bar.classList.toggle('show', y>380); }
+  }, {passive:true});
+  document.getElementById('topBtn').onclick = ()=>window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('totopFooter').onclick = ()=>window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('sbCartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); };
+
+  document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click', ripple));
+
+}
+
+try{ init(); }catch(e){ console.error('init failed', e); const l=document.getElementById('loader'); if(l) l.classList.add('hidden'); }
+</script>
 </body>
 </html>
