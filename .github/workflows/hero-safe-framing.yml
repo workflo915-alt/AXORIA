@@ -1,0 +1,31 @@
+name: AXORIA hero safe framing
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - 'scripts/hero_safe_framing.py'
+      - '.github/workflows/hero-safe-framing.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python scripts/hero_safe_framing.py
+      - name: Commit generated hero framing
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'No index change'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'hero: keep athlete duo fully framed'
+          git push origin phase-4-meta-tracking
