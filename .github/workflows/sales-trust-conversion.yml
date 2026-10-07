@@ -1,0 +1,36 @@
+name: AXORIA sales trust conversion
+
+on:
+  push:
+    branches: [phase-4-meta-tracking]
+    paths:
+      - 'scripts/sales_trust_conversion.py'
+      - '.github/workflows/sales-trust-conversion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-4-meta-tracking
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply trust and conversion cleanup
+        run: python scripts/sales_trust_conversion.py
+      - name: Commit storefront trust fixes
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No storefront changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "sales: use real proof and strengthen product trust"
+          git push origin HEAD:phase-4-meta-tracking
