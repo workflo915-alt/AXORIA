@@ -1399,7 +1399,8 @@ function applyStaticText(){
   document.getElementById('footBrandSlot').innerHTML = badgeLogoSVG(58) + `<span>${t.brand}</span>`;
   const ids = ['#home','#menu','#about','#avis','#faq','#contact'];
   document.getElementById('navLinks').innerHTML = t.nav.map((label,i)=>`<li><a href="${ids[i]}">${label}</a></li>`).join('');
-  document.getElementById('footQuick').innerHTML = t.nav.map((label,i)=>`<li><a href="${ids[i]}">${label}</a></li>`).join('');
+  const guidesLabel=currentLang==='ar'?'دليل AXORIA':currentLang==='en'?'Guides':'Guides';
+  document.getElementById('footQuick').innerHTML = t.nav.map((label,i)=>`<li><a href="${ids[i]}">${label}</a></li>`).join('') + `<li><a href="guides.html">${guidesLabel}</a></li>`;
   const mobileMenu=document.getElementById('mobileMenu');
   if(mobileMenu) mobileMenu.innerHTML=t.nav.map((label,i)=>`<a href="${ids[i]}">${label}</a>`).join('');
   document.getElementById('heroEyebrow').textContent = t.heroEyebrow;
@@ -1487,7 +1488,7 @@ function applyStaticText(){
   document.getElementById('fh3').textContent = t.fh3;
   const infoLinks=['shipping-returns.html','privacy.html','terms.html'];
   document.getElementById('footInfo').innerHTML = t.footInfo.map((l,i)=>`<li><a href="${infoLinks[i]}">${l}</a></li>`).join('');
-  document.getElementById('footBottomLinks').innerHTML = `<li><a href="#faq">FAQ</a></li><li><a href="privacy.html">${t.footInfo[1]}</a></li><li><a href="terms.html">${t.footInfo[2]}</a></li>`;
+  document.getElementById('footBottomLinks').innerHTML = `<li><a href="guides.html">${guidesLabel}</a></li><li><a href="#faq">FAQ</a></li><li><a href="privacy.html">${t.footInfo[1]}</a></li><li><a href="terms.html">${t.footInfo[2]}</a></li>`;
   document.getElementById('copyLine').textContent = t.copyLine;
   document.getElementById('cartTitle').textContent = t.cartTitle;
   document.getElementById('totalLbl').textContent = t.totalLbl;
