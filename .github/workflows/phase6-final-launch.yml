@@ -1,0 +1,66 @@
+name: AXORIA Phase 6 Final Launch
+
+on:
+  push:
+    branches:
+      - phase-6-final-launch-readiness
+    paths:
+      - 'scripts/phase6_final_launch.py'
+      - '.github/workflows/phase6-final-launch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-6-final-launch-readiness
+          fetch-depth: 0
+
+      - name: Apply Phase 6 patch
+        run: python scripts/phase6_final_launch.py
+
+      - name: Validate generated files
+        shell: bash
+        run: |
+          git diff --check
+          grep -q "orderSuccessOverlay" index.html
+          grep -q "showOrderSuccess" index.html
+          grep -q "sessionStorage.getItem(CATEGORY_SESSION_KEY)" index.html
+          grep -q "canonical.*privacy.html" privacy.html
+          grep -q "canonical.*terms.html" terms.html
+          grep -q "canonical.*shipping-returns.html" shipping-returns.html
+          grep -q "2026-10-08" sitemap.xml
+          python - <<'PY'
+          from pathlib import Path
+          import json, re, subprocess, tempfile, xml.etree.ElementTree as ET
+          html=Path('index.html').read_text(encoding='utf-8')
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',html,re.S|re.I):
+              attrs,body=m.group(1),m.group(2).strip()
+              if not body: continue
+              if 'application/ld+json' in attrs.lower():
+                  json.loads(body); continue
+              with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as f:
+                  f.write(body); path=f.name
+              subprocess.run(['node','--check',path],check=True)
+          ET.parse('sitemap.xml')
+          print('Phase 6 syntax and sitemap validation passed.')
+          PY
+
+      - name: Commit generated changes
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html privacy.html terms.html shipping-returns.html sitemap.xml; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html privacy.html terms.html shipping-returns.html sitemap.xml
+          git commit -m "phase6: finalize checkout confirmation and launch metadata"
+          git push origin HEAD:phase-6-final-launch-readiness
