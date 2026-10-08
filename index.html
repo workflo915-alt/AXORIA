@@ -540,8 +540,8 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
   .section-head h2{font-size:clamp(28px,8vw,38px);line-height:1.08;}
   .section-head p{font-size:14.5px;line-height:1.55;}
 
-  .hero{height:100svh;min-height:620px;}
-  .hero-content{padding:0 18px 46px;}
+  .hero{height:auto;min-height:0;display:block;padding:46px 0 28px;}
+  .hero-content{padding:0 18px 24px;}
   .hero h1{font-size:clamp(40px,13vw,62px);line-height:.98;letter-spacing:-.03em;}
   .hero .subtitle{font-size:12px;letter-spacing:.055em;gap:7px;margin-top:11px;}
   .hero .tagline{font-size:14px;line-height:1.55;max-width:94%;margin-top:14px;}
@@ -597,7 +597,7 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
 }
 
 @media(max-width:360px){
-  .hero{min-height:600px;}
+  .hero{min-height:0;padding-top:38px;}
   .hero h1{font-size:37px;}
   .hero .subtitle{font-size:10.5px;}
   .hero .tagline{font-size:13px;}
