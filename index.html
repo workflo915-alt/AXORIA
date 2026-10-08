@@ -264,12 +264,15 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 
 /* ---------- Products (Menu) ---------- */
 .menu-section{background:var(--bg-alt);}
-.cat-filters{display:flex;gap:10px;overflow-x:auto;padding-bottom:14px;margin-bottom:44px;scrollbar-width:thin;}
+.cat-filters{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 16px;margin-bottom:44px;scrollbar-width:thin;scroll-snap-type:x proximity;}
 .cat-filters::-webkit-scrollbar{height:5px;}
 .cat-filters::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
-.cat-chip{flex:0 0 auto;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.02em;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--text-soft);transition:all .25s ease;white-space:nowrap;}
-.cat-chip:hover{border-color:var(--teal-deep);color:var(--text);}
-.cat-chip.active{background:var(--charcoal);color:var(--teal);border-color:var(--charcoal);}
+.cat-chip{flex:0 0 auto;scroll-snap-align:start;font-family:var(--font-mono);font-size:13px;font-weight:700;letter-spacing:.02em;padding:12px 22px;border-radius:999px;border:1px solid #D4DCE8;background:linear-gradient(180deg,#FFFFFF 0%,#F5F7FA 100%);color:#34445B;box-shadow:0 7px 18px rgba(10,36,60,.06),inset 0 1px 0 rgba(255,255,255,.9);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease,color .22s ease;white-space:nowrap;}
+.cat-chip:hover{transform:translateY(-2px);border-color:#9BAEC6;color:#0B1524;box-shadow:0 10px 24px rgba(10,36,60,.10);}
+.cat-chip.active{background:linear-gradient(135deg,#0B1524 0%,#162A45 100%);color:#FFFFFF;border-color:#0B1524;box-shadow:0 10px 24px rgba(11,21,36,.18),inset 0 1px 0 rgba(255,255,255,.08);}
+[data-theme="dark"] .cat-chip{background:linear-gradient(180deg,rgba(255,255,255,.065) 0%,rgba(255,255,255,.025) 100%);color:#C7D3E4;border-color:rgba(255,255,255,.12);box-shadow:0 8px 20px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);}
+[data-theme="dark"] .cat-chip:hover{color:#FFFFFF;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08);}
+[data-theme="dark"] .cat-chip.active{background:linear-gradient(135deg,#FFFFFF 0%,#DCE6F2 100%);color:#0B1524;border-color:#FFFFFF;box-shadow:0 10px 28px rgba(0,0,0,.30);}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:26px;}
 .pcard{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--line);position:relative;transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;display:flex;flex-direction:column;}
 .pcard:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
@@ -1386,6 +1389,25 @@ function animateStats(){
   });
 }
 
+const CATEGORY_SESSION_KEY='axoria_category_analytics_session';
+function categoryAnalyticsSessionId(){
+  let id='';
+  try{id=localStorage.getItem(CATEGORY_SESSION_KEY)||'';}catch(_){ }
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)){
+    if(globalThis.crypto?.randomUUID)id=globalThis.crypto.randomUUID();
+    else id='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&3|8);return v.toString(16);});
+    try{localStorage.setItem(CATEGORY_SESSION_KEY,id);}catch(_){ }
+  }
+  return id;
+}
+async function trackCategoryInterest(catName){
+  if(!sb||!catName||catName==='all')return;
+  const cat=CATEGORIES.find(c=>c.name===catName);
+  if(!cat)return;
+  try{const {error}=await sb.from('category_views').insert({category_id:String(cat.id),category:String(cat.name),session_id:categoryAnalyticsSessionId()});if(error)throw error;}
+  catch(e){console.warn('Category analytics unavailable',e);}
+}
+
 function renderCatFilters(){
   const t = I18N[currentLang];
   const cats = catNames();
@@ -1393,7 +1415,7 @@ function renderCatFilters(){
   wrap.innerHTML = `<button class="cat-chip ${currentCategory==='all'?'active':''}" data-cat="all">${t.all}</button>` +
     cats.map(c=>`<button class="cat-chip ${currentCategory===c?'active':''}" data-cat="${c}">${c}</button>`).join('');
   wrap.querySelectorAll('.cat-chip').forEach(b=>{
-    b.onclick = ()=>{ currentCategory = b.dataset.cat; renderCatFilters(); renderMenuGrid(); };
+    b.onclick = ()=>{ currentCategory = b.dataset.cat; if(currentCategory!=='all')void trackCategoryInterest(currentCategory); renderCatFilters(); renderMenuGrid(); };
   });
 }
 function fmtPrice(p){ return p + ' DH'; }

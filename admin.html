@@ -13,6 +13,7 @@
 .auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.auth-actions .btn{flex:1}.msg.ok{color:var(--ok)}.password-hint{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:-4px}
 .status.pending{background:#FFF5D6;color:#775B00}.status.approved{background:#E7F6EC;color:#157347}.status.rejected{background:#FDE8E7;color:#B42318}
 .review-stars{color:#C9A227;letter-spacing:1px;font-size:14px;white-space:nowrap}
+.cat-admin-row{padding:12px 13px;margin:9px 0;display:grid;grid-template-columns:minmax(220px,1fr) auto auto;gap:12px;align-items:center}.cat-metrics{display:flex;gap:7px;flex-wrap:wrap}.cat-metric{min-width:82px;padding:8px 10px;border-radius:12px;background:#F6F8FC;border:1px solid var(--line);text-align:center}.cat-metric strong{display:block;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--ink)}.cat-metric span{display:block;margin-top:2px;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}.cat-metric.recent{background:#EEF5FF;border-color:#D4E3F8}.cat-analytics-note{padding:10px 12px;border-radius:12px;background:#F8FAFD;border:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.5;margin-bottom:12px}@media(max-width:760px){.cat-admin-row{grid-template-columns:1fr}.cat-admin-row .btn.danger{justify-self:start}.cat-metrics{order:2}}
 </style>
 </head>
 <body>
@@ -117,7 +118,11 @@
     </section>
 
     <section id="categoriesPanel" class="card panel hidden">
-      <div class="bar"><h2>Catégories</h2><div class="actions"><input id="newCategory" placeholder="Nouvelle catégorie"><button id="addCategory" class="btn primary">Ajouter</button></div></div>
+      <div class="bar">
+        <div><h2>Catégories & intérêt</h2><div class="sub">Comprenez les catégories qui attirent le plus les visiteurs.</div></div>
+        <div class="actions"><input id="newCategory" placeholder="Nouvelle catégorie"><button id="addCategory" class="btn primary">Ajouter</button><button id="reloadCategoryAnalytics" class="btn ghost">Actualiser stats</button></div>
+      </div>
+      <div class="cat-analytics-note">Données anonymes : <strong>Visiteurs</strong> = sessions uniques ayant ouvert la catégorie · <strong>Clics</strong> = nombre total d'ouvertures · <strong>7 jours</strong> = visiteurs uniques récents. Les statistiques commencent à partir de l'activation de ce suivi.</div>
       <div id="categoriesList"></div>
     </section>
   </div>
@@ -130,7 +135,7 @@ const SUPABASE_URL='https://gdemgpkkrmpridqgjmtx.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const ORDER_STATUSES=['New','Contacted','Confirmed','Shipped','Delivered','Cancelled'];
-let PRODUCTS=[];let CATEGORIES=[];let ORDERS=[];let REVIEW_SUBMISSIONS=[];let TRACKING_CONFIG={enabled:false,pixelId:'',capiEnabled:false};
+let PRODUCTS=[];let CATEGORIES=[];let ORDERS=[];let REVIEW_SUBMISSIONS=[];let TRACKING_CONFIG={enabled:false,pixelId:'',capiEnabled:false};let CATEGORY_STATS={};
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function money(v){return `${Number(v||0)} DH`;}
@@ -157,7 +162,7 @@ $('confirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('savePa
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload();};
 sb.auth.onAuthStateChange((event,s)=>{if(event==='PASSWORD_RECOVERY'){recoveryMode=true;showPasswordEditor('recovery');return;}if(!s&&!recoveryMode)showLogin();});
 
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['products','orders','reviews','tracking','categories'].forEach(t=>$(t+'Panel').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='orders')loadOrders();if(b.dataset.tab==='reviews')loadReviewSubmissions();if(b.dataset.tab==='tracking')loadTrackingConfig();if(b.dataset.tab==='categories')renderCategories();});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['products','orders','reviews','tracking','categories'].forEach(t=>$(t+'Panel').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='orders')loadOrders();if(b.dataset.tab==='reviews')loadReviewSubmissions();if(b.dataset.tab==='tracking')loadTrackingConfig();if(b.dataset.tab==='categories')loadCategoryAnalytics();});
 
 async function loadProducts(){try{const [p,c]=await Promise.all([getStore('axoria_products'),getStore('axoria_categories')]);PRODUCTS=Array.isArray(p)?p:[];CATEGORIES=Array.isArray(c)?c:[];renderProducts();renderCategories();}catch(e){console.error(e);toast('Impossible de charger les produits. Vérifiez RLS/Auth.');}}
 function categoryOptions(selected){return CATEGORIES.map(c=>`<option value="${esc(c.name)}" ${c.name===selected?'selected':''}>${esc(c.name)}</option>`).join('');}
@@ -215,7 +220,9 @@ async function duplicateProduct(id){const p=PRODUCTS.find(x=>String(x.id)===Stri
 async function deleteProduct(id){if(!confirm('Supprimer ce produit ?'))return;const before=[...PRODUCTS];PRODUCTS=PRODUCTS.filter(x=>String(x.id)!==String(id));try{await setStore('axoria_products',PRODUCTS);renderProducts();toast('Produit supprimé');}catch(e){PRODUCTS=before;console.error(e);toast('Échec suppression');}}
 $('reloadProducts').onclick=loadProducts;
 
-function renderCategories(){const host=$('categoriesList');if(!CATEGORIES.length){host.innerHTML='<p class="muted">Aucune catégorie.</p>';return;}host.innerHTML=CATEGORIES.map(c=>`<div class="card" style="padding:10px 12px;margin:8px 0;display:flex;gap:8px;align-items:center"><input data-catname="${esc(c.id)}" value="${esc(c.name)}" style="flex:1"><button class="btn danger" data-catdel="${esc(c.id)}">Supprimer</button></div>`).join('');host.querySelectorAll('[data-catname]').forEach(i=>i.onchange=()=>renameCategory(i.dataset.catname,i.value));host.querySelectorAll('[data-catdel]').forEach(b=>b.onclick=()=>deleteCategory(b.dataset.catdel));}
+async function loadCategoryAnalytics(){try{const {data,error}=await sb.from('category_interest_stats').select('category_id,clicks_total,visitors_unique,clicks_7d,visitors_7d,last_view_at');if(error)throw error;CATEGORY_STATS={};(Array.isArray(data)?data:[]).forEach(r=>{CATEGORY_STATS[String(r.category_id)]={clicks_total:Number(r.clicks_total||0),visitors_unique:Number(r.visitors_unique||0),clicks_7d:Number(r.clicks_7d||0),visitors_7d:Number(r.visitors_7d||0),last_view_at:r.last_view_at};});renderCategories();}catch(e){console.error(e);toast('Impossible de charger les statistiques catégories');renderCategories();}}
+function renderCategories(){const host=$('categoriesList');if(!CATEGORIES.length){host.innerHTML='<p class="muted">Aucune catégorie.</p>';return;}host.innerHTML=CATEGORIES.map(c=>{const s=CATEGORY_STATS[String(c.id)]||{clicks_total:0,visitors_unique:0,visitors_7d:0};return `<div class="card cat-admin-row"><input data-catname="${esc(c.id)}" value="${esc(c.name)}"><div class="cat-metrics"><div class="cat-metric"><strong>${s.visitors_unique}</strong><span>Visiteurs</span></div><div class="cat-metric"><strong>${s.clicks_total}</strong><span>Clics</span></div><div class="cat-metric recent"><strong>${s.visitors_7d}</strong><span>7 jours</span></div></div><button class="btn danger" data-catdel="${esc(c.id)}">Supprimer</button></div>`;}).join('');host.querySelectorAll('[data-catname]').forEach(i=>i.onchange=()=>renameCategory(i.dataset.catname,i.value));host.querySelectorAll('[data-catdel]').forEach(b=>b.onclick=()=>deleteCategory(b.dataset.catdel));}
+$('reloadCategoryAnalytics').onclick=loadCategoryAnalytics;
 $('addCategory').onclick=async()=>{const n=$('newCategory').value.trim();if(!n)return;if(CATEGORIES.some(c=>c.name===n)){toast('Catégorie déjà existante');return;}CATEGORIES.push({id:'c'+Date.now(),name:n,img:4506106});try{await setStore('axoria_categories',CATEGORIES);$('newCategory').value='';renderCategories();renderProducts();toast('Catégorie ajoutée');}catch(e){console.error(e);toast('Échec ajout catégorie');}};
 async function renameCategory(id,newName){newName=newName.trim();const c=CATEGORIES.find(x=>String(x.id)===String(id));if(!c||!newName)return;const old=c.name;c.name=newName;PRODUCTS.forEach(p=>{if(p.cat===old)p.cat=newName;});try{await Promise.all([setStore('axoria_categories',CATEGORIES),setStore('axoria_products',PRODUCTS)]);renderCategories();renderProducts();toast('Catégorie renommée');}catch(e){console.error(e);toast('Échec renommage');}}
 async function deleteCategory(id){if(CATEGORIES.length<=1){toast('Gardez au moins une catégorie');return;}const c=CATEGORIES.find(x=>String(x.id)===String(id));if(!c||!confirm(`Supprimer « ${c.name} » ?`))return;const fallback=CATEGORIES.find(x=>String(x.id)!==String(id));PRODUCTS.forEach(p=>{if(p.cat===c.name)p.cat=fallback.name;});CATEGORIES=CATEGORIES.filter(x=>String(x.id)!==String(id));try{await Promise.all([setStore('axoria_categories',CATEGORIES),setStore('axoria_products',PRODUCTS)]);renderCategories();renderProducts();toast('Catégorie supprimée');}catch(e){console.error(e);toast('Échec suppression catégorie');}}
