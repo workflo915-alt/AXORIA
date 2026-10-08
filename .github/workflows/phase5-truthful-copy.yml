@@ -1,0 +1,76 @@
+name: AXORIA Phase 5 Truthful Copy
+
+on:
+  push:
+    branches:
+      - phase-5-launch-hardening
+    paths:
+      - 'scripts/phase5_truthful_copy.py'
+      - '.github/workflows/phase5-truthful-copy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-5-launch-hardening
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply truthful copy patch
+        run: python scripts/phase5_truthful_copy.py
+
+      - name: Validate claims and JS
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          html=Path('index.html').read_text(encoding='utf-8')
+          banned=['Rejoignez des centaines de clients','Join hundreds of customers','انضم إلى مئات العملاء']
+          for phrase in banned:
+              assert phrase not in html, phrase
+          required=[
+            'livraison partout au Maroc et paiement à la livraison',
+            'delivery across Morocco and cash on delivery',
+            'التوصيل لجميع مدن المغرب والدفع عند الاستلام',
+            'aria-label="Back to top"',
+            "function normalizeMoroccanPhone",
+            "encodeURIComponent(lines.join('\\n'))",
+            "from('review_submissions').select",
+            "trackCommerceEvent('PageView')",
+            'assets/hero/axoria-hero-characters.webp',
+          ]
+          for marker in required:
+              assert marker in html, marker
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',html,re.S|re.I):
+              attrs, body=m.group(1),m.group(2).strip()
+              if not body or 'application/ld+json' in attrs.lower() or 'src=' in attrs.lower():
+                  continue
+              with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as f:
+                  f.write(body); path=f.name
+              subprocess.run(['node','--check',path],check=True)
+          print('Truthful copy validation passed.')
+          PY
+          git diff --check
+
+      - name: Commit generated copy change
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No copy change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "phase5: remove unsupported trust claims"
+          git push origin HEAD:phase-5-launch-hardening
