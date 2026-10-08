@@ -2232,8 +2232,9 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
 
     // Fan opens while the bridge enters the viewport and reverses on scroll-up.
     const vh=Math.max(window.innerHeight,1);
-    const enterStart=vh*.92;
-    const enterEnd=vh*.46;
+    // Let the bridge settle deeper into the viewport before the fan starts opening.
+    const enterStart=vh*.76;
+    const enterEnd=vh*.34;
     const scrollP=clamp((enterStart-rect.top)/Math.max(enterStart-enterEnd,1));
     const p=Math.max(scrollP,interaction);
 
@@ -2247,7 +2248,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
       const isAthlete=i<2;
       const isMale=i%2===0;
       const delay=Number(el.dataset.delay||0);
-      const local=isAthlete ? 1 : ease(clamp((p-delay)/Math.max(.48-delay,.12)));
+      const local=isAthlete ? 1 : ease(clamp((p-delay)/Math.max(.58-delay,.16)));
       const anchorPct=isMale ? manAnchor : womanAnchor;
       const targetPct=mobile ? (mobileTargets[i] ?? anchorPct) : (desktopTargets[i] ?? anchorPct);
       const xPct=isAthlete ? targetPct : anchorPct+(targetPct-anchorPct)*local;
