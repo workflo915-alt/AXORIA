@@ -1234,14 +1234,14 @@ function productImg(name, cat){
 function genDesc(cat, name){
   const n = name.toLowerCase();
   const bits = {
-    'posture corrector':'Redresse les épaules et soutient le dos pour une meilleure posture au quotidien, dès les premières minutes de port.',
+    'posture corrector':'Aide au retour et au maintien vers un alignement naturel, avec un soutien postural confortable au quotidien.',
     'slimming waist belt':'Ceinture ajustable pensée pour offrir maintien et confort pendant vos activités ou votre routine quotidienne.',
     'knee support':'Maintien souple du genou, idéal pendant le sport ou la récupération.',
-    'wrist support':'Soutien du poignet pour soulager la tension liée aux gestes répétitifs.',
-    'ankle support':'Stabilise la cheville, réduit les risques de gêne pendant l\'effort.',
-    'elbow support':'Compression légère pour soulager la douleur au coude.',
-    'back support belt':'Ceinture lombaire ajustable pour soutenir le bas du dos.',
-    'neck support pillow':'Coussin ergonomique qui soulage les tensions de la nuque.',
+    'wrist support':'Soutien confortable du poignet pour accompagner les gestes répétitifs et les activités du quotidien.',
+    'ankle support':'Maintien ajustable de la cheville pour accompagner le mouvement pendant vos activités.',
+    'elbow support':'Compression légère et maintien confortable du coude pendant les activités du quotidien.',
+    'back support belt':'Ceinture ajustable pensée pour apporter un maintien confortable au bas du dos.',
+    'neck support pillow':'Coussin ergonomique pensé pour favoriser une position confortable de la nuque au repos.',
     'lumbar cushion':'Coussin lombaire pour une assise plus confortable, au bureau ou en voiture.',
     'resistance bands':'Bandes élastiques pour renforcer et étirer en douceur, à la maison.',
     'hand grip exerciser':'Renforce la poigne et les avant-bras en quelques minutes par jour.',
@@ -1250,9 +1250,9 @@ function genDesc(cat, name){
     'foot massage ball':'Balle de massage plantaire pour détendre la voûte du pied.',
     'massage roller':'Rouleau de massage pour dénouer les muscles après l\'effort.',
     'mini massage ball set':'Set de petites balles de massage pour cibler les points de tension.',
-    'reusable ice/hot pack':'Compresse réutilisable chaude ou froide pour soulager rapidement.',
+    'reusable ice/hot pack':'Compresse réutilisable chaude ou froide pour une sensation de confort ciblée selon votre routine.',
     'gel heel cups':'Coussinets en gel qui amortissent le talon à chaque pas.',
-    'compression socks':'Chaussettes de compression pour stimuler la circulation et réduire la fatigue des jambes.',
+    'compression socks':'Chaussettes de compression conçues pour offrir un maintien ajusté et un confort régulier des jambes.',
     'silicone heel protectors':'Protège-talons en silicone contre les frottements et ampoules.',
     'sleep eye mask premium':'Masque de sommeil doux qui bloque la lumière pour un repos profond.'
   };
@@ -1267,7 +1267,7 @@ function genDesc(cat, name){
   return catDesc[cat] || 'Un accessoire bien-être pensé pour votre confort au quotidien.';
 }
 function genLongDesc(cat, name){
-  return genDesc(cat, name) + " Fabriqué avec des matériaux résistants et respirants, ce produit AXORIA est conçu pour un usage quotidien prolongé, que ce soit au bureau, à la maison ou pendant le sport. Réglable et ajustable pour s'adapter à toutes les morphologies.";
+  return genDesc(cat, name) + " Sélectionné pour son confort et sa praticité, ce produit AXORIA s'intègre facilement à une routine au bureau, à la maison ou pendant vos activités, selon son usage et votre confort.";
 }
 
 /* Sequential product IDs starting at 1965, never reused (stored as strings for safe DOM dataset comparisons). */
