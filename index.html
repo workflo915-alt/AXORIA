@@ -497,17 +497,6 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 }
 
 /* ---------- Final visual polish ---------- */
-.hero-logo-orbit{position:absolute;right:8.5%;top:48%;width:clamp(170px,20vw,285px);aspect-ratio:1;transform:translateY(-50%);display:grid;place-items:center;opacity:.86;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.10),transparent 42%),color-mix(in srgb,var(--surface) 10%,transparent);filter:drop-shadow(0 22px 38px rgba(0,0,0,.18));}
-.hero-logo-inner{width:58%;height:58%;display:grid;place-items:center;animation:heroLogoFloat 7s ease-in-out infinite;will-change:transform;}
-.hero-logo-inner svg{width:100%;height:100%;filter:drop-shadow(0 12px 28px rgba(10,77,155,.22));}
-.hero-logo-ring{position:absolute;inset:9%;border-radius:50%;border:1px solid color-mix(in srgb,var(--teal) 32%,transparent);box-shadow:0 0 0 12px color-mix(in srgb,var(--teal) 4%,transparent),inset 0 0 42px color-mix(in srgb,var(--teal) 7%,transparent);animation:heroRingSpin 24s linear infinite;}
-.hero-logo-ring::before,.hero-logo-ring::after{content:'';position:absolute;border-radius:50%;inset:14%;border:1px dashed color-mix(in srgb,var(--coral) 38%,transparent);}
-.hero-logo-ring::after{inset:28%;border-style:solid;border-color:color-mix(in srgb,var(--sky) 26%,transparent);}
-.hero-logo-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--coral);box-shadow:0 0 16px color-mix(in srgb,var(--coral) 75%,transparent);}
-.hero-logo-dot.d1{top:10%;right:27%;}.hero-logo-dot.d2{bottom:18%;left:11%;width:6px;height:6px;background:var(--teal);}.hero-logo-dot.d3{top:37%;left:4%;width:5px;height:5px;background:var(--sky);}
-@keyframes heroLogoFloat{0%,100%{transform:translate3d(0,-8px,0) rotate(-2deg)}50%{transform:translate3d(0,10px,0) rotate(2deg)}}
-@keyframes heroRingSpin{to{transform:rotate(360deg)}}
-[data-theme="light"] .hero-logo-orbit{filter:drop-shadow(0 24px 38px rgba(35,54,76,.14));}
 
 .character-bridge{position:relative;height:clamp(235px,27vw,320px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;border-bottom:1px solid var(--line);}
 .character-bridge::before{content:'';position:absolute;left:50%;bottom:7%;width:min(1000px,88vw);height:72px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(10,36,60,.16) 0%,rgba(10,36,60,.06) 42%,transparent 73%);filter:blur(2px);}
@@ -524,7 +513,6 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 body.cart-bar-visible .floatbtns{bottom:92px;}
 
 @media(max-width:900px){
-  .hero-logo-orbit{right:50%;top:31%;width:clamp(150px,35vw,230px);transform:translateX(50%) translateY(-50%);opacity:.72;}
   .hero-content{padding-bottom:70px;}
   .character-bridge{height:270px;}
   .character-bridge .hero-character{width:clamp(112px,21vw,148px)!important;}
@@ -533,7 +521,6 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
 }
 @media(max-width:600px){
   .hero{min-height:680px;}
-  .hero-logo-orbit{top:27%;width:154px;opacity:.56;}
   .hero-content{padding:0 18px 54px;}
   .character-bridge{height:235px;}
   .character-bridge .hero-character{width:96px!important;}
@@ -565,10 +552,6 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
   .trust-badges span svg{width:14px;height:14px;}
   .scrolldown{display:none;}
 
-  .hero-logo-orbit{right:16px;top:25%;width:132px;transform:none;opacity:.42;background:none;filter:none;}
-  .hero-logo-inner{width:60%;height:60%;}
-  .hero-logo-ring{inset:11%;box-shadow:0 0 0 7px color-mix(in srgb,var(--teal) 4%,transparent);}
-  .hero-logo-dot{display:none;}
 
   .character-bridge{height:228px;}
   .character-bridge .hero-character{bottom:8%!important;width:96px!important;}
@@ -607,7 +590,6 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
   .hero-content{padding-left:16px;padding-right:16px;}
   .hero h1{font-size:clamp(38px,12.5vw,54px);}
   .hero .tagline{max-width:100%;}
-  .hero-logo-orbit{width:116px;right:8px;top:23%;opacity:.34;}
   .character-bridge{height:214px;}
   .character-bridge .hero-character{width:91px!important;}
   .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:106px!important;}
@@ -622,7 +604,6 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
   .hero-ctas{margin-top:20px;}
   .trust-badges{gap:7px 10px;}
   .trust-badges span{font-size:10.5px;}
-  .hero-logo-orbit{width:96px;opacity:.28;}
   .section{padding:62px 0;}
   .character-bridge{height:198px;}
   .character-bridge .hero-character{width:84px!important;}
@@ -669,11 +650,6 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 <section class="hero" id="home">
   <div class="hero-visual" id="heroVisual" aria-hidden="true">
     <div class="hero-atmosphere" id="heroAtmosphere"></div>
-    <div class="hero-logo-orbit" id="heroLogoOrbit">
-      <div class="hero-logo-ring"></div>
-      <div class="hero-logo-inner" id="heroLogoInner"></div>
-      <span class="hero-logo-dot d1"></span><span class="hero-logo-dot d2"></span><span class="hero-logo-dot d3"></span>
-    </div>
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-particles" id="heroParticles"></div>
@@ -2062,7 +2038,6 @@ function renderAll(){
 
 async function init(){
   document.getElementById('loaderLogo').innerHTML = badgeLogoSVG(120);
-  const heroLogoInner=document.getElementById('heroLogoInner'); if(heroLogoInner) heroLogoInner.innerHTML=badgeLogoSVG(220);
   spawnHeroParticles();
   await loadTrackingConfig();
 
