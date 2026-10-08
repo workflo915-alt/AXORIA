@@ -19,6 +19,7 @@
 <meta name="twitter:description" content="Essentiels bien-être et confort au quotidien. Livraison partout au Maroc et paiement à la livraison.">
 <meta name="theme-color" content="#0A1220">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -482,6 +483,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
   .hero-character.is-featured{width:clamp(198px,20.5vw,304px);}
 }
 
+input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px rgba(180,35,24,.12)!important;}
 </style>
 </head>
 <body>
@@ -753,15 +755,15 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
       <div id="orderFormSummary"></div>
       <div class="cart-total" style="margin:4px 0 18px;"><span id="orderFormTotalLbl"></span><span id="orderFormTotalVal">0 DH</span></div>
       <div class="formgrid">
-        <div class="form-row"><label id="lblOrderName"></label><input type="text" id="ofName" autocomplete="name"></div>
-        <div class="form-row"><label id="lblOrderPhone"></label><input type="tel" id="ofPhone" autocomplete="tel"></div>
+        <div class="form-row"><label id="lblOrderName" for="ofName"></label><input type="text" id="ofName" autocomplete="name" maxlength="120" required></div>
+        <div class="form-row"><label id="lblOrderPhone" for="ofPhone"></label><input type="tel" id="ofPhone" autocomplete="tel" inputmode="tel" maxlength="30" required aria-describedby="orderFormError"></div>
       </div>
       <div class="formgrid">
-        <div class="form-row"><label id="lblOrderCity"></label><input type="text" id="ofCity" autocomplete="address-level2"></div>
-        <div class="form-row"><label id="lblOrderAddress"></label><input type="text" id="ofAddress" autocomplete="street-address"></div>
+        <div class="form-row"><label id="lblOrderCity" for="ofCity"></label><input type="text" id="ofCity" autocomplete="address-level2" maxlength="120" required></div>
+        <div class="form-row"><label id="lblOrderAddress" for="ofAddress"></label><input type="text" id="ofAddress" autocomplete="street-address" maxlength="300" required></div>
       </div>
-      <div class="form-row"><label id="lblOrderNotes"></label><textarea id="ofNotes" rows="3"></textarea></div>
-      <div class="form-error" id="orderFormError"></div>
+      <div class="form-row"><label id="lblOrderNotes" for="ofNotes"></label><textarea id="ofNotes" rows="3" maxlength="1000"></textarea></div>
+      <div class="form-error" id="orderFormError" role="alert" aria-live="polite"></div>
       <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;"></button>
       <button class="btn btn-green" id="orderFormWaBtn" style="width:100%;justify-content:center;margin-top:10px;"></button>
     </div>
@@ -921,7 +923,8 @@ const I18N = {
     orderSubmitBtn:'Valider ma commande', orderHelpWa:"Besoin d'aide ? WhatsApp",
     orderEmptyCart:'Votre panier est vide.', orderFillFields:'Merci de remplir le nom, téléphone, ville et adresse.',
     orderSuccess:'Commande envoyée ! Nous vous contacterons bientôt.', orderFailed:"Erreur lors de l'envoi. Merci de réessayer ou de nous contacter sur WhatsApp.",
-    orderNoConnection:'Connexion indisponible. Merci de réessayer ou de nous contacter sur WhatsApp.'
+    orderNoConnection:'Connexion indisponible. Merci de réessayer ou de nous contacter sur WhatsApp.',
+    orderInvalidPhone:'Veuillez saisir un numéro marocain valide (ex. 06 12 34 56 78 ou +212 6 12 34 56 78).'
   },
   en:{brand:'AXORIA', nav:['Home','Products','About','Reviews','FAQ','Contact'],
     heroEyebrow:'AXORIA — Premium Wellness', heroTitle:'Feel Better,<br>Every Day', heroSub:'Comfort • Wellness • Balance',
@@ -983,7 +986,8 @@ const I18N = {
     orderSubmitBtn:'Place my order', orderHelpWa:'Need help? WhatsApp',
     orderEmptyCart:'Your cart is empty.', orderFillFields:'Please fill in your name, phone, city and address.',
     orderSuccess:"Order sent! We'll contact you soon.", orderFailed:'Something went wrong sending your order. Please try again or contact us on WhatsApp.',
-    orderNoConnection:'Connection unavailable. Please try again or contact us on WhatsApp.'
+    orderNoConnection:'Connection unavailable. Please try again or contact us on WhatsApp.',
+    orderInvalidPhone:'Please enter a valid Moroccan phone number (e.g. 06 12 34 56 78 or +212 6 12 34 56 78).'
   },
   ar:{brand:'أكسوريا', nav:['الرئيسية','المنتجات','من نحن','الآراء','الأسئلة الشائعة','اتصل بنا'],
     heroEyebrow:'أكسوريا — عافية فاخرة', heroTitle:'Feel Better,<br>Every Day', heroSub:'راحة • عناية • توازن',
@@ -1045,7 +1049,8 @@ const I18N = {
     orderSubmitBtn:'تأكيد الطلب', orderHelpWa:'تحتاج مساعدة؟ واتساب',
     orderEmptyCart:'سلتك فارغة.', orderFillFields:'يرجى ملء الاسم والهاتف والمدينة والعنوان.',
     orderSuccess:'تم إرسال طلبك! سنتواصل معك قريباً.', orderFailed:'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.',
-    orderNoConnection:'الاتصال غير متوفر. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.'
+    orderNoConnection:'الاتصال غير متوفر. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.',
+    orderInvalidPhone:'يرجى إدخال رقم هاتف مغربي صحيح، مثل 06 12 34 56 78 أو +212 6 12 34 56 78.'
   }
 };
 let currentLang = 'fr';
@@ -1589,18 +1594,28 @@ function updateStickyBar(){
   if(window.scrollY>380) bar.classList.add('show');
 }
 function buildWhatsAppMessage(fromContactForm){
-  let msg = `Bonjour AXORIA! Je souhaite commander:%0A%0A`;
+  const lines=[];
   if(CART.length){
-    CART.forEach(c=>{ msg += `• ${c.name} x${c.qty} — ${fmtPrice(c.price*c.qty)}%0A`; });
-    const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
-    msg += `%0ATotal: ${fmtPrice(total)}%0A`;
+    lines.push('Bonjour AXORIA ! Je souhaite commander :','');
+    CART.forEach(c=>lines.push(`• ${c.name} x${c.qty} — ${fmtPrice(c.price*c.qty)}`));
+    const total=CART.reduce((sum,c)=>sum+c.price*c.qty,0);
+    lines.push('',`Total : ${fmtPrice(total)}`);
+  }else{
+    lines.push('Bonjour AXORIA !');
   }
   if(fromContactForm){
-    const n = document.getElementById('cName').value, ph = document.getElementById('cPhone').value,
-      em = document.getElementById('cEmail').value, sub = document.getElementById('cSubject').value, me = document.getElementById('cMessage').value;
-    if(n||ph||em||sub||me){ msg += `%0A--- Infos contact ---%0ANom: ${n}%0ATél: ${ph}%0AEmail: ${em}%0ASujet: ${sub}%0AMessage: ${me}`; }
+    const n=document.getElementById('cName').value.trim(), ph=document.getElementById('cPhone').value.trim(),
+      em=document.getElementById('cEmail').value.trim(), sub=document.getElementById('cSubject').value.trim(), me=document.getElementById('cMessage').value.trim();
+    if(n||ph||em||sub||me){
+      lines.push('','--- Infos contact ---');
+      if(n) lines.push(`Nom : ${n}`);
+      if(ph) lines.push(`Tél : ${ph}`);
+      if(em) lines.push(`Email : ${em}`);
+      if(sub) lines.push(`Sujet : ${sub}`);
+      if(me) lines.push(`Message : ${me}`);
+    }
   }
-  return `https://wa.me/212621575115?text=${msg}`;
+  return `https://wa.me/212621575115?text=${encodeURIComponent(lines.join('\n'))}`;
 }
 
 /* ---------- Order Form (internal order system, replaces WhatsApp-only checkout) ----------
@@ -1633,6 +1648,15 @@ function closeOrderForm(){
   document.getElementById('orderFormOverlay').classList.remove('open');
   document.body.classList.remove('no-scroll');
 }
+function normalizeMoroccanPhone(value){
+  let v=String(value||'').trim().replace(/[\s().-]/g,'');
+  if(v.startsWith('00212')) v='0'+v.slice(5);
+  else if(v.startsWith('+212')) v='0'+v.slice(4);
+  else if(v.startsWith('212')) v='0'+v.slice(3);
+  v=v.replace(/\D/g,'');
+  return /^0[5-7]\d{8}$/.test(v) ? v : '';
+}
+
 async function submitOrder(){
   const t = I18N[currentLang];
   const errEl = document.getElementById('orderFormError');
@@ -1641,12 +1665,18 @@ async function submitOrder(){
   if(CART.length===0){ errEl.textContent = t.orderEmptyCart; return; }
 
   const name = document.getElementById('ofName').value.trim();
-  const phone = document.getElementById('ofPhone').value.trim();
+  let phone = document.getElementById('ofPhone').value.trim();
   const city = document.getElementById('ofCity').value.trim();
   const address = document.getElementById('ofAddress').value.trim();
   const notes = document.getElementById('ofNotes').value.trim();
 
+  const phoneInput=document.getElementById('ofPhone');
+  phoneInput.removeAttribute('aria-invalid');
   if(!name || !phone || !city || !address){ errEl.textContent = t.orderFillFields; return; }
+  const normalizedPhone=normalizeMoroccanPhone(phone);
+  if(!normalizedPhone){ phoneInput.setAttribute('aria-invalid','true'); errEl.textContent=t.orderInvalidPhone; phoneInput.focus(); return; }
+  phone=normalizedPhone;
+  phoneInput.value=phone;
   if(!sb){ errEl.textContent = t.orderNoConnection; return; }
 
   // Only product IDs and quantities leave the browser. Prices, availability and
@@ -1925,13 +1955,13 @@ function bindEvents(){
   };
 
   document.getElementById('waCartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); openOrderForm(); };
-  document.getElementById('waOrderBtn').onclick = ()=>{ window.open(buildWhatsAppMessage(true), '_blank'); };
+  document.getElementById('waOrderBtn').onclick = ()=>{ const w=window.open(buildWhatsAppMessage(true),'_blank','noopener,noreferrer'); if(w)w.opener=null; };
   document.getElementById('waFloat').href = 'https://wa.me/212621575115';
 
   document.getElementById('orderFormCloseBtn').onclick = closeOrderForm;
   document.getElementById('orderFormOverlay').addEventListener('click', (e)=>{ if(e.target.id==='orderFormOverlay') closeOrderForm(); });
   document.getElementById('orderFormSubmitBtn').onclick = submitOrder;
-  document.getElementById('orderFormWaBtn').onclick = ()=>{ window.open(buildWhatsAppMessage(false), '_blank'); };
+  document.getElementById('orderFormWaBtn').onclick = ()=>{ const w=window.open(buildWhatsAppMessage(false),'_blank','noopener,noreferrer'); if(w)w.opener=null; };
 
   document.getElementById('submitReview').onclick = async ()=>{
     const t = I18N[currentLang];
