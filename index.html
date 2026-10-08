@@ -509,15 +509,15 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 @keyframes heroRingSpin{to{transform:rotate(360deg)}}
 [data-theme="light"] .hero-logo-orbit{filter:drop-shadow(0 24px 38px rgba(35,54,76,.14));}
 
-.character-bridge{position:relative;height:clamp(300px,35vw,430px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;border-bottom:1px solid var(--line);}
+.character-bridge{position:relative;height:clamp(235px,27vw,320px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;border-bottom:1px solid var(--line);}
 .character-bridge::before{content:'';position:absolute;left:50%;bottom:7%;width:min(1000px,88vw);height:72px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(10,36,60,.16) 0%,rgba(10,36,60,.06) 42%,transparent 73%);filter:blur(2px);}
 [data-theme="dark"] .character-bridge::before{background:radial-gradient(ellipse,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 42%,transparent 73%);}
 .bridge-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--teal) 10%,transparent),transparent 43%);pointer-events:none;}
 .character-stage{position:absolute;inset:0;z-index:2;pointer-events:none;transform:translateZ(0);}
 .character-stage::after{display:none!important;}
-.character-bridge .hero-character{bottom:2%!important;width:clamp(104px,11vw,158px)!important;filter:drop-shadow(0 15px 18px rgba(0,0,0,.18));}
-.character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(118px,12.5vw,178px)!important;bottom:1.2%!important;}
-.character-bridge + .menu-section{padding-top:76px;}
+.character-bridge .hero-character{bottom:0!important;width:clamp(130px,13.4vw,190px)!important;filter:drop-shadow(0 15px 18px rgba(0,0,0,.18));}
+.character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(148px,15.3vw,216px)!important;bottom:-.5%!important;}
+.character-bridge + .menu-section{padding-top:48px;}
 
 .reveal{will-change:opacity,transform;}
 .floatbtns{transition:bottom .28s ease;}
@@ -526,20 +526,20 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
 @media(max-width:900px){
   .hero-logo-orbit{right:50%;top:31%;width:clamp(150px,35vw,230px);transform:translateX(50%) translateY(-50%);opacity:.72;}
   .hero-content{padding-bottom:70px;}
-  .character-bridge{height:340px;}
-  .character-bridge .hero-character{width:clamp(92px,18vw,128px)!important;}
-  .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(104px,20vw,144px)!important;}
-  .character-bridge + .menu-section{padding-top:64px;}
+  .character-bridge{height:270px;}
+  .character-bridge .hero-character{width:clamp(112px,21vw,148px)!important;}
+  .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(128px,24vw,168px)!important;}
+  .character-bridge + .menu-section{padding-top:42px;}
 }
 @media(max-width:600px){
   .hero{min-height:680px;}
   .hero-logo-orbit{top:27%;width:154px;opacity:.56;}
   .hero-content{padding:0 18px 54px;}
-  .character-bridge{height:286px;}
-  .character-bridge .hero-character{width:88px!important;}
-  .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:102px!important;}
+  .character-bridge{height:235px;}
+  .character-bridge .hero-character{width:96px!important;}
+  .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:112px!important;}
   .character-bridge .hero-character:nth-child(n+9){display:none;}
-  .character-bridge + .menu-section{padding-top:54px;}
+  .character-bridge + .menu-section{padding-top:36px;}
   body.cart-bar-visible .floatbtns{bottom:104px;right:14px;}
   .floatbtns{right:14px;bottom:16px;}
   .fab{width:52px;height:52px;}
@@ -2201,9 +2201,10 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
 <script id="hero-character-fan-v3">
 (()=>{
   const hero=document.getElementById('home');
+  const bridge=document.getElementById('characterBridge');
   const stage=document.getElementById('heroStage');
   const atmosphere=document.getElementById('heroAtmosphere');
-  if(!hero||!stage||!atmosphere)return;
+  if(!hero||!bridge||!stage||!atmosphere)return;
   const chars=[...stage.querySelectorAll('.hero-character')];
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let ticking=false,interaction=0,resetTimer=0;
@@ -2225,17 +2226,20 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   });
 
   const update=()=>{
-    const rect=hero.getBoundingClientRect();
-    const h=Math.max(hero.offsetHeight,1);
+    const rect=bridge.getBoundingClientRect();
+    const h=Math.max(bridge.offsetHeight,1);
     const mobile=window.innerWidth<700;
 
-    // Reveal the fan early, before the hero has scrolled too far away.
-    const scrollP=clamp(-rect.top/(h*.34));
+    // Fan opens while the bridge enters the viewport and reverses on scroll-up.
+    const vh=Math.max(window.innerHeight,1);
+    const enterStart=vh*.92;
+    const enterEnd=vh*.46;
+    const scrollP=clamp((enterStart-rect.top)/Math.max(enterStart-enterEnd,1));
     const p=Math.max(scrollP,interaction);
 
     // Shrink the whole group only as the visible hero height gets shorter,
     // so heads/feet stay inside the viewport instead of getting chopped.
-    const fit=clamp((rect.bottom+20)/(h*.88),.88,1);
+    const fit=1;
     const manAnchor=mobile?44:46;
     const womanAnchor=mobile?56:54;
 
