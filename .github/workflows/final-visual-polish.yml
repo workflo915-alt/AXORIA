@@ -1,0 +1,64 @@
+name: AXORIA Final Visual Polish
+
+on:
+  push:
+    branches:
+      - final-visual-polish
+    paths:
+      - 'scripts/final_visual_polish.py'
+      - '.github/workflows/final-visual-polish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: final-visual-polish
+          fetch-depth: 0
+
+      - name: Apply visual polish
+        run: python scripts/final_visual_polish.py
+
+      - name: Validate generated HTML and JS
+        shell: bash
+        run: |
+          git diff --check
+          grep -q 'character-bridge' index.html
+          grep -q 'hero-logo-orbit' index.html
+          grep -q "classList.toggle('in',e.isIntersecting)" index.html
+          grep -q 'cart-bar-visible' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile, json
+          html=Path('index.html').read_text(encoding='utf-8')
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',html,re.S|re.I):
+              attrs,body=m.group(1),m.group(2).strip()
+              if not body: continue
+              if 'application/ld+json' in attrs.lower():
+                  json.loads(body); continue
+              with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as f:
+                  f.write(body); path=f.name
+              subprocess.run(['node','--check',path],check=True)
+          assert html.count('id="heroStage"')==1
+          assert html.index('id="heroStage"') > html.index('</section>\n\n<section class="character-bridge"')
+          print('Final visual polish validation passed.')
+          PY
+
+      - name: Commit generated change
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'No generated change.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'polish: rebalance hero characters and replay reveals'
+          git push origin HEAD:final-visual-polish
