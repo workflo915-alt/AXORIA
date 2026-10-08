@@ -502,7 +502,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 .character-bridge::before{content:'';position:absolute;left:50%;bottom:7%;width:min(1000px,88vw);height:72px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(10,36,60,.16) 0%,rgba(10,36,60,.06) 42%,transparent 73%);filter:blur(2px);}
 [data-theme="dark"] .character-bridge::before{background:radial-gradient(ellipse,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 42%,transparent 73%);}
 .bridge-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--teal) 10%,transparent),transparent 43%);pointer-events:none;}
-.character-stage{position:absolute;inset:0;z-index:2;pointer-events:none;transform:translateZ(0);}
+.character-stage{position:absolute;inset:0;z-index:2;pointer-events:none;perspective:900px;perspective-origin:50% 58%;transform-style:preserve-3d;}
 .character-stage::after{display:none!important;}
 .character-bridge .hero-character{bottom:7%!important;width:clamp(130px,13.4vw,190px)!important;filter:drop-shadow(0 15px 18px rgba(0,0,0,.18));}
 .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(148px,15.3vw,216px)!important;bottom:5%!important;}
@@ -2268,7 +2268,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let ticking=false,interaction=0,resetTimer=0;
   const clamp=(n,a=0,b=1)=>Math.min(Math.max(n,a),b);
-  const ease=t=>1-Math.pow(1-t,3);
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 
   // The first two cells are the athlete man + athlete woman.
   if(chars[1]) chars[1].classList.add('is-featured');
@@ -2315,12 +2315,15 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
       const targetPct=mobile ? (mobileTargets[i] ?? anchorPct) : (desktopTargets[i] ?? anchorPct);
       const xPct=isAthlete ? targetPct : anchorPct+(targetPct-anchorPct)*local;
       const y=isAthlete ? 0 : (1-local)*(mobile?5:14)+local*(mobile?1:2);
-      const scale=(finalScale[i] ?? .84)*fit;
-      const opacity=isAthlete ? 1 : (finalAlpha[i] ?? .88)*local;
+      const targetScale=(finalScale[i] ?? .84)*fit;
+      const depthStart=mobile?.80:.74;
+      const scale=isAthlete ? targetScale : targetScale*(depthStart+(1-depthStart)*local);
+      const z=isAthlete ? 0 : -(mobile?82:118)*(1-local);
+      const opacity=isAthlete ? 1 : (finalAlpha[i] ?? .88)*(.20+.80*local);
 
       el.style.left=`${xPct.toFixed(2)}%`;
       el.style.opacity=opacity.toFixed(3);
-      el.style.transform=`translate3d(-50%,${y.toFixed(1)}px,0) scale(${scale.toFixed(3)})`;
+      el.style.transform=`translate3d(-50%,${y.toFixed(1)}px,${z.toFixed(1)}px) scale(${scale.toFixed(3)})`;
     });
 
     atmosphere.style.transform=`translate3d(${(-p*8).toFixed(1)}px,${(-p*12).toFixed(1)}px,0) scale(${(1+p*.03).toFixed(3)})`;
