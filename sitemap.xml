@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://axoria.ma/</loc><lastmod>2026-10-08</lastmod><priority>1.0</priority></url>
+  <url><loc>https://axoria.ma/guides.html</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://axoria.ma/fr/guides/posture-bureau.html</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://axoria.ma/ar/guides/posture-bureau.html</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://axoria.ma/fr/guides/recuperation-sportive.html</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://axoria.ma/ar/guides/recuperation-sportive.html</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
   <url><loc>https://axoria.ma/shipping-returns.html</loc><lastmod>2026-10-08</lastmod><priority>0.5</priority></url>
   <url><loc>https://axoria.ma/privacy.html</loc><lastmod>2026-10-08</lastmod><priority>0.3</priority></url>
   <url><loc>https://axoria.ma/terms.html</loc><lastmod>2026-10-08</lastmod><priority>0.3</priority></url>
