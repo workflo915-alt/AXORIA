@@ -1,0 +1,83 @@
+name: AXORIA Phase 5 Launch Hardening
+
+on:
+  push:
+    branches:
+      - phase-5-launch-hardening
+    paths:
+      - 'scripts/phase5_launch_hardening.py'
+      - '.github/workflows/phase5-launch-hardening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Phase 5 branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-5-launch-hardening
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply launch hardening patch
+        run: python scripts/phase5_launch_hardening.py
+
+      - name: Validate JavaScript and protected features
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+
+          html=Path('index.html').read_text(encoding='utf-8')
+          required=[
+            "function normalizeMoroccanPhone",
+            "encodeURIComponent(lines.join('\\n'))",
+            "orderInvalidPhone",
+            "from('review_submissions').select",
+            "trackCommerceEvent('PageView')",
+            "meta-capi",
+            'rel="canonical" href="https://axoria.ma/"',
+            "assets/hero/axoria-hero-characters.webp",
+          ]
+          for marker in required:
+            assert marker in html, marker
+
+          assert "storeGet('axoria_reviews', true)" not in html
+          assert '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' in html
+          assert 'aria-live="polite"' in html
+          assert 'maxlength="300"' in html
+
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>',html,re.S|re.I):
+            attrs, body=m.group(1), m.group(2).strip()
+            if not body or 'application/ld+json' in attrs.lower() or 'src=' in attrs.lower():
+              continue
+            with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as f:
+              f.write(body)
+              path=f.name
+            subprocess.run(['node','--check',path],check=True)
+
+          print('Phase 5 validation passed: checkout hardened; SEO, reviews, hero and Meta tracking preserved.')
+          PY
+          git diff --check
+
+      - name: Commit generated storefront change
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No generated storefront change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "phase5: harden checkout and WhatsApp UX"
+          git push origin HEAD:phase-5-launch-hardening
