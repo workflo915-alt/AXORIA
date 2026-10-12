@@ -497,6 +497,21 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 }
 
 input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px rgba(180,35,24,.12)!important;}
+
+/* AXORIA AI chat — isolated preview, backend not connected */
+.ax-ai-launch{position:fixed;right:20px;bottom:154px;z-index:970;width:56px;height:56px;border:0;border-radius:50%;background:linear-gradient(135deg,#0A4D9B,#073869);color:#fff;box-shadow:0 10px 28px rgba(7,56,105,.30);display:grid;place-items:center;cursor:pointer}
+.ax-ai-launch svg{width:27px;height:27px}
+.ax-ai-panel{position:fixed;right:20px;bottom:220px;z-index:971;width:min(370px,calc(100vw - 30px));max-height:min(540px,calc(100dvh - 110px));display:none;flex-direction:column;overflow:hidden;background:var(--surface,#fff);color:var(--text,#0B1524);border:1px solid var(--line,#DCE6F2);border-radius:22px;box-shadow:0 20px 70px rgba(7,28,55,.24);font-family:var(--font-body,sans-serif)}
+.ax-ai-panel.is-open{display:flex}
+.ax-ai-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:#0A4D9B;color:#fff}
+.ax-ai-head strong{font-size:15px}.ax-ai-head small{display:block;font-size:11px;opacity:.85;margin-top:3px}
+.ax-ai-close{background:transparent;border:0;color:#fff;font-size:25px;cursor:pointer}
+.ax-ai-body{padding:22px 18px;overflow:auto;font-size:14px;line-height:1.8}
+.ax-ai-bubble{background:var(--bg-alt,#EEF3FA);padding:14px 15px;border-radius:16px;margin-bottom:14px}
+.ax-ai-notice{font-size:12px;color:var(--text-soft,#5C6A7C);margin:0 0 16px}
+.ax-ai-wa{display:block;text-align:center;padding:12px 16px;background:#0A4D9B;color:white!important;text-decoration:none;border-radius:12px;font-size:13px;font-weight:700}
+@media(max-width:600px){.ax-ai-launch{right:14px;bottom:150px;width:50px;height:50px}.ax-ai-panel{right:10px;bottom:208px}}
+
 </style>
 </head>
 <body>
@@ -2213,6 +2228,17 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   window.addEventListener('resize',request,{passive:true});
   hero.addEventListener('pointerdown',boost,{passive:true});
 })();
+</script>
+
+
+<!-- AXORIA AI assistant preview: no live AI requests or order processing yet -->
+<button type="button" class="ax-ai-launch" id="axAiLaunch" aria-label="مساعد AXORIA" aria-expanded="false" aria-controls="axAiPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8A8.5 8.5 0 0 1 12.5 20a8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5Z"/><path d="M9 12h7M12.5 8.5v7"/></svg></button>
+<section class="ax-ai-panel" id="axAiPanel" role="dialog" aria-label="مساعد AXORIA" aria-hidden="true" dir="rtl">
+  <div class="ax-ai-head"><div><strong>مساعد AXORIA الذكي</strong><small>مرحلة التجربة — قريباً</small></div><button type="button" class="ax-ai-close" id="axAiClose" aria-label="إغلاق">×</button></div>
+  <div class="ax-ai-body"><div class="ax-ai-bubble">مرحبا بيك فـ AXORIA 👋<br>المساعد الذكي ديالنا غادي يعاونك تختار المنتج المناسب وتعرف التفاصيل ديالو.</div><p class="ax-ai-notice">المحادثة بالذكاء الاصطناعي مازال ما تفعّلاتش. دابا تقدر تتواصل مع الفريق مباشرة على واتساب.</p><a class="ax-ai-wa" href="https://wa.me/212621575115" target="_blank" rel="noopener">تواصل مع الفريق على واتساب</a></div>
+</section>
+<script>
+(function(){const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');if(!trigger||!panel||!close)return;function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)close.focus();else trigger.focus()}trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));close.addEventListener('click',()=>toggle(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});})();
 </script>
 
 </body>
