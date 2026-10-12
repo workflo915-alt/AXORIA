@@ -1,0 +1,32 @@
+
+/* AXORIA shopping assistant — scoped, mobile-first, inherits the site's theme */
+.axoria-assist{position:fixed;right:20px;bottom:152px;z-index:455;font-family:var(--font-body,system-ui,sans-serif);color:var(--text,#eaf1fb)}
+.axoria-assist *{box-sizing:border-box}
+.axoria-assist__toggle{display:flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid rgba(255,255,255,.13);border-radius:999px;box-shadow:0 10px 32px rgba(0,0,0,.28);background:linear-gradient(125deg,#073869,#0a4d9b);color:#fff;font-weight:750;max-width:260px}
+.axoria-assist__toggle:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.3)}
+.axoria-assist__toggle svg{width:21px;height:21px}
+.axoria-assist__toggle:focus-visible,.axoria-assist__panel button:focus-visible,.axoria-assist__panel input:focus-visible{outline:3px solid #d3a53a;outline-offset:2px}
+.axoria-assist__panel{position:absolute;right:0;bottom:68px;display:flex;flex-direction:column;width:min(380px,calc(100vw - 24px));height:min(520px,calc(100dvh - 240px));min-height:290px;background:var(--surface,#101e33);border:1px solid var(--line,#1e2e47);box-shadow:0 18px 65px rgba(0,0,0,.28);border-radius:20px;overflow:hidden}
+.axoria-assist__panel[hidden]{display:none!important}
+.axoria-assist__head{background:linear-gradient(125deg,#073869,#0a4d9b);color:white;display:flex;align-items:center;justify-content:space-between;padding:15px;gap:12px}
+.axoria-assist__head strong{display:block;font-size:14px;letter-spacing:.01em}
+.axoria-assist__head small{display:block;font-size:11px;opacity:.86;margin-top:4px}
+.axoria-assist__close{color:#fff;background:transparent;border:0;width:32px;height:32px;font-size:23px}
+.axoria-assist__messages{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:11px;padding:14px;overscroll-behavior:contain}
+.axoria-assist__bubble{font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;max-width:94%;padding:10px 13px;border-radius:14px;background:var(--bg-alt,#0e1a2c);border:1px solid var(--line,#1e2e47)}
+.axoria-assist__bubble--user{align-self:flex-end;background:#0a4d9b;color:#fff;border-color:#0a4d9b;border-bottom-right-radius:4px}
+.axoria-assist__bubble--bot{align-self:flex-start;border-bottom-left-radius:4px}
+.axoria-assist__chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 12px}
+.axoria-assist__chip{font-size:11px;font-weight:650;color:var(--text,#eaf1fb);border:1px solid var(--line,#1e2e47);background:var(--surface,#101e33);border-radius:999px;padding:8px 10px}
+.axoria-assist__chip:hover{border-color:#3f8fc4}
+.axoria-assist__form{padding:11px;border-top:1px solid var(--line,#1e2e47);display:flex;gap:8px}
+.axoria-assist__input{flex:1;min-width:0;border:1px solid var(--line,#1e2e47);color:var(--text,#eaf1fb);background:var(--bg,#0a1220);border-radius:10px;padding:11px 12px;font-size:13px;font:inherit}
+.axoria-assist__send{border:0;border-radius:10px;padding:0 14px;color:white;background:#0a4d9b;font-weight:750}
+.axoria-assist__send[disabled]{opacity:.55;cursor:wait}
+.axoria-assist__footer{padding:0 12px 10px;color:var(--text-soft,#9fb0c8);font-size:10px;line-height:1.4}
+.axoria-assist__footer a{color:#3f8fc4;text-decoration:underline}
+.axoria-assist__actions{padding:0 12px 10px;display:flex;gap:8px}
+.axoria-assist__actions a{display:inline-flex;align-items:center;justify-content:center;padding:8px 10px;border:1px solid var(--line,#1e2e47);border-radius:8px;font-size:11px;font-weight:700;flex:1}
+.axoria-assist__actions a:hover{background:var(--bg-alt,#0e1a2c)}
+@media(max-width:560px){.axoria-assist{right:12px;bottom:155px}.axoria-assist__toggle{padding:12px;border-radius:50%;width:48px;height:48px;justify-content:center}.axoria-assist__toggle span{display:none}.axoria-assist__panel{right:0;bottom:59px;width:min(360px,calc(100vw - 24px));height:min(460px,calc(100dvh - 225px))}}
+@media(max-height:560px){.axoria-assist{bottom:80px}.axoria-assist__panel{height:calc(100dvh - 160px)}}
