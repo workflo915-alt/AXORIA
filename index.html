@@ -2401,7 +2401,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  const scroll=()=>{history.scrollTop=history.scrollHeight};
  const snapshot=()=>({step:checkout.step,data:{...checkout.data},productId:checkout.product?.id??null,quantity:checkout.quantity});
  function restore(snap){checkout.step=snap.step;checkout.data={...snap.data};checkout.product=PRODUCTS.find(p=>String(p.id)===String(snap.productId))||null;checkout.quantity=snap.quantity}
- function bot(value){const el=document.createElement('div');el.className='ax-ai-answer';el.dir='auto';el.textContent=value;messages.appendChild(el);scroll();return el}
+ function bot(value,memo=false){const el=document.createElement('div');el.className='ax-ai-answer';el.dir='auto';el.textContent=value;if(memo)el._history={role:'assistant',content:value};messages.appendChild(el);scroll();return el}
  function user(value){
   const el=document.createElement('div');el.className='ax-ai-user';el.dir='auto';el._previousCheckout=snapshot();
   const content=document.createElement('div');content.className='ax-ai-user-text';content.textContent=value;
@@ -2413,13 +2413,26 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   el.append(content,edit);messages.appendChild(el);scroll();return el;
  }
  const products=()=>PRODUCTS.filter(p=>p.visible!==false&&p.status!=='inactive'&&(p.stock==null||Number(p.stock)>0));
- const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|nkmel commande|bghit\s*(ncommande|ncommandi|nchri|nchrih|ndoz\s*commande)|نكمّل\s*الطلب/i;
+ const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|nkmel commande|bghit\s*(ncommande|ncommandi|nchri|nchrih|ndoz\s*commande)|نكمّل\s*الطلب|(?:تقدر|ممكن|تقدري|بغيتك)?\s*(?:تعمر|تعمّر|عمر|عمّر|تكمل|تكمّل|كمل|كمّل|دير)\s*(?:ليا|لي|لينا)?\s*(?:الطلب|الكموند|الكوموند|طلب)|(?:3mer|3ammar|kmmel|kmel)\s*(?:liya|lia)\s*(?:talab|commande|comand)/i;
  const confirmIntent=/^(نعم\s*أكد\s*الطلب|أكد\s*الطلب|نأكد\s*الطلب|oui\s*je\s*confirme|confirm\s*(the\s*)?order)\s*[.!؟]?$/i;
  const cancelIntent=/^(لا|لالا|non|no|annuler|إلغاء|الغاء|cancel)$/i;
+ function memory(){return Array.from(messages.children).filter(el=>el._history).slice(-8).map(el=>el._history)}
+ function productFromText(text){
+  const t=String(text||'').toLocaleLowerCase();
+  const found=products().filter(p=>{
+   const name=String(p.name||'').toLocaleLowerCase();
+   return t.includes(name)||(/posture|correcteur/.test(name)&&/(مصح[ّ]?ح\s*(القامة|الظهر)|تصحيح\s*القامة|posture|corrector|correcteur)/i.test(t))||(/massag/.test(name)&&/(مساج|تدليك|massage|massager|مدلك)/i.test(t));
+  });
+  if(found.length===1)return found[0];
+  const byPrice=found.filter(p=>new RegExp('(?:^|\\D)'+Number(p.price)+'(?:\\D|$)').test(t));
+  return byPrice.length===1?byPrice[0]:null;
+ }
+ function contextProduct(){const h=memory();for(let i=h.length-1;i>=0;i--){const p=productFromText(h[i].content);if(p)return p}return null}
  function begin(){
   checkout.data={};checkout.product=null;checkout.quantity=1;
   if(CART.length){checkout.step='name';bot('نعاونك تكمل طلبك. شنو الاسم الكامل ديالك؟');return}
-  checkout.step='product';bot('مرحبا! شنو المنتج اللي بغيتي تطلب؟ كتب سميتو.')
+  const chosen=contextProduct();if(chosen){checkout.product=chosen;checkout.step='name';bot('نوجد ليك '+chosen.name+' ديال '+fmtPrice(chosen.price)+'. شنو الاسم الكامل ديالك؟');return}
+  checkout.step='product';bot('أكيد، نعاونك. شنو المنتج اللي بغيتي؟')
  }
  async function guided(value){
   if(!checkout.step){if(!orderIntent.test(value))return false;begin();return true}
@@ -2465,31 +2478,33 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   }
   return true
  }
- async function sendMessage(value){
+ async function sendMessage(value,userNode){
   if(await guided(value)){status.textContent='تقدر تصلّح رسالة سابقة من زر تعديل.';return}
+  const previous=memory();if(userNode)userNode._history={role:'user',content:value};
   send.disabled=true;status.textContent='كنوجد الجواب...';
   try{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
    let response;
-   try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:value}),signal:controller.signal})}
+   try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:value,history:previous}),signal:controller.signal})}
    finally{clearTimeout(timer)}
    const data=await response.json();
    if(!response.ok||typeof data.reply!=='string')throw Error('unavailable');
-   bot(data.reply.slice(0,1100));status.textContent='شنو السؤال الآخر ديالك؟';
+   bot(data.reply.slice(0,1100),true);status.textContent='شنو السؤال الآخر ديالك؟';
   }catch{bot('سمح ليا، الخدمة غير متاحة دابا. عاود حاول من بعد.');status.textContent='الخدمة مؤقتاً غير متاحة.'}
   finally{send.disabled=false;input.focus()}
  }
  form.addEventListener('submit',async e=>{
   e.preventDefault();const value=input.value.trim();if(!value||send.disabled)return;
+  let sentNode;
   if(editTarget){
    const target=editTarget,prior=target._previousCheckout;
    while(target.nextSibling)target.nextSibling.remove();
    restore(prior);
-   target.querySelector('.ax-ai-user-text').textContent=value;
-   editTarget=null;send.textContent='إرسال';
-  }else user(value);
+   target.querySelector('.ax-ai-user-text').textContent=value;target._history=null;
+   sentNode=target;editTarget=null;send.textContent='إرسال';
+  }else sentNode=user(value);
   input.value='';scroll();
-  await sendMessage(value);
+  await sendMessage(value,sentNode);
  });
 })();
 </script>
