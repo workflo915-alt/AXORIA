@@ -503,6 +503,8 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 .ax-ai-launch svg{width:27px;height:27px}
 .ax-ai-panel{position:fixed;right:20px;bottom:220px;z-index:971;width:min(395px,calc(100vw - 24px));height:min(560px,calc(100dvh - 240px));min-height:230px;display:none;flex-direction:column;overflow:hidden;background:var(--surface,#fff);color:var(--text,#0B1524);border:1px solid var(--line,#DCE6F2);border-radius:20px;box-shadow:0 20px 70px rgba(7,28,55,.24);font-family:var(--font-body,sans-serif)}
 .ax-ai-panel.is-open{display:flex}
+/* Checkout and confirmation overlays must sit above the chat */
+#orderFormOverlay,#orderSuccessOverlay{z-index:1000}
 .ax-ai-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;background:#0A4D9B;color:#fff}
 .ax-ai-head strong{font-size:14px}.ax-ai-head small{display:block;font-size:11px;opacity:.88;margin-top:3px}
 .ax-ai-close{background:transparent;border:0;color:#fff;font-size:25px;cursor:pointer;line-height:1}
@@ -2250,7 +2252,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  <div class="ax-ai-head"><div><strong>مساعد AXORIA</strong><small>سولني ونعاونك فالاختيار والطلب</small></div><button type="button" class="ax-ai-close" id="axAiClose" aria-label="إغلاق">×</button></div>
  <div class="ax-ai-body">
   <div class="ax-ai-history" id="axAiHistory"><div class="ax-ai-bubble">مرحبا بيك 👋 شنو نقدر نعاونك فيه؟</div><div class="ax-ai-messages" id="axAiMessages" aria-live="polite"></div></div>
-  <div class="ax-ai-composer"><p class="ax-ai-notice" id="axAiStatus" role="status">Enter لسطر جديد، وCtrl+Enter للإرسال.</p><form id="axAiForm" class="ax-ai-form"><textarea id="axAiInput" maxlength="700" rows="2" placeholder="كتب رسالتك هنا..." aria-label="رسالتك للمساعد" required></textarea><button id="axAiSend" type="submit">إرسال</button></form></div>
+  <div class="ax-ai-composer"><p class="ax-ai-notice" id="axAiStatus" role="status">Enter لسطر جديد، وCtrl+Enter للإرسال.</p><form id="axAiForm" class="ax-ai-form"><textarea id="axAiInput" maxlength="700" rows="2" dir="auto" placeholder="كتب رسالتك هنا..." aria-label="رسالتك للمساعد" required></textarea><button id="axAiSend" type="submit">إرسال</button></form></div>
  </div>
 </section>
 <script>
@@ -2319,11 +2321,13 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
     if(checkout.product)addToCart(checkout.product.id,checkout.quantity);
     if(!CART.length)throw Error('empty cart');
     openOrderForm();
+    toggle(false);
     document.getElementById('ofName').value=checkout.data.name;
     document.getElementById('ofPhone').value=checkout.data.phone;
     document.getElementById('ofCity').value=checkout.data.city;
     document.getElementById('ofAddress').value=checkout.data.address;
     document.getElementById('ofNotes').value='طلب بمساعدة AI Chat';
+    document.getElementById('ofName').focus();
     bot('وجدت ليك Checkout وعمّرت المعلومات. راجع الطلب واضغط «تأكيد الطلب» باش يتسجل.');
    }catch(e){bot('ما قدرتش نفتح Checkout دابا. تقدر تكمل من السلة.')}
    checkout.step='';checkout.data={};checkout.product=null;return true
