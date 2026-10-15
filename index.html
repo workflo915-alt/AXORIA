@@ -2280,7 +2280,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   el.append(content,edit);messages.appendChild(el);scroll();return el;
  }
  const products=()=>PRODUCTS.filter(p=>p.visible!==false&&p.status!=='inactive'&&(p.stock==null||Number(p.stock)>0));
- const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|نكمّل\s*الطلب/i;
+ const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|nkmel commande|bghit\s*(ncommande|ncommandi|nchri|nchrih|ndoz\s*commande)|نكمّل\s*الطلب/i;
  const confirmIntent=/^(نعم\s*أكد\s*الطلب|أكد\s*الطلب|نأكد\s*الطلب|oui\s*je\s*confirme|confirm\s*(the\s*)?order)\s*[.!؟]?$/i;
  const cancelIntent=/^(لا|لالا|non|no|annuler|إلغاء|الغاء|cancel)$/i;
  function begin(){
