@@ -2480,7 +2480,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  }
  async function sendMessage(value,userNode){
   if(await guided(value)){status.textContent='تقدر تصلّح رسالة سابقة من زر تعديل.';return}
-  const previous=memory();if(userNode)userNode._history={role:'user',content:value};
+  const previous=memory().slice(-8).map(t=>({role:t.role,content:String(t.content||'').slice(0,280)}));if(userNode)userNode._history={role:'user',content:value};
   send.disabled=true;status.textContent='كنوجد الجواب...';
   try{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
