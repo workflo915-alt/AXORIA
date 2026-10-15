@@ -498,19 +498,34 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 
 input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px rgba(180,35,24,.12)!important;}
 
-/* AXORIA AI chat — isolated preview, backend not connected */
+/* AXORIA assistant — scrollable conversation and multiline composer */
 .ax-ai-launch{position:fixed;right:20px;bottom:154px;z-index:970;width:56px;height:56px;border:0;border-radius:50%;background:linear-gradient(135deg,#0A4D9B,#073869);color:#fff;box-shadow:0 10px 28px rgba(7,56,105,.30);display:grid;place-items:center;cursor:pointer}
 .ax-ai-launch svg{width:27px;height:27px}
-.ax-ai-panel{position:fixed;right:20px;bottom:220px;z-index:971;width:min(370px,calc(100vw - 30px));max-height:min(540px,calc(100dvh - 110px));display:none;flex-direction:column;overflow:hidden;background:var(--surface,#fff);color:var(--text,#0B1524);border:1px solid var(--line,#DCE6F2);border-radius:22px;box-shadow:0 20px 70px rgba(7,28,55,.24);font-family:var(--font-body,sans-serif)}
+.ax-ai-panel{position:fixed;right:20px;bottom:220px;z-index:971;width:min(395px,calc(100vw - 24px));height:min(560px,calc(100dvh - 240px));min-height:230px;display:none;flex-direction:column;overflow:hidden;background:var(--surface,#fff);color:var(--text,#0B1524);border:1px solid var(--line,#DCE6F2);border-radius:20px;box-shadow:0 20px 70px rgba(7,28,55,.24);font-family:var(--font-body,sans-serif)}
 .ax-ai-panel.is-open{display:flex}
-.ax-ai-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:#0A4D9B;color:#fff}
-.ax-ai-head strong{font-size:15px}.ax-ai-head small{display:block;font-size:11px;opacity:.85;margin-top:3px}
-.ax-ai-close{background:transparent;border:0;color:#fff;font-size:25px;cursor:pointer}
-.ax-ai-body{padding:22px 18px;overflow:auto;font-size:14px;line-height:1.8}
-.ax-ai-bubble{background:var(--bg-alt,#EEF3FA);padding:14px 15px;border-radius:16px;margin-bottom:14px}
-.ax-ai-notice{font-size:12px;color:var(--text-soft,#5C6A7C);margin:0 0 16px}
-.ax-ai-form{display:flex;gap:8px;margin:14px 0}.ax-ai-form input{flex:1;min-width:0;border:1px solid var(--line,#DCE6F2);border-radius:10px;padding:12px;background:var(--surface,#fff);color:var(--text,#0B1524);font-size:13px}.ax-ai-form button{background:#0A4D9B;color:#fff;border:0;border-radius:10px;padding:0 15px;cursor:pointer}.ax-ai-form button:disabled{opacity:.55;cursor:wait}.ax-ai-user{background:#E5F1FF;margin:10px 0 10px 22px;padding:10px 12px;border-radius:12px;font-size:13px;overflow-wrap:anywhere}.ax-ai-answer{background:var(--bg-alt,#EEF3FA);margin:10px 22px 10px 0;padding:10px 12px;border-radius:12px;font-size:13px;overflow-wrap:anywhere}.ax-ai-wa{display:block;text-align:center;padding:12px 16px;background:#0A4D9B;color:white!important;text-decoration:none;border-radius:12px;font-size:13px;font-weight:700}
-@media(max-width:600px){.ax-ai-launch{right:14px;bottom:150px;width:50px;height:50px}.ax-ai-panel{right:10px;bottom:208px}}
+/* Checkout and confirmation overlays must sit above the chat */
+#orderFormOverlay,#orderSuccessOverlay{z-index:1000}
+.ax-ai-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;background:#0A4D9B;color:#fff}
+.ax-ai-head strong{font-size:14px}.ax-ai-head small{display:block;font-size:11px;opacity:.88;margin-top:3px}
+.ax-ai-close{background:transparent;border:0;color:#fff;font-size:25px;cursor:pointer;line-height:1}
+.ax-ai-body{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;overflow:hidden;padding:0}
+.ax-ai-history{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 13px 8px}
+.ax-ai-messages{display:flex;flex-direction:column;gap:10px}
+.ax-ai-bubble,.ax-ai-answer,.ax-ai-user{font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext;max-width:92%;padding:10px 12px;border-radius:14px}
+.ax-ai-bubble{background:var(--bg-alt,#EEF3FA);margin-bottom:12px}
+.ax-ai-answer{background:var(--bg-alt,#EEF3FA);align-self:flex-start}
+.ax-ai-user{background:#DCEEFF;color:#092947;align-self:flex-end;position:relative;padding-bottom:7px}
+.ax-ai-user-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.ax-ai-edit{display:block;margin-top:5px;margin-inline-start:auto;padding:2px 5px;color:#0A4D9B;background:transparent;border:0;font-size:11px;text-decoration:underline;cursor:pointer}
+.ax-ai-composer{display:flex;flex:0 0 auto;flex-direction:column;gap:7px;padding:10px 13px 13px;border-top:1px solid var(--line,#DCE6F2);background:var(--surface,#fff)}
+.ax-ai-notice{font-size:10px;line-height:1.4;color:var(--text-soft,#5C6A7C);margin:0}
+.ax-ai-form{display:flex;flex-direction:column;gap:8px;margin:0}
+.ax-ai-form textarea{display:block;width:100%;box-sizing:border-box;min-height:64px;max-height:145px;resize:vertical;padding:10px 12px;background:var(--surface,#fff);color:var(--text,#0B1524);border:1px solid var(--line,#DCE6F2);border-radius:11px;font:inherit;font-size:13px;line-height:1.5;direction:auto;text-align:start}
+.ax-ai-form textarea:focus{outline:2px solid #3192D1;outline-offset:1px}
+.ax-ai-form button{display:block;width:100%;min-height:43px;padding:9px 15px;border:0;border-radius:11px;background:#0A82C9;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.ax-ai-form button:disabled{opacity:.55;cursor:wait}
+@media(max-width:600px){.ax-ai-launch{right:14px;bottom:150px;width:50px;height:50px}.ax-ai-panel{right:10px;bottom:208px;width:calc(100vw - 20px);height:min(540px,calc(100dvh - 218px));min-height:200px}.ax-ai-history{padding:10px}.ax-ai-composer{padding:9px 10px}}
+@media(max-height:470px){.ax-ai-panel{bottom:8px;height:calc(100dvh - 16px);min-height:0}.ax-ai-form textarea{min-height:40px}}
 
 </style>
 </head>
@@ -2231,14 +2246,121 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
 </script>
 
 
-<!-- AXORIA AI assistant preview: no live AI requests or order processing yet -->
+<!-- AXORIA AI assistant — guided checkout remains on website's existing order form -->
 <button type="button" class="ax-ai-launch" id="axAiLaunch" aria-label="مساعد AXORIA" aria-expanded="false" aria-controls="axAiPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8A8.5 8.5 0 0 1 12.5 20a8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5Z"/><path d="M9 12h7M12.5 8.5v7"/></svg></button>
 <section class="ax-ai-panel" id="axAiPanel" role="dialog" aria-label="مساعد AXORIA" aria-hidden="true" dir="rtl">
-  <div class="ax-ai-head"><div><strong>مساعد AXORIA الذكي</strong><small>مساعد التسوق — نسخة تجريبية</small></div><button type="button" class="ax-ai-close" id="axAiClose" aria-label="إغلاق">×</button></div>
-  <div class="ax-ai-body"><div class="ax-ai-bubble">مرحبا بيك فـ AXORIA 👋<br>سولني على المنتجات ولا التوصيل، وغادي نحاول نعاونك.</div><div id="axAiMessages" aria-live="polite"></div><p class="ax-ai-notice" id="axAiStatus">المساعد فمرحلة التجربة. المعلومات المهمة كتحتاج تأكيد من الفريق.</p><form id="axAiForm" class="ax-ai-form"><input id="axAiInput" maxlength="700" placeholder="كتب سؤالك هنا..." autocomplete="off" aria-label="سؤالك للمساعد" required><button id="axAiSend" type="submit">إرسال</button></form><a class="ax-ai-wa" href="https://wa.me/212621575115" target="_blank" rel="noopener">تواصل مع الفريق على واتساب</a></div>
+ <div class="ax-ai-head"><div><strong>مساعد AXORIA</strong><small>سولني ونعاونك فالاختيار والطلب</small></div><button type="button" class="ax-ai-close" id="axAiClose" aria-label="إغلاق">×</button></div>
+ <div class="ax-ai-body">
+  <div class="ax-ai-history" id="axAiHistory"><div class="ax-ai-bubble">مرحبا بيك 👋 شنو نقدر نعاونك فيه؟</div><div class="ax-ai-messages" id="axAiMessages" aria-live="polite"></div></div>
+  <div class="ax-ai-composer"><p class="ax-ai-notice" id="axAiStatus" role="status">Enter لسطر جديد، وCtrl+Enter للإرسال.</p><form id="axAiForm" class="ax-ai-form"><textarea id="axAiInput" maxlength="700" rows="2" dir="auto" placeholder="كتب رسالتك هنا..." aria-label="رسالتك للمساعد" required></textarea><button id="axAiSend" type="submit">إرسال</button></form></div>
+ </div>
 </section>
 <script>
-(function(){const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');if(!trigger||!panel||!close)return;function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)close.focus();else trigger.focus()}trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));close.addEventListener('click',()=>toggle(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),status=document.getElementById('axAiStatus');form?.addEventListener('submit',async e=>{e.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;const add=(cls,value)=>{const node=document.createElement('div');node.className=cls;node.textContent=value;messages.appendChild(node);node.scrollIntoView({block:'nearest'});};add('ax-ai-user',message);input.value='';send.disabled=true;status.textContent='كنوجد الجواب...';try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),18000);let response;try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message}),signal:controller.signal});}finally{clearTimeout(timeout)}const data=await response.json();if(!response.ok||typeof data.reply!=='string')throw Error('unavailable');add('ax-ai-answer',data.reply);status.textContent='تأكد من المعلومات المهمة قبل الطلب.';}catch{add('ax-ai-answer','سمح ليا، المساعد مازال ما متاحش دابا. تقدر تتواصل مع الفريق مباشرة على واتساب.');status.textContent='الخدمة مؤقتاً غير متاحة.';}finally{send.disabled=false;input.focus()}});})();
+(function(){
+ const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');
+ const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),history=document.getElementById('axAiHistory'),status=document.getElementById('axAiStatus');
+ if(!trigger||!panel||!form||!input||!messages)return;
+ function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)input.focus();else trigger.focus()}
+ trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));
+ close.addEventListener('click',()=>toggle(false));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});
+ input.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();if(!send.disabled)form.requestSubmit()}});
+ const checkout={step:'',data:{},product:null,quantity:1};
+ let editTarget=null;
+ const scroll=()=>{history.scrollTop=history.scrollHeight};
+ const snapshot=()=>({step:checkout.step,data:{...checkout.data},productId:checkout.product?.id??null,quantity:checkout.quantity});
+ function restore(snap){checkout.step=snap.step;checkout.data={...snap.data};checkout.product=PRODUCTS.find(p=>String(p.id)===String(snap.productId))||null;checkout.quantity=snap.quantity}
+ function bot(value){const el=document.createElement('div');el.className='ax-ai-answer';el.dir='auto';el.textContent=value;messages.appendChild(el);scroll();return el}
+ function user(value){
+  const el=document.createElement('div');el.className='ax-ai-user';el.dir='auto';el._previousCheckout=snapshot();
+  const content=document.createElement('div');content.className='ax-ai-user-text';content.textContent=value;
+  const edit=document.createElement('button');edit.type='button';edit.className='ax-ai-edit';edit.textContent='تعديل';edit.setAttribute('aria-label','تعديل الرسالة');
+  edit.addEventListener('click',()=>{
+   if(send.disabled||document.getElementById('orderFormOverlay')?.classList.contains('open')||document.getElementById('orderSuccessOverlay')?.classList.contains('open'))return;
+   input.value=content.textContent;editTarget=el;send.textContent='حفظ التعديل';status.textContent='صلّح الرسالة ومن بعد ضغط حفظ التعديل.';input.focus();
+  });
+  el.append(content,edit);messages.appendChild(el);scroll();return el;
+ }
+ const products=()=>PRODUCTS.filter(p=>p.visible!==false&&p.status!=='inactive'&&(p.stock==null||Number(p.stock)>0));
+ const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|nkmel commande|bghit\s*(ncommande|ncommandi|nchri|nchrih|ndoz\s*commande)|نكمّل\s*الطلب/i;
+ const confirmIntent=/^(نعم\s*أكد\s*الطلب|أكد\s*الطلب|نأكد\s*الطلب|oui\s*je\s*confirme|confirm\s*(the\s*)?order)\s*[.!؟]?$/i;
+ const cancelIntent=/^(لا|لالا|non|no|annuler|إلغاء|الغاء|cancel)$/i;
+ function begin(){
+  checkout.data={};checkout.product=null;checkout.quantity=1;
+  if(CART.length){checkout.step='name';bot('نعاونك تكمل طلبك. شنو الاسم الكامل ديالك؟');return}
+  checkout.step='product';bot('مرحبا! شنو المنتج اللي بغيتي تطلب؟ كتب سميتو.')
+ }
+ async function guided(value){
+  if(!checkout.step){if(!orderIntent.test(value))return false;begin();return true}
+  if(cancelIntent.test(value)){checkout.step='';checkout.data={};checkout.product=null;bot('حاضر، لغيت التحضير. ما تسجل حتى طلب.');return true}
+  if(checkout.step==='product'){
+   const available=products(),p=available.find(p=>String(p.name).trim().toLocaleLowerCase()===value.toLocaleLowerCase())||available.find(p=>value.length>=3&&String(p.name).toLocaleLowerCase().includes(value.toLocaleLowerCase()));
+   if(!p){bot('ما عرفتش شنو المنتج المقصود. هادو بعض المنتجات المتوفرة:\n'+available.slice(0,4).map(p=>'• '+p.name).join('\n')+'\nشنو فيهم بغيتي؟');return true}
+   checkout.product=p;checkout.step='quantity';bot(p.name+' — '+fmtPrice(p.price)+'. شحال من وحدة بغيتي؟');return true
+  }
+  if(checkout.step==='quantity'){
+   const qty=Number(value);
+   if(!Number.isInteger(qty)||qty<1||qty>20){bot('شحال من وحدة؟ عطيني رقم بين 1 و20.');return true}
+   const already=CART.find(c=>String(c.id)===String(checkout.product?.id))?.qty||0;
+   if(checkout.product?.stock!=null&&qty+already>Number(checkout.product.stock)){bot('هاد الكمية ما متوفراش. نقص شوية من فضلك.');return true}
+   checkout.quantity=qty;checkout.step='name';bot('مزيان. شنو الاسم الكامل ديالك؟');return true
+  }
+  if(checkout.step==='name'){if(value.length<3||value.length>90){bot('عطيني الاسم الكامل ديالك.');return true}checkout.data.name=value;checkout.step='phone';bot('شنو رقم الهاتف ديالك؟');return true}
+  if(checkout.step==='phone'){const phone=normalizeMoroccanPhone(value);if(!phone){bot('عطيني رقم مغربي صحيح، بحال 06XXXXXXXX.');return true}checkout.data.phone=phone;checkout.step='city';bot('فاش من مدينة غادي يكون التوصيل؟');return true}
+  if(checkout.step==='city'){if(value.length<2||value.length>100){bot('شنو اسم المدينة؟');return true}checkout.data.city=value;checkout.step='address';bot('شنو العنوان بالتفصيل؟');return true}
+  if(checkout.step==='address'){
+   if(value.length<8||value.length>300){bot('عطيني عنوان واضح فيه الحي والزنقة أو أقرب معلم.');return true}
+   checkout.data.address=value;checkout.step='confirm';
+   const items=checkout.product?[{name:checkout.product.name,qty:checkout.quantity,price:checkout.product.price}]:CART;
+   const total=items.reduce((s,p)=>s+Number(p.price||0)*Number(p.qty||0),0);
+   bot('ملخص طلبك:\n'+items.map(p=>p.name+' × '+p.qty).join('\n')+'\nثمن المنتجات: '+fmtPrice(total)+'\nالاسم: '+checkout.data.name+'\nالهاتف: '+checkout.data.phone+'\nالمدينة: '+checkout.data.city+'\nالعنوان: '+checkout.data.address+'\n\nواش صحيح؟ كتب «نعم أكد الطلب» باش نعمر ليك Checkout، وتراجع التأكيد النهائي فيه.');return true
+  }
+  if(checkout.step==='confirm'){
+   if(!confirmIntent.test(value)){bot('إلا المعلومات صحيحة كتب «نعم أكد الطلب». أو كتب «لا» للإلغاء.');return true}
+   try{
+    if(checkout.product)addToCart(checkout.product.id,checkout.quantity);
+    if(!CART.length)throw Error('empty cart');
+    openOrderForm();
+    toggle(false);
+    document.getElementById('ofName').value=checkout.data.name;
+    document.getElementById('ofPhone').value=checkout.data.phone;
+    document.getElementById('ofCity').value=checkout.data.city;
+    document.getElementById('ofAddress').value=checkout.data.address;
+    document.getElementById('ofNotes').value='طلب بمساعدة AI Chat';
+    document.getElementById('ofName').focus();
+    bot('وجدت ليك Checkout وعمّرت المعلومات. راجع الطلب واضغط «تأكيد الطلب» باش يتسجل.');
+   }catch(e){bot('ما قدرتش نفتح Checkout دابا. تقدر تكمل من السلة.')}
+   checkout.step='';checkout.data={};checkout.product=null;return true
+  }
+  return true
+ }
+ async function sendMessage(value){
+  if(await guided(value)){status.textContent='تقدر تصلّح رسالة سابقة من زر تعديل.';return}
+  send.disabled=true;status.textContent='كنوجد الجواب...';
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+   let response;
+   try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:value}),signal:controller.signal})}
+   finally{clearTimeout(timer)}
+   const data=await response.json();
+   if(!response.ok||typeof data.reply!=='string')throw Error('unavailable');
+   bot(data.reply.slice(0,1100));status.textContent='شنو السؤال الآخر ديالك؟';
+  }catch{bot('سمح ليا، الخدمة غير متاحة دابا. عاود حاول من بعد.');status.textContent='الخدمة مؤقتاً غير متاحة.'}
+  finally{send.disabled=false;input.focus()}
+ }
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();const value=input.value.trim();if(!value||send.disabled)return;
+  if(editTarget){
+   const target=editTarget,prior=target._previousCheckout;
+   while(target.nextSibling)target.nextSibling.remove();
+   restore(prior);
+   target.querySelector('.ax-ai-user-text').textContent=value;
+   editTarget=null;send.textContent='إرسال';
+  }else user(value);
+  input.value='';scroll();
+  await sendMessage(value);
+ });
+})();
 </script>
 
 </body>
