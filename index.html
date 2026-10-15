@@ -2414,7 +2414,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  }
  const products=()=>PRODUCTS.filter(p=>p.visible!==false&&p.status!=='inactive'&&(p.stock==null||Number(p.stock)>0));
  const orderIntent=/بغيت\s*(نطلب|نشري|ندوز|نكوموندي)|بغيت\s*commande|نأكد\s*الطلب|نطلب\s*(دابا|هاد)|je veux commander|passer commande|i want to order|buy now|nkmel commande|bghit\s*(ncommande|ncommandi|nchri|nchrih|ndoz\s*commande)|نكمّل\s*الطلب|(?:تقدر|ممكن|تقدري|بغيتك)?\s*(?:تعمر|تعمّر|عمر|عمّر|تكمل|تكمّل|كمل|كمّل|دير)\s*(?:ليا|لي|لينا)?\s*(?:الطلب|الكموند|الكوموند|طلب)|(?:3mer|3ammar|kmmel|kmel)\s*(?:liya|lia)\s*(?:talab|commande|comand)/i;
- const confirmIntent=/^(نعم\s*أكد\s*الطلب|أكد\s*الطلب|نأكد\s*الطلب|oui\s*je\s*confirme|confirm\s*(the\s*)?order)\s*[.!؟]?$/i;
+ const confirmIntent=/^(نعم(?:\s*أكد\s*الطلب)?|اه|آه|ايه|إيه|أيوه|ايوه|واخا|موافق|صحيح|تمام|أكيد|اكد\s*الطلب|أكد\s*الطلب|نأكد\s*الطلب|oui(?:\s*je\s*confirme)?|yes|ok|okay|confirm\s*(the\s*)?order)\s*[.!؟،]*$/i;
  const cancelIntent=/^(لا|لالا|non|no|annuler|إلغاء|الغاء|cancel)$/i;
  function memory(){return Array.from(messages.children).filter(el=>el._history).slice(-8).map(el=>el._history)}
  function productFromText(text){
@@ -2457,10 +2457,10 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
    checkout.data.address=value;checkout.step='confirm';
    const items=checkout.product?[{name:checkout.product.name,qty:checkout.quantity,price:checkout.product.price}]:CART;
    const total=items.reduce((s,p)=>s+Number(p.price||0)*Number(p.qty||0),0);
-   bot('ملخص طلبك:\n'+items.map(p=>p.name+' × '+p.qty).join('\n')+'\nثمن المنتجات: '+fmtPrice(total)+'\nالاسم: '+checkout.data.name+'\nالهاتف: '+checkout.data.phone+'\nالمدينة: '+checkout.data.city+'\nالعنوان: '+checkout.data.address+'\n\nواش صحيح؟ كتب «نعم أكد الطلب» باش نعمر ليك Checkout، وتراجع التأكيد النهائي فيه.');return true
+   bot('ملخص طلبك:\n'+items.map(p=>p.name+' × '+p.qty).join('\n')+'\nثمن المنتجات: '+fmtPrice(total)+'\nالاسم: '+checkout.data.name+'\nالهاتف: '+checkout.data.phone+'\nالمدينة: '+checkout.data.city+'\nالعنوان: '+checkout.data.address+'\n\nواش المعلومات صحيحة؟ جاوب بـ «نعم» ونفتح ليك Checkout معمّر باش تراجع الطلب وتأكد نهائياً.');return true
   }
   if(checkout.step==='confirm'){
-   if(!confirmIntent.test(value)){bot('إلا المعلومات صحيحة كتب «نعم أكد الطلب». أو كتب «لا» للإلغاء.');return true}
+   if(!confirmIntent.test(value)){bot('واش المعلومات صحيحة؟ جاوب بـ «نعم» باش نفتح ليك Checkout، أو «لا» باش نلغي التحضير.');return true}
    try{
     if(checkout.product)addToCart(checkout.product.id,checkout.quantity);
     if(!CART.length)throw Error('empty cart');
