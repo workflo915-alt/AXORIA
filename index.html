@@ -2413,7 +2413,7 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),history=document.getElementById('axAiHistory'),status=document.getElementById('axAiStatus');
  if(!trigger||!panel||!form||!input||!messages)return;
  const welcome=document.getElementById('axAiWelcome'),welcomeOpen=document.getElementById('axAiWelcomeOpen'),welcomeClose=document.getElementById('axAiWelcomeClose');
- let welcomeDelay=null,welcomeHideTimer=null,welcomeExitTimer=null;
+ let welcomeDelay=null,welcomeHideTimer=null,welcomeExitTimer=null,welcomeShown=false;
  function hideWelcome(immediate=false){
   if(welcomeDelay!==null){clearTimeout(welcomeDelay);welcomeDelay=null;}
   if(welcomeHideTimer!==null){clearTimeout(welcomeHideTimer);welcomeHideTimer=null;}
@@ -2426,19 +2426,24 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  }
  function showWelcome(){
   welcomeDelay=null;
-  if(!welcome||document.hidden||panel.classList.contains('is-open'))return;
-  try{
-   if(sessionStorage.getItem('axoria_ai_welcome_seen_v1'))return;
-   sessionStorage.setItem('axoria_ai_welcome_seen_v1','1');
-  }catch(e){/* Still allow the invitation if storage is unavailable. */}
+  if(!welcome||welcomeShown||document.hidden||panel.classList.contains('is-open'))return;
+  // One entrance per page visit, including on reload: old sessionStorage flags
+  // must not prevent customers from ever seeing the new invitation.
+  welcomeShown=true;
   if(welcomeExitTimer!==null){clearTimeout(welcomeExitTimer);welcomeExitTimer=null;}
   welcome.hidden=false;
-  // Let the browser apply the start state before the entrance transition.
   void welcome.offsetWidth;
   welcome.classList.add('is-visible');
   welcomeHideTimer=setTimeout(()=>hideWelcome(),12000);
  }
  welcomeDelay=setTimeout(showWelcome,3400);
+ // If a customer returned to a backgrounded tab, display the invitation
+ // once it becomes visible, rather than discarding it permanently.
+ document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&!welcomeShown&&welcomeDelay===null&&!panel.classList.contains('is-open')){
+   welcomeDelay=setTimeout(showWelcome,800);
+  }
+ });
  function toggle(open){if(open)hideWelcome(true);panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)input.focus();else trigger.focus()}
  trigger.addEventListener('click',()=>{hideWelcome(true);toggle(!panel.classList.contains('is-open'))});
  welcomeOpen?.addEventListener('click',()=>{hideWelcome(true);toggle(true)});
