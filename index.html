@@ -2238,7 +2238,68 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
   <div class="ax-ai-body"><div class="ax-ai-bubble">مرحبا بيك فـ AXORIA 👋<br>سولني على المنتجات ولا التوصيل، وغادي نحاول نعاونك.</div><div id="axAiMessages" aria-live="polite"></div><p class="ax-ai-notice" id="axAiStatus">المساعد فمرحلة التجربة. المعلومات المهمة كتحتاج تأكيد من الفريق.</p><form id="axAiForm" class="ax-ai-form"><input id="axAiInput" maxlength="700" placeholder="كتب سؤالك هنا..." autocomplete="off" aria-label="سؤالك للمساعد" required><button id="axAiSend" type="submit">إرسال</button></form><a class="ax-ai-wa" href="https://wa.me/212621575115" target="_blank" rel="noopener">تواصل مع الفريق على واتساب</a></div>
 </section>
 <script>
-(function(){const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');if(!trigger||!panel||!close)return;function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)close.focus();else trigger.focus()}trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));close.addEventListener('click',()=>toggle(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),status=document.getElementById('axAiStatus');form?.addEventListener('submit',async e=>{e.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;const add=(cls,value)=>{const node=document.createElement('div');node.className=cls;node.textContent=value;messages.appendChild(node);node.scrollIntoView({block:'nearest'});};add('ax-ai-user',message);input.value='';send.disabled=true;status.textContent='كنوجد الجواب...';try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),18000);let response;try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message}),signal:controller.signal});}finally{clearTimeout(timeout)}const data=await response.json();if(!response.ok||typeof data.reply!=='string')throw Error('unavailable');add('ax-ai-answer',data.reply);status.textContent='تأكد من المعلومات المهمة قبل الطلب.';}catch{add('ax-ai-answer','سمح ليا، المساعد مازال ما متاحش دابا. تقدر تتواصل مع الفريق مباشرة على واتساب.');status.textContent='الخدمة مؤقتاً غير متاحة.';}finally{send.disabled=false;input.focus()}});})();
+(function(){const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');if(!trigger||!panel||!close)return;function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)close.focus();else trigger.focus()}trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));close.addEventListener('click',()=>toggle(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),status=document.getElementById('axAiStatus');
+/* Assisted checkout uses the EXISTING cart and place_order RPC. No new admin writes. */
+const axCheckout={step:'',data:{},product:null,quantity:1};
+const axSay=(value)=>{const node=document.createElement('div');node.className='ax-ai-answer';node.textContent=value;messages.appendChild(node);node.scrollIntoView({block:'nearest'});};
+const axProducts=()=>PRODUCTS.filter(p=>p.visible!==false&&p.status!=='inactive'&&(p.stock==null||Number(p.stock)>0));
+const axOrderIntent=/بغيت\s*(نطلب|نشري)|نأكد\s*الطلب|نطلب|نشري|commande|commander|passer commande|order now|buy now|كوموند/i;
+const axYes=/^(نعم|اه|آه|ايه|إييه|واخا|أكد|نأكد|موافق|oui|yes|confirm|تأكيد)(\s|$)/i;
+const axNo=/^(لا|لالا|non|no|annuler|إلغاء|الغاء)/i;
+function axBegin(){
+ axCheckout.data={};axCheckout.product=null;axCheckout.quantity=1;
+ if(CART.length){axCheckout.step='name';axSay('مزيان! عندك منتجات فالسلة. عطيني الاسم الكامل ديالك باش نوجد ليك الطلب.');return;}
+ const products=axProducts().slice(0,15);
+ if(!products.length){axCheckout.step='';axSay('سمح ليا، المنتجات ما متاحةش دابا. تواصل مع الفريق باش نعاونوك.');return;}
+ axCheckout.step='product';
+ axSay('مرحبا! شنو المنتج اللي بغيتي؟ كتب سميتو أو الرقم ديالو:\n'+products.map((p,i)=>(i+1)+'. '+p.name+' — '+fmtPrice(p.price)).join('\n'));
+}
+async function axHandle(message){
+ const value=message.trim();
+ if(!axCheckout.step){if(!axOrderIntent.test(value))return false;axBegin();return true;}
+ if(axNo.test(value)||/^(cancel|إلغاء الطلب)$/i.test(value)){axCheckout.step='';axCheckout.data={};axSay('حاضر، ما تسجل حتى طلب. نقدر نعاونك فشي سؤال آخر.');return true;}
+ if(axCheckout.step==='product'){
+  const products=axProducts().slice(0,15);
+  const n=Number(value),p=Number.isInteger(n)&&n>=1&&n<=products.length?products[n-1]:products.find(x=>String(x.name).toLocaleLowerCase().includes(value.toLocaleLowerCase())&&value.length>=3);
+  if(!p){axSay('ما تعرفتش على المنتج. كتب الرقم ديالو من اللائحة أو الاسم بالضبط.');return true;}
+  axCheckout.product=p;axCheckout.step='quantity';axSay('اختيار زوين: '+p.name+' ('+fmtPrice(p.price)+'). شحال من وحدة بغيتي؟');return true;
+ }
+ if(axCheckout.step==='quantity'){
+  const qty=Number(value);
+  if(!Number.isInteger(qty)||qty<1||qty>20){axSay('عطيني كمية صحيحة بين 1 و20.');return true;}
+  if(axCheckout.product.stock!=null&&qty>Number(axCheckout.product.stock)){axSay('الكمية المطلوبة ما متوفراش حالياً. اختار كمية أقل.');return true;}
+  axCheckout.quantity=qty;axCheckout.step='name';axSay('عطيني الاسم الكامل ديالك.');return true;
+ }
+ if(axCheckout.step==='name'){if(value.length<3||value.length>90){axSay('عطيني الاسم الكامل بشكل صحيح.');return true;}axCheckout.data.name=value;axCheckout.step='phone';axSay('شكراً! شنو رقم الهاتف ديالك؟');return true;}
+ if(axCheckout.step==='phone'){const phone=normalizeMoroccanPhone(value);if(!phone){axSay('عطيني رقم مغربي صحيح، بحال 06XXXXXXXX أو 07XXXXXXXX.');return true;}axCheckout.data.phone=phone;axCheckout.step='city';axSay('فاش من مدينة غادي يكون التوصيل؟');return true;}
+ if(axCheckout.step==='city'){if(value.length<2||value.length>100){axSay('عطيني اسم المدينة من فضلك.');return true;}axCheckout.data.city=value;axCheckout.step='address';axSay('عطيني العنوان بالتفصيل باش شركة التوصيل تلقاك بسهولة.');return true;}
+ if(axCheckout.step==='address'){
+  if(value.length<8||value.length>300){axSay('خصني عنوان واضح فيه الحي والزنقة أو أقرب معلم.');return true;}
+  axCheckout.data.address=value;axCheckout.step='confirm';
+  const items=axCheckout.product?[{name:axCheckout.product.name,qty:axCheckout.quantity,price:Number(axCheckout.product.price)}]:CART;
+  const total=items.reduce((sum,p)=>sum+Number(p.price||0)*Number(p.qty||0),0);
+  axSay('ها ملخص الطلب ديالك:\n'+items.map(p=>p.name+' × '+p.qty).join('\n')+'\nالمجموع ديال المنتجات: '+fmtPrice(total)+' (مصاريف التوصيل إلا كانت كتتأكد فالموقع)\nالاسم: '+axCheckout.data.name+'\nالهاتف: '+axCheckout.data.phone+'\nالمدينة: '+axCheckout.data.city+'\nالعنوان: '+axCheckout.data.address+'\n\nإلا كلشي صحيح كتب «نعم أكد الطلب». إلا بغيتي تبدل شي معلومة كتب «لا» ونعاودو من الأول.');
+  return true;
+ }
+ if(axCheckout.step==='confirm'){
+  if(!axYes.test(value)){axSay('باش نأكد الطلب خاصك تكتب «نعم أكد الطلب». أو كتب «لا» للإلغاء.');return true;}
+  axCheckout.step='submitting';
+  try{
+   if(axCheckout.product){addToCart(axCheckout.product.id,axCheckout.quantity);}
+   if(!CART.length)throw Error('empty cart');
+   openOrderForm();
+   document.getElementById('ofName').value=axCheckout.data.name;
+   document.getElementById('ofPhone').value=axCheckout.data.phone;
+   document.getElementById('ofCity').value=axCheckout.data.city;
+   document.getElementById('ofAddress').value=axCheckout.data.address;
+   document.getElementById('ofNotes').value='طلب بمساعدة AI Chat';
+   axSay('وجدت ليك نفس Checkout ديال AXORIA وعمّرت المعلومات. راجعها واضغط على زر تأكيد الطلب اللي فالفورم باش يتسجل الطلب رسمياً.');
+  }catch{axSay('وقع مشكل ففتح الطلب. تقدر تكمل من السلة أو تتواصل مع الفريق.');}
+  axCheckout.step='';axCheckout.data={};axCheckout.product=null;return true;
+ }
+ return true;
+}
+form?.addEventListener('submit',async e=>{e.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;if(axCheckout.step||axOrderIntent.test(message)){const node=document.createElement('div');node.className='ax-ai-user';node.textContent=message;messages.appendChild(node);input.value='';await axHandle(message);return;}const add=(cls,value)=>{const node=document.createElement('div');node.className=cls;node.textContent=value;messages.appendChild(node);node.scrollIntoView({block:'nearest'});};add('ax-ai-user',message);input.value='';send.disabled=true;status.textContent='كنوجد الجواب...';try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),18000);let response;try{response=await fetch('https://gdemgpkkrmpridqgjmtx.supabase.co/functions/v1/axoria-ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message}),signal:controller.signal});}finally{clearTimeout(timeout)}const data=await response.json();if(!response.ok||typeof data.reply!=='string')throw Error('unavailable');add('ax-ai-answer',data.reply);status.textContent='تأكد من المعلومات المهمة قبل الطلب.';}catch{add('ax-ai-answer','سمح ليا، المساعد مازال ما متاحش دابا. تقدر تتواصل مع الفريق مباشرة على واتساب.');status.textContent='الخدمة مؤقتاً غير متاحة.';}finally{send.disabled=false;input.focus()}});})();
 </script>
 
 </body>
