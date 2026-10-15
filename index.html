@@ -640,6 +640,18 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 @media(max-width:600px){.ax-ai-launch{right:14px;bottom:150px;width:50px;height:50px}.ax-ai-panel{right:10px;bottom:208px;width:calc(100vw - 20px);height:min(540px,calc(100dvh - 218px));min-height:200px}.ax-ai-history{padding:10px}.ax-ai-composer{padding:9px 10px}}
 @media(max-height:470px){.ax-ai-panel{bottom:8px;height:calc(100dvh - 16px);min-height:0}.ax-ai-form textarea{min-height:40px}}
 
+/* A quiet, one-time invitation beside the AI button, not a popup modal. */
+.ax-ai-welcome{position:fixed;right:88px;bottom:163px;z-index:969;width:min(270px,calc(100vw - 112px));padding:13px 35px 13px 12px;border:1px solid #c4d9f2;border-radius:15px;background:#fff;color:#153152;box-shadow:0 9px 28px rgba(5,33,68,.20);direction:rtl;text-align:right}
+.ax-ai-welcome[hidden]{display:none!important}
+.ax-ai-welcome::after{content:'';position:absolute;right:-6px;bottom:20px;width:11px;height:11px;background:#fff;border-top:1px solid #c4d9f2;border-right:1px solid #c4d9f2;transform:rotate(45deg)}
+.ax-ai-welcome-open{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;font-size:12px;line-height:1.65;text-align:right;cursor:pointer}
+.ax-ai-welcome-open strong{display:block;font-size:13px;font-weight:700;color:#0A4D9B}
+.ax-ai-welcome-open span{display:block;color:#34516d}
+.ax-ai-welcome-close{position:absolute;top:7px;left:7px;width:23px;height:23px;border:0;border-radius:50%;background:#eff5fb;color:#37536b;cursor:pointer;font-size:17px;line-height:1;display:grid;place-items:center}
+.ax-ai-welcome-open:focus-visible,.ax-ai-welcome-close:focus-visible{outline:2px solid #0A82C9;outline-offset:3px}
+@media(max-width:600px){.ax-ai-welcome{right:74px;bottom:157px;width:min(250px,calc(100vw - 96px));padding:11px 32px 11px 11px}}
+
+
 </style>
 </head>
 <body>
@@ -2379,6 +2391,13 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
 
 <!-- AXORIA AI assistant — guided checkout remains on website's existing order form -->
 <button type="button" class="ax-ai-launch" id="axAiLaunch" aria-label="مساعد AXORIA" aria-expanded="false" aria-controls="axAiPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8A8.5 8.5 0 0 1 12.5 20a8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5Z"/><path d="M9 12h7M12.5 8.5v7"/></svg></button>
+<div class="ax-ai-welcome" id="axAiWelcome" role="group" aria-label="ترحيب مساعد AXORIA" hidden>
+ <button type="button" class="ax-ai-welcome-open" id="axAiWelcomeOpen" aria-label="فتح مساعد AXORIA">
+  <strong>السلام عليكم 👋</strong>
+  <span>أنا مساعدك فـ AXORIA. محتاج شي مساعدة؟ أنا هنا 😊</span>
+ </button>
+ <button type="button" class="ax-ai-welcome-close" id="axAiWelcomeClose" aria-label="إخفاء رسالة الترحيب">×</button>
+</div>
 <section class="ax-ai-panel" id="axAiPanel" role="dialog" aria-label="مساعد AXORIA" aria-hidden="true" dir="rtl">
  <div class="ax-ai-head"><div><strong>مساعد AXORIA</strong><small>سولني ونعاونك فالاختيار والطلب</small></div><button type="button" class="ax-ai-close" id="axAiClose" aria-label="إغلاق">×</button></div>
  <div class="ax-ai-body">
@@ -2391,8 +2410,28 @@ try{ init(); }catch(e){ console.error('init failed', e); const l=document.getEle
  const trigger=document.getElementById('axAiLaunch'),panel=document.getElementById('axAiPanel'),close=document.getElementById('axAiClose');
  const form=document.getElementById('axAiForm'),input=document.getElementById('axAiInput'),send=document.getElementById('axAiSend'),messages=document.getElementById('axAiMessages'),history=document.getElementById('axAiHistory'),status=document.getElementById('axAiStatus');
  if(!trigger||!panel||!form||!input||!messages)return;
- function toggle(open){panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)input.focus();else trigger.focus()}
- trigger.addEventListener('click',()=>toggle(!panel.classList.contains('is-open')));
+ const welcome=document.getElementById('axAiWelcome'),welcomeOpen=document.getElementById('axAiWelcomeOpen'),welcomeClose=document.getElementById('axAiWelcomeClose');
+ let welcomeDelay=null,welcomeHideTimer=null;
+ function hideWelcome(){
+  if(welcome){welcome.hidden=true;}
+  if(welcomeDelay!==null){clearTimeout(welcomeDelay);welcomeDelay=null;}
+  if(welcomeHideTimer!==null){clearTimeout(welcomeHideTimer);welcomeHideTimer=null;}
+ }
+ function showWelcome(){
+  welcomeDelay=null;
+  if(!welcome||document.hidden||panel.classList.contains('is-open'))return;
+  try{
+   if(sessionStorage.getItem('axoria_ai_welcome_seen_v1'))return;
+   sessionStorage.setItem('axoria_ai_welcome_seen_v1','1');
+  }catch(e){/* Still allow the one-time invitation if storage is unavailable. */}
+  welcome.hidden=false;
+  welcomeHideTimer=setTimeout(hideWelcome,12000);
+ }
+ welcomeDelay=setTimeout(showWelcome,3400);
+ function toggle(open){if(open)hideWelcome();panel.classList.toggle('is-open',open);panel.setAttribute('aria-hidden',String(!open));trigger.setAttribute('aria-expanded',String(open));if(open)input.focus();else trigger.focus()}
+ trigger.addEventListener('click',()=>{hideWelcome();toggle(!panel.classList.contains('is-open'))});
+ welcomeOpen?.addEventListener('click',()=>{hideWelcome();toggle(true)});
+ welcomeClose?.addEventListener('click',hideWelcome);
  close.addEventListener('click',()=>toggle(false));
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('is-open'))toggle(false)});
  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();if(!send.disabled)form.requestSubmit()}});
