@@ -209,7 +209,24 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .sticky-buybar .btn{padding:11px 18px;font-size:13px;white-space:nowrap;}
 @media (min-width:860px){.sticky-buybar{display:none !important;}}
 .quickbuy{position:absolute;bottom:12px;right:12px;z-index:3;background:var(--white);color:var(--charcoal);border:none;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;box-shadow:var(--shadow-sm);opacity:0;transform:translateY(6px);transition:opacity .25s ease, transform .25s ease;}
-.pcard:hover .quickbuy{opacity:1;transform:translateY(0);}
+.pcard:hover .quickbuy,.pcard:focus-within .quickbuy{opacity:1;transform:translateY(0);}
+/* Conversion improvements: retain AXORIA's existing layout and cart */
+.pcard .ax-delivery-note{font-size:11.5px;line-height:1.5;color:var(--text-soft);margin-top:9px}
+.pcard .ax-direct-order{display:block;width:100%;min-height:44px;padding:11px 14px;margin-top:12px;border:0;border-radius:11px;background:var(--teal);color:#fff;font:700 13px var(--font-body);cursor:pointer;text-align:center;transition:filter .2s}
+.pcard .ax-direct-order:hover,.pcard .ax-direct-order:focus-visible{filter:brightness(1.12)}
+.pcard .ax-direct-order:disabled{opacity:.55;cursor:not-allowed}
+.pcard .addbtn{min-width:44px;min-height:44px}
+@media (hover:none),(pointer:coarse){.pcard .quickbuy{opacity:1;transform:none;min-height:40px}}
+@media(max-width:600px){
+  .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .pcard{min-width:0}
+  .pcard-body{padding:14px 12px}
+  .pcard .ax-direct-order{font-size:12px;padding:10px 7px}
+  .pcard .ax-delivery-note{font-size:10.5px}
+  .pcard .price-row{flex-wrap:wrap;gap:8px}
+  .pcard .quickbuy{bottom:8px;right:8px;max-width:calc(100% - 16px);font-size:10px;padding:8px}
+}
+@media(max-width:360px){.menu-grid{grid-template-columns:1fr}}
 .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin-top:10px;}
 .why-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow-sm);transition:transform .35s ease, box-shadow .35s ease;}
 .why-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);}
@@ -1550,18 +1567,20 @@ function renderMenuGrid(){
       <div class="pcard-body">
         <h4>${p.name}</h4>
         <p class="desc">${p.desc}</p>
+        <p class="ax-delivery-note">${currentLang==='ar'?'🚚 التوصيل لجميع أنحاء المغرب · الدفع عند الاستلام':currentLang==='en'?'🚚 Morocco-wide delivery · Cash on delivery':'🚚 Livraison partout au Maroc · Paiement à la livraison'}</p>
         <div class="price-row">
           <span class="price-tag">${p.oldPrice? `<span class="price-old">${fmtPrice(p.oldPrice)}</span>`:''}${fmtPrice(p.price)}</span>
           ${outOfStock
             ? `<span style="font-size:11.5px;font-weight:700;color:#D34747;">${currentLang==='ar'?'نفذ من المخزون':currentLang==='en'?'Out of stock':'Rupture de stock'}</span>`
             : `<button class="addbtn" data-add="${p.id}">${ICONS.plus}</button>`}
         </div>
+        ${outOfStock ? '' : `<button class="ax-direct-order" type="button" data-direct-order="${p.id}">${currentLang==='ar'?'اطلب الآن':currentLang==='en'?'Order now':'Commander maintenant'}</button>`}
       </div>
     </div>`;
   }).join('');
   grid.querySelectorAll('.pcard:not(.pcard-add)').forEach(card=>{
     card.addEventListener('click', (e)=>{
-      if(e.target.closest('.favbtn') || e.target.closest('.addbtn')) return;
+      if(e.target.closest('.favbtn') || e.target.closest('.addbtn') || e.target.closest('.ax-direct-order') || e.target.closest('.quickbuy')) return;
       openModal(card.dataset.id);
     });
   });
@@ -1570,6 +1589,9 @@ function renderMenuGrid(){
   });
   grid.querySelectorAll('[data-add]').forEach(b=>{
     b.onclick = (e)=>{ e.stopPropagation(); addToCart(b.dataset.add, 1); toast(I18N[currentLang].addedToast); ripple(e); };
+  });
+  grid.querySelectorAll('[data-direct-order]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); addToCart(b.dataset.directOrder,1); openOrderForm(); };
   });
   grid.querySelectorAll('[data-quickbuy]').forEach(b=>{
     b.onclick = (e)=>{ e.stopPropagation(); quickBuy(b.dataset.quickbuy); };
