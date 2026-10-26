@@ -121,6 +121,15 @@ function setInner(html, id, inner) {
   throw new Error(`index.html: element #${id} is not closed`);
 }
 
+// JSON that is safe inside a <script> element.
+const scriptJson = (value) => JSON.stringify(value).replace(/</g, '\\u003c');
+// Rewrites `const NAME = …;` between its /*NAME:BEGIN*/ and /*NAME:END*/ markers in the page script.
+function setJsConst(html, name, value) {
+  const re = new RegExp(`/\\*${name}:BEGIN\\*/[\\s\\S]*?/\\*${name}:END\\*/`);
+  if (!re.test(html)) throw new Error(`index.html: markers /*${name}:BEGIN*/ … /*${name}:END*/ not found`);
+  return html.replace(re, () => `/*${name}:BEGIN*/\nconst ${name} = ${scriptJson(value)};\n/*${name}:END*/`);
+}
+
 /* ---------- data ---------- */
 async function loadCatalog() {
   const url = `${SUPABASE_URL}/rest/v1/axoria_store?select=key,value&key=in.(axoria_products,axoria_categories)`;
@@ -225,7 +234,7 @@ function productPageHtml(p, page, ctx) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<script type="application/ld+json">${JSON.stringify(schema)}</script>
+<script type="application/ld+json">${scriptJson(schema)}</script>
 <style>
 :root{--bg:#0A1220;--surface:#101E33;--line:#1E2E47;--text:#EAF1FB;--soft:#9FB0C8;--blue:#2F80ED;--teal:#20BFA9;--gold:#C9A227;--wa:#1FA855}
 *{box-sizing:border-box}
@@ -349,8 +358,7 @@ async function main() {
     pages[id] = { url: `/${PRODUCTS_DIR}/${config[id].slug}.html`, name: config[id].name || p.name, ...(img.local ? { image: img.local } : {}), imageUrl: img.url };
   }
   const jsPages = Object.fromEntries(Object.entries(pages).map(([id, { url, name, image }]) => [id, image ? { url, name, image } : { url, name }]));
-  html = html.replace(/\/\*PRODUCT_PAGES:BEGIN\*\/[\s\S]*?\/\*PRODUCT_PAGES:END\*\//,
-    `/*PRODUCT_PAGES:BEGIN*/\nconst PRODUCT_PAGES = ${JSON.stringify(jsPages)};\n/*PRODUCT_PAGES:END*/`);
+  html = setJsConst(html, 'PRODUCT_PAGES', jsPages);
 
   // 2. Run the page's own rendering code with the French texts and the live catalog.
   const recorded = new Map();
@@ -364,7 +372,10 @@ async function main() {
       classList: { add() {}, remove() {}, toggle() {}, contains: () => false }, style: {}, dataset: {},
     };
   };
-  const forGrid = products.map((p) => (String(p.img || '').startsWith('data:') && pages[String(p.id)]?.image ? { ...p, img: pages[String(p.id)].image } : p));
+  // Same catalog without base64 photos (replaced by their file URL), for the grid and the snapshot.
+  const forGrid = products.map((p) => (String(p.img || '').startsWith('data:') ? { ...p, img: pages[String(p.id)]?.image || '' } : p));
+  const KEEP = ['id', 'cat', 'name', 'price', 'oldPrice', 'discount', 'badge', 'stock', 'status', 'visible', 'desc', 'longDesc', 'img'];
+  html = setJsConst(html, 'PRERENDERED_PRODUCTS', forGrid.map((p) => Object.fromEntries(KEEP.filter((k) => p[k] !== undefined).map((k) => [k, p[k]]))));
   const sandbox = {
     document: { documentElement: {}, getElementById: element, querySelectorAll: () => [], createElement: () => ({}), head: { appendChild() {} } },
     currentLang: 'fr', currentCategory: 'all', FAVS: [], PRODUCTS: forGrid, CATEGORIES: categories.length ? categories : [], PRODUCT_PAGES: jsPages,
@@ -398,7 +409,7 @@ async function main() {
       },
     };
   });
-  html = setInner(html, 'axoriaProductSchema', JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'ItemList', name: 'Produits AXORIA', itemListElement: schemaItems }] }));
+  html = setInner(html, 'axoriaProductSchema', scriptJson({ '@context': 'https://schema.org', '@graph': [{ '@type': 'ItemList', name: 'Produits AXORIA', itemListElement: schemaItems }] }));
   write('index.html', html);
 
   // 4. Product pages (and removal of pages whose product is gone or hidden).

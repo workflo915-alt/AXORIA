@@ -1485,6 +1485,11 @@ async function fetchProductsSafe(){
 const PRODUCT_PAGES = {"1965":{"url":"/produits/correcteur-posture-dos-epaules-noir.html","name":"Correcteur de posture dos et épaules — Noir","image":"/assets/products/1965.jpg"},"1967":{"url":"/produits/correcteur-posture-dos-epaules-rose.html","name":"Correcteur de posture dos et épaules — Rose","image":"/assets/products/1967.jpg"},"1968":{"url":"/produits/masseur-cou-epaules.html","name":"Masseur cou et épaules"}};
 /*PRODUCT_PAGES:END*/
 function productPage(p){ return PRODUCT_PAGES[String(p && p.id)] || null; }
+/* Catalog snapshot written by tools/seo-build.mjs: the pre-rendered products are clickable
+   before Supabase answers, and it is the fallback if Supabase cannot be reached. */
+/*PRERENDERED_PRODUCTS:BEGIN*/
+const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Neck & Shoulder Massager","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Posture Corrector","price":149,"oldPrice":179,"discount":0,"badge":"new","stock":0,"status":"active","visible":true,"desc":"Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.","longDesc":"Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.","img":"/assets/products/1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Posture Corrector","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":19,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"/assets/products/1965.jpg"}];
+/*PRERENDERED_PRODUCTS:END*/
 
 let PRODUCTS = [];
 let REVIEWS = [];
@@ -2211,7 +2216,8 @@ async function init(){
   const theme = readLocalJSON('axoria_theme');
   if(theme) document.documentElement.setAttribute('data-theme', theme);
   const cachedProducts = readLocalJSON('axoria_products');
-  if(Array.isArray(cachedProducts) && cachedProducts.length){ PRODUCTS = cachedProducts; syncNextProductId(); }
+  const startProducts = (Array.isArray(cachedProducts) && cachedProducts.length) ? cachedProducts : PRERENDERED_PRODUCTS;
+  if(startProducts.length){ PRODUCTS = startProducts; syncNextProductId(); }
   const cachedCats = readLocalJSON('axoria_categories');
   if(Array.isArray(cachedCats) && cachedCats.length){ CATEGORIES = cachedCats; }
 
@@ -2253,12 +2259,12 @@ async function init(){
     // Supabase unreachable, but we have a last-known-good local copy -> use it, don't touch remote.
     PRODUCTS = productsResult.data;
   } else if(productsResult.status === 'nodb'){
-    // No Supabase configured and no local cache -> local-only first run.
-    PRODUCTS = seedProducts();
+    // No Supabase configured and no local cache -> last published catalog, else local-only first run.
+    PRODUCTS = PRERENDERED_PRODUCTS.length ? PRERENDERED_PRODUCTS : seedProducts();
   } else {
-    // 'error': Supabase unreachable and nothing cached. Show something locally
+    // 'error': Supabase unreachable and nothing cached. Show the last published catalog
     // so the site isn't blank, but NEVER write this fallback to Supabase.
-    PRODUCTS = seedProducts();
+    PRODUCTS = PRERENDERED_PRODUCTS.length ? PRERENDERED_PRODUCTS : seedProducts();
   }
   syncNextProductId();
   if(storedCats && storedCats.length){ CATEGORIES = storedCats; }
