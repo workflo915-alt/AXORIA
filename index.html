@@ -215,12 +215,6 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .step-card .stepnum{font-family:var(--font-mono);font-size:34px;font-weight:800;color:var(--line);line-height:1;margin-bottom:10px;}
 .step-card h4{font-size:15.5px;font-weight:700;margin-bottom:6px;}
 .step-card p{font-size:13px;color:var(--text-soft);line-height:1.55;}
-.ba-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-@media (max-width:720px){.ba-wrap{grid-template-columns:1fr;}}
-.ba-card{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-md);aspect-ratio:4/3;}
-.ba-card img{width:100%;height:100%;object-fit:cover;}
-.ba-tag{position:absolute;top:14px;left:14px;background:var(--charcoal);color:#fff;font-family:var(--font-mono);font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:.04em;}
-.ba-tag.after{background:var(--teal);}
 .guarantee-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:10px;}
 .g-card{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm);}
 .g-card .gi{width:44px;height:44px;border-radius:12px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0;}
@@ -743,7 +737,7 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
   <div class="wrap">
     <div class="about-grid">
       <div class="about-img reveal">
-        <img src="asest/batal1.png" alt="AXORIA — bien-être et confort" loading="lazy" onerror="this.onerror=null;this.src='https://images.pexels.com/photos/7222429/pexels-photo-7222429.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000';">
+        <img src="/assets/about/axoria-bien-etre-1000.webp" srcset="/assets/about/axoria-bien-etre-600.webp 600w, /assets/about/axoria-bien-etre-1000.webp 1000w" sizes="(max-width: 900px) 92vw, 480px" width="1000" height="667" alt="Étirements avec ballons de gym — le bien-être au quotidien avec AXORIA" loading="lazy" decoding="async">
         <div class="zbadge" id="aboutBadge">★ AXORIA</div>
       </div>
       <div class="about-body reveal">
@@ -765,25 +759,6 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
       <h2 id="howToTitle">Comment bien utiliser votre produit</h2>
     </div>
     <div class="steps-row" id="stepsRow"></div>
-  </div>
-</section>
-
-<section class="section" id="beforeafter">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow" id="baEyebrow">Résultats</span>
-      <h2 id="baTitle">Avant / Après</h2>
-    </div>
-    <div class="ba-wrap reveal">
-      <div class="ba-card">
-        <span class="ba-tag" id="baBeforeTag">Avant</span>
-        <img src="asest/b12.png" alt="Avant" loading="lazy" onerror="const section=document.getElementById('beforeafter');if(section)section.hidden=true;">
-      </div>
-      <div class="ba-card">
-        <span class="ba-tag after" id="baAfterTag">Après</span>
-        <img src="asest/b21.png" alt="Après" loading="lazy" onerror="const section=document.getElementById('beforeafter');if(section)section.hidden=true;">
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1081,7 +1056,6 @@ const I18N = {
       ['Intégrez-le à votre routine','Utilisez-le au travail, à la maison, pendant vos activités ou vos moments de détente.'],
       ['Écoutez votre confort','Adaptez son utilisation à vos besoins pour profiter pleinement de votre expérience AXORIA.']
     ],
-    baEyebrow:'Résultats', baTitle:'Avant / Après', baBefore:'Avant', baAfter:'Après',
     guaranteeEyebrow:'Garanties', guaranteeTitle:'Acheter chez AXORIA, en toute confiance',
     guarantees:[
       ['Livraison Maroc','Expédition vers toutes les villes du royaume.'],
@@ -1144,7 +1118,6 @@ const I18N = {
       ['Fit it into your routine','Use it at work, at home, during activities or while relaxing.'],
       ['Follow your comfort','Adapt how you use it to your needs and enjoy your AXORIA experience.']
     ],
-    baEyebrow:'Results', baTitle:'Before / After', baBefore:'Before', baAfter:'After',
     guaranteeEyebrow:'Guarantees', guaranteeTitle:'Shop AXORIA with total confidence',
     guarantees:[
       ['Morocco delivery','Shipping to every city in the kingdom.'],
@@ -1207,7 +1180,6 @@ const I18N = {
       ['اجعله جزءاً من يومك','استخدمه في العمل أو المنزل أو أثناء النشاط أو وقت الاسترخاء.'],
       ['استمع لراحتك','عدّل طريقة استخدامه حسب احتياجاتك لتستفيد من تجربة أكسوريا بأفضل شكل.']
     ],
-    baEyebrow:'النتائج', baTitle:'قبل / بعد', baBefore:'قبل', baAfter:'بعد',
     guaranteeEyebrow:'الضمانات', guaranteeTitle:'تسوق من أكسوريا بثقة تامة',
     guarantees:[
       ['توصيل للمغرب','شحن لكل مدن المملكة.'],
@@ -1471,10 +1443,6 @@ function applyStaticText(){
   document.getElementById('howToTitle').textContent = t.howToTitle;
   document.getElementById('stepsRow').innerHTML = t.howToSteps.map((s,i)=>`
     <div class="step-card reveal in"><div class="stepnum">0${i+1}</div><h4>${s[0]}</h4><p>${s[1]}</p></div>`).join('');
-  document.getElementById('baEyebrow').textContent = t.baEyebrow;
-  document.getElementById('baTitle').textContent = t.baTitle;
-  document.getElementById('baBeforeTag').textContent = t.baBefore;
-  document.getElementById('baAfterTag').textContent = t.baAfter;
   document.getElementById('guaranteeEyebrow').textContent = t.guaranteeEyebrow;
   document.getElementById('guaranteeTitle').textContent = t.guaranteeTitle;
   const gIcons = [ICONS.truck, ICONS.trash, ICONS.shield, ICONS.chat];
@@ -1606,7 +1574,9 @@ async function trackCategoryInterest(catName){
 
 function renderCatFilters(){
   const t = I18N[currentLang];
-  const cats = catNames();
+  // Only offer categories that contain at least one visible product: no empty filters.
+  const cats = catNames().filter(c=>PRODUCTS.some(p=>p.visible && p.cat===c));
+  if(currentCategory!=='all' && !cats.includes(currentCategory)) currentCategory = 'all';
   const wrap = document.getElementById('catFilters');
   wrap.innerHTML = `<button class="cat-chip ${currentCategory==='all'?'active':''}" data-cat="all">${t.all}</button>` +
     cats.map(c=>`<button class="cat-chip ${currentCategory===c?'active':''}" data-cat="${c}">${c}</button>`).join('');
