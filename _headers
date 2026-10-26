@@ -1,0 +1,20 @@
+# Netlify response headers — https://docs.netlify.com/routing/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+# Images and icons: reuse for a day, refresh quietly in the background for a week.
+# File names are not hashed, so keep this short enough for replaced images to show up.
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/admin
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
