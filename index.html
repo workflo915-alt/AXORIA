@@ -656,11 +656,54 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 @media(max-width:600px){.ax-ai-welcome{right:74px;bottom:157px;width:min(250px,calc(100vw - 96px));padding:11px 32px 11px 11px}}
 @media(prefers-reduced-motion:reduce){.ax-ai-welcome{transition:none;transform:none}}
 
+/* ---------- Express checkout ---------- */
+.modal-actions{display:grid;gap:10px;}
+.modal-actions .btn{width:100%;justify-content:center;}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--teal);transform:translateY(-3px);}
+.order-reassure{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 12px;font-size:12.5px;font-weight:600;color:var(--text-soft);}
+.order-reassure span{display:inline-flex;align-items:center;gap:6px;}
+.order-reassure span::before{content:'✓';color:#25D366;font-weight:800;}
+.pcard .card-buy{width:100%;justify-content:center;margin-top:8px;padding:13px 18px;font-size:14.5px;}
+#orderFormSummary .trashbtn{margin-left:auto;padding:9px;flex-shrink:0;}
+#orderFormSummary .trashbtn svg{width:18px;height:18px;display:block;}
+
+/* ---------- Scroll effects ----------
+   CSS scroll-driven animations: no JavaScript, run on the GPU, nothing to download.
+   Browsers without support (and visitors who ask for reduced motion) simply see the
+   content without animation. Individual transform properties (translate/rotate/scale)
+   are used so the existing hover effects on `transform` keep working. */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:600;pointer-events:none;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--teal),var(--sky),var(--coral));}
+@keyframes axProgress{to{transform:scaleX(1);}}
+@keyframes axRise3d{from{opacity:0;translate:0 60px;rotate:x 24deg;scale:.94;}to{opacity:1;translate:0 0;rotate:x 0deg;scale:1;}}
+@keyframes axImageSettle{from{scale:1.2;}to{scale:1;}}
+@keyframes axTurnIn{from{opacity:.15;translate:0 70px;rotate:y -16deg;scale:.9;}to{opacity:1;translate:0 0;rotate:y 0deg;scale:1;}}
+@keyframes axPop{from{opacity:0;scale:.88;}to{opacity:1;scale:1;}}
+@keyframes axHeroDepth{to{translate:0 -70px;scale:.94;opacity:.35;}}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .scroll-progress{animation:axProgress linear both;animation-timeline:scroll(root);}
+    .menu-grid,.why-grid,.steps-row,.guarantee-row,.about-grid{perspective:1100px;}
+    .pcard,.why-card,.step-card,.g-card{animation:axRise3d linear both;animation-timeline:view();animation-range:entry 0% cover 30%;}
+    .pcard .imgwrap img{animation:axImageSettle linear both;animation-timeline:view();animation-range:entry 0% cover 45%;}
+    .about-img{animation:axTurnIn linear both;animation-timeline:view();animation-range:entry 0% cover 45%;}
+    .final-cta{animation:axPop linear both;animation-timeline:view();animation-range:entry 10% cover 40%;}
+    .hero-content{animation:axHeroDepth linear both;animation-timeline:scroll(root);animation-range:0 90vh;}
+  }
+}
+
+/* 3D tilt that follows the mouse on product cards (desktop only, driven by --tx/--ty). */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion: no-preference){
+  .menu-grid{perspective:1100px;}
+  .pcard.tilt{transition:transform .12s linear, box-shadow .4s ease;transform:rotateX(var(--ty,0deg)) rotateY(var(--tx,0deg)) translateY(-8px);box-shadow:var(--shadow-lg);}
+}
+
 
 </style>
 </head>
 <body>
 
+<div class="scroll-progress" aria-hidden="true"></div>
 <div class="toast" id="toast"></div>
 
 <header class="nav">
@@ -741,7 +784,6 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
         <img src="https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg" alt="Neck & Shoulder Massager" loading="lazy">
         
         <button class="favbtn " data-fav="1968"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        <button class="quickbuy" data-quickbuy="1968">Achat rapide</button>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/masseur-cou-epaules.html">Neck & Shoulder Massager</a></h4>
@@ -760,8 +802,9 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 AXORIA — Feel Better, Every Day.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">300 DH</span>260 DH</span>
-          <button class="addbtn" data-add="1968"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          
         </div>
+        <button class="btn btn-primary card-buy" type="button" data-buy="1968">Commander maintenant</button>
       </div>
     </div>
     <div class="pcard reveal in" id="product-1967" data-id="1967">
@@ -769,7 +812,6 @@ AXORIA — Feel Better, Every Day.</p>
         <img src="/assets/products/1967.jpg" alt="Posture Corrector" loading="lazy">
         <span class="badge promo" style="background:#3F8FC4;">NEW</span>
         <button class="favbtn " data-fav="1967"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-rose.html">Posture Corrector</a></h4>
@@ -778,6 +820,7 @@ AXORIA — Feel Better, Every Day.</p>
           <span class="price-tag"><span class="price-old">179 DH</span>149 DH</span>
           <span style="font-size:11.5px;font-weight:700;color:#D34747;">Rupture de stock</span>
         </div>
+        
       </div>
     </div>
     <div class="pcard reveal in" id="product-1965" data-id="1965">
@@ -785,15 +828,15 @@ AXORIA — Feel Better, Every Day.</p>
         <img src="/assets/products/1965.jpg" alt="Posture Corrector" loading="lazy">
         <span class="badge promo" style="background:var(--coral);">BEST SELLER</span>
         <button class="favbtn " data-fav="1965"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        <button class="quickbuy" data-quickbuy="1965">Achat rapide</button>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-noir.html">Posture Corrector</a></h4>
         <p class="desc">Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">135 DH</span>129 DH</span>
-          <button class="addbtn" data-add="1965"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          
         </div>
+        <button class="btn btn-primary card-buy" type="button" data-buy="1965">Commander maintenant</button>
       </div>
     </div></div>
   </div>
@@ -1004,17 +1047,17 @@ AXORIA — Feel Better, Every Day.</p>
       <div class="cart-total" style="margin:4px 0 18px;"><span id="orderFormTotalLbl">Total commande</span><span id="orderFormTotalVal">0 DH</span></div>
       <div class="formgrid">
         <div class="form-row"><label id="lblOrderName" for="ofName">Nom complet</label><input type="text" id="ofName" autocomplete="name" maxlength="120" required></div>
-        <div class="form-row"><label id="lblOrderPhone" for="ofPhone">Téléphone</label><input type="tel" id="ofPhone" autocomplete="tel" inputmode="tel" maxlength="30" required aria-describedby="orderFormError"></div>
+        <div class="form-row"><label id="lblOrderPhone" for="ofPhone">Téléphone</label><input type="tel" id="ofPhone" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="06 XX XX XX XX" required aria-describedby="orderFormError"></div>
       </div>
       <div class="formgrid">
-        <div class="form-row"><label id="lblOrderCity" for="ofCity">Ville</label><input type="text" id="ofCity" autocomplete="address-level2" maxlength="120" required></div>
+        <div class="form-row"><label id="lblOrderCity" for="ofCity">Ville</label><input type="text" id="ofCity" list="maCities" autocomplete="address-level2" maxlength="120" required>
+          <datalist id="maCities"><option value="Casablanca"><option value="Rabat"><option value="Salé"><option value="Témara"><option value="Kénitra"><option value="Mohammedia"><option value="Marrakech"><option value="Fès"><option value="Meknès"><option value="Tanger"><option value="Tétouan"><option value="Agadir"><option value="Inezgane"><option value="Aït Melloul"><option value="Oujda"><option value="Nador"><option value="Berkane"><option value="El Jadida"><option value="Safi"><option value="Essaouira"><option value="Béni Mellal"><option value="Khouribga"><option value="Settat"><option value="Berrechid"><option value="Bouskoura"><option value="Dar Bouazza"><option value="Skhirat"><option value="Bouznika"><option value="Khémisset"><option value="Sidi Kacem"><option value="Sidi Slimane"><option value="Larache"><option value="Ksar El Kébir"><option value="Asilah"><option value="Martil"><option value="M'diq"><option value="Fnideq"><option value="Chefchaouen"><option value="Al Hoceïma"><option value="Taza"><option value="Guercif"><option value="Taourirt"><option value="Sefrou"><option value="Ifrane"><option value="Azrou"><option value="Khénifra"><option value="Midelt"><option value="Errachidia"><option value="Ouarzazate"><option value="Zagora"><option value="Taroudant"><option value="Tiznit"><option value="Guelmim"><option value="Tan-Tan"><option value="Laâyoune"><option value="Dakhla"><option value="Kelaat Sraghna"><option value="Ben Guerir"><option value="Youssoufia"><option value="Oued Zem"><option value="Fquih Ben Salah"><option value="Sidi Bennour"><option value="Azemmour"></datalist></div>
         <div class="form-row"><label id="lblOrderAddress" for="ofAddress">Adresse</label><input type="text" id="ofAddress" autocomplete="street-address" maxlength="300" required></div>
       </div>
       <div class="form-row"><label id="lblOrderNotes" for="ofNotes">Notes (optionnel)</label><textarea id="ofNotes" rows="3" maxlength="1000"></textarea></div>
       <div class="form-error" id="orderFormError" role="alert" aria-live="polite"></div>
-      <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;">Valider ma commande</button>
-      <button class="btn btn-green" id="orderFormWaBtn" style="width:100%;justify-content:center;margin-top:10px;">Besoin d&#39;aide ? WhatsApp</button>
-    </div>
+      <div class="order-reassure" id="orderReassure"><span>Paiement à la livraison, en espèces</span><span>Livraison 24 à 72h partout au Maroc</span><span>Aucun paiement en ligne demandé</span></div>
+      <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;">Valider ma commande</button>    </div>
   </div>
 </div>
 
@@ -1035,7 +1078,10 @@ AXORIA — Feel Better, Every Day.</p>
       </div>
       <div class="mprice" id="modalPrice"></div>
       <div class="modal-trust" id="modalTrust"><span>Livraison partout au Maroc</span><span>Paiement à la livraison</span><span>Garantie qualité</span></div>
-      <button class="btn btn-primary" id="modalAddBtn" style="width:100%;justify-content:center;">Ajouter au panier</button>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="modalBuyBtn">Commander maintenant</button>
+        <button class="btn btn-ghost" id="modalAddBtn">Ajouter au panier</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1108,26 +1154,42 @@ let META_PAGEVIEW_SENT=false;
 function validMetaPixelId(v){return /^\d{5,30}$/.test(String(v||'').trim());}
 function metaEventId(prefix='ax'){return `${prefix}-${Date.now()}-${(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2))}`;}
 function getCookieValue(name){const prefix=name+'=';return document.cookie.split(';').map(v=>v.trim()).find(v=>v.startsWith(prefix))?.slice(prefix.length)||'';}
+function whenIdle(cb){
+  const run=()=>('requestIdleCallback' in window) ? requestIdleCallback(cb,{timeout:4000}) : setTimeout(cb,2000);
+  if(document.readyState==='complete') run(); else window.addEventListener('load',run,{once:true});
+}
 function ensureMetaPixel(){
   if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return false;
   if(!window.fbq){
     const n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!window._fbq)window._fbq=n;
     n.push=n;n.loaded=true;n.version='2.0';n.queue=[];
-    const s=document.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';
-    const first=document.getElementsByTagName('script')[0];first.parentNode.insertBefore(s,first);
+    // fbevents.js is ~270 KB of JavaScript: fetch it once the page is idle so it never
+    // competes with the storefront. Calls made before then wait in the queue above, and
+    // the Conversions API copy of each event is sent right away by trackCommerceEvent().
+    whenIdle(()=>{
+      const s=document.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';
+      document.head.appendChild(s);
+    });
   }
   if(!META_PIXEL_INITIALIZED){window.fbq('init',META_TRACKING.pixelId);META_PIXEL_INITIALIZED=true;}
   return true;
 }
+/* Events fired before the tracking config has loaded (e.g. the express checkout opened from
+   a product page link) wait here and are sent once it arrives, instead of being dropped. */
+let META_CONFIG_READY=false;
+const META_PENDING=[];
 async function loadTrackingConfig(){
   try{
     const raw=await storeGet('axoria_tracking',true);
     META_TRACKING={enabled:!!raw?.enabled,pixelId:String(raw?.pixelId||'').trim(),capiEnabled:!!raw?.capiEnabled};
-    if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
   }catch(e){console.warn('Meta tracking config unavailable',e);}
+  META_CONFIG_READY=true;
+  if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
+  META_PENDING.splice(0).forEach(args=>trackCommerceEvent(...args));
 }
 function trackCommerceEvent(eventName,customData={},userData={},options={}){
+  if(!META_CONFIG_READY){ META_PENDING.push([eventName,customData,userData,options]); return null; }
   if(!META_TRACKING.enabled||!validMetaPixelId(META_TRACKING.pixelId))return null;
   const eventID=String(options?.eventID||'').trim() || metaEventId(eventName.toLowerCase());
   try{if(ensureMetaPixel()&&window.fbq)window.fbq('track',eventName,customData,{eventID});}catch(e){console.warn('Meta Pixel event failed',e);}
@@ -1200,7 +1262,8 @@ const I18N = {
     orderEmptyCart:'Votre panier est vide.', orderFillFields:'Merci de remplir le nom, téléphone, ville et adresse.',
     orderSuccess:'Votre commande a bien été enregistrée.', orderSuccessTitle:'Commande confirmée', orderSuccessRefLabel:'Référence', orderSuccessNext:'Notre équipe vous contactera prochainement pour confirmer votre commande avant expédition.', orderSuccessBack:'Continuer mes achats', orderSuccessWa:'Contacter sur WhatsApp', orderSubmitting:'Envoi en cours…', orderFailed:"Erreur lors de l'envoi. Merci de réessayer ou de nous contacter sur WhatsApp.",
     orderNoConnection:'Connexion indisponible. Merci de réessayer ou de nous contacter sur WhatsApp.',
-    orderInvalidPhone:'Veuillez saisir un numéro marocain valide (ex. 06 12 34 56 78 ou +212 6 12 34 56 78).'
+    orderInvalidPhone:'Veuillez saisir un numéro marocain valide (ex. 06 12 34 56 78 ou +212 6 12 34 56 78).',
+    orderReassure:['Paiement à la livraison, en espèces','Livraison 24 à 72h partout au Maroc','Aucun paiement en ligne demandé']
   },
   en:{brand:'AXORIA', nav:['Home','Products','About','Reviews','FAQ','Contact'],
     heroEyebrow:'Posture correctors & wellness in Morocco', heroTitle:'Feel Better,<br>Every Day', heroSub:'Comfort • Wellness • Balance',
@@ -1262,7 +1325,8 @@ const I18N = {
     orderEmptyCart:'Your cart is empty.', orderFillFields:'Please fill in your name, phone, city and address.',
     orderSuccess:'Your order has been registered successfully.', orderSuccessTitle:'Order confirmed', orderSuccessRefLabel:'Reference', orderSuccessNext:'Our team will contact you shortly to confirm the order before shipping.', orderSuccessBack:'Continue shopping', orderSuccessWa:'Contact on WhatsApp', orderSubmitting:'Sending…', orderFailed:'Something went wrong sending your order. Please try again or contact us on WhatsApp.',
     orderNoConnection:'Connection unavailable. Please try again or contact us on WhatsApp.',
-    orderInvalidPhone:'Please enter a valid Moroccan phone number (e.g. 06 12 34 56 78 or +212 6 12 34 56 78).'
+    orderInvalidPhone:'Please enter a valid Moroccan phone number (e.g. 06 12 34 56 78 or +212 6 12 34 56 78).',
+    orderReassure:['Cash on delivery','Delivery in 24–72h across Morocco','No online payment required']
   },
   ar:{brand:'أكسوريا', nav:['الرئيسية','المنتجات','من نحن','الآراء','الأسئلة الشائعة','اتصل بنا'],
     heroEyebrow:'مصححات الوضعية ومنتجات العافية في المغرب', heroTitle:'Feel Better,<br>Every Day', heroSub:'راحة • عناية • توازن',
@@ -1324,7 +1388,8 @@ const I18N = {
     orderEmptyCart:'سلتك فارغة.', orderFillFields:'يرجى ملء الاسم والهاتف والمدينة والعنوان.',
     orderSuccess:'تم تسجيل طلبك بنجاح.', orderSuccessTitle:'تم تأكيد الطلب', orderSuccessRefLabel:'رقم الطلب', orderSuccessNext:'سيتواصل معك فريقنا قريباً لتأكيد الطلب قبل الشحن.', orderSuccessBack:'متابعة التسوق', orderSuccessWa:'التواصل عبر واتساب', orderSubmitting:'جارٍ الإرسال…', orderFailed:'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.',
     orderNoConnection:'الاتصال غير متوفر. يرجى المحاولة مجدداً أو التواصل معنا عبر واتساب.',
-    orderInvalidPhone:'يرجى إدخال رقم هاتف مغربي صحيح، مثل 06 12 34 56 78 أو +212 6 12 34 56 78.'
+    orderInvalidPhone:'يرجى إدخال رقم هاتف مغربي صحيح، مثل 06 12 34 56 78 أو +212 6 12 34 56 78.',
+    orderReassure:['الدفع عند الاستلام نقداً','التوصيل خلال 24 إلى 72 ساعة في كل المغرب','بدون أي دفع عبر الإنترنت']
   }
 };
 let currentLang = 'fr';
@@ -1488,7 +1553,7 @@ function productPage(p){ return PRODUCT_PAGES[String(p && p.id)] || null; }
 /* Catalog snapshot written by tools/seo-build.mjs: the pre-rendered products are clickable
    before Supabase answers, and it is the fallback if Supabase cannot be reached. */
 /*PRERENDERED_PRODUCTS:BEGIN*/
-const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Neck & Shoulder Massager","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Posture Corrector","price":149,"oldPrice":179,"discount":0,"badge":"new","stock":0,"status":"active","visible":true,"desc":"Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.","longDesc":"Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.","img":"/assets/products/1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Posture Corrector","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":19,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"/assets/products/1965.jpg"}];
+const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Neck & Shoulder Massager","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Posture Corrector","price":149,"oldPrice":179,"discount":0,"badge":"new","stock":0,"status":"active","visible":true,"desc":"Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.","longDesc":"Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.","img":"/assets/products/1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Posture Corrector","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":18,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"/assets/products/1965.jpg"}];
 /*PRERENDERED_PRODUCTS:END*/
 
 let PRODUCTS = [];
@@ -1604,7 +1669,6 @@ function applyStaticText(){
   document.getElementById('lblOrderAddress').textContent = t.lblOrderAddress;
   document.getElementById('lblOrderNotes').textContent = t.lblOrderNotes;
   document.getElementById('orderFormSubmitBtn').textContent = t.orderSubmitBtn;
-  document.getElementById('orderFormWaBtn').textContent = t.orderHelpWa;
   if(document.getElementById('orderSuccessTitle')){
     document.getElementById('orderSuccessTitle').textContent=t.orderSuccessTitle;
     document.getElementById('orderSuccessText').textContent=t.orderSuccess;
@@ -1626,6 +1690,8 @@ function applyStaticText(){
   document.getElementById('cartTitle').textContent = t.cartTitle;
   document.getElementById('totalLbl').textContent = t.totalLbl;
   document.getElementById('modalAddBtn').textContent = t.modalAdd;
+  document.getElementById('modalBuyBtn').textContent = t.heroOrder;
+  document.getElementById('orderReassure').innerHTML = t.orderReassure.map(x=>`<span>${x}</span>`).join('');
   const modalTrust = document.getElementById('modalTrust');
   if(modalTrust) modalTrust.innerHTML = t.trustBadges.map(x=>`<span>${x}</span>`).join('');
   document.getElementById('socialRow').innerHTML = `<a href="https://www.instagram.com/axoria_store" target="_blank" rel="noopener" aria-label="Instagram">${ICONS.ig}</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp">${ICONS.whatsapp}</a>`;
@@ -1776,7 +1842,6 @@ function renderMenuGrid(){
         <img src="${p.img}" alt="${p.name}" loading="lazy">
         ${badgeHtml}
         <button class="favbtn ${FAVS.includes(p.id)?'active':''}" data-fav="${p.id}">${ICONS.heart}</button>
-        ${outOfStock ? '' : `<button class="quickbuy" data-quickbuy="${p.id}">${t.quickBuy}</button>`}
       </div>
       <div class="pcard-body">
         <h4>${productPage(p) ? `<a href="${productPage(p).url}">${p.name}</a>` : p.name}</h4>
@@ -1785,33 +1850,45 @@ function renderMenuGrid(){
           <span class="price-tag">${p.oldPrice? `<span class="price-old">${fmtPrice(p.oldPrice)}</span>`:''}${fmtPrice(p.price)}</span>
           ${outOfStock
             ? `<span style="font-size:11.5px;font-weight:700;color:#D34747;">${currentLang==='ar'?'نفذ من المخزون':currentLang==='en'?'Out of stock':'Rupture de stock'}</span>`
-            : `<button class="addbtn" data-add="${p.id}">${ICONS.plus}</button>`}
+            : ''}
         </div>
+        ${outOfStock ? '' : `<button class="btn btn-primary card-buy" type="button" data-buy="${p.id}">${t.heroOrder}</button>`}
       </div>
     </div>`;
   }).join('');
   grid.querySelectorAll('.pcard:not(.pcard-add)').forEach(card=>{
     card.addEventListener('click', (e)=>{
-      if(e.target.closest('.favbtn') || e.target.closest('.addbtn') || e.target.closest('a')) return;
+      if(e.target.closest('.favbtn') || e.target.closest('[data-buy]') || e.target.closest('a')) return;
       openModal(card.dataset.id);
     });
   });
   grid.querySelectorAll('[data-fav]').forEach(b=>{
     b.onclick = (e)=>{ e.stopPropagation(); toggleFav(b.dataset.fav); };
   });
-  grid.querySelectorAll('[data-add]').forEach(b=>{
-    b.onclick = (e)=>{ e.stopPropagation(); addToCart(b.dataset.add, 1); toast(I18N[currentLang].addedToast); ripple(e); };
-  });
-  grid.querySelectorAll('[data-quickbuy]').forEach(b=>{
-    b.onclick = (e)=>{ e.stopPropagation(); quickBuy(b.dataset.quickbuy); };
+  // One obvious action per product: straight to the cash-on-delivery order form.
+  grid.querySelectorAll('[data-buy]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); buyNow(b.dataset.buy, 1); };
   });
 }
-function quickBuy(id){
-  const p = PRODUCTS.find(x=>x.id===id);
+/* Express checkout: straight to the cash-on-delivery order form, no cart detour.
+   The product joins whatever is already in the cart; the form shows the full summary. */
+function buyNow(id, qty=1){
+  const p = PRODUCTS.find(x=>x.id===String(id));
   if(!p) return;
-  const t = I18N[currentLang];
-  const lines = [`${t.brand} — ${t.quickBuy}`, `${p.name} x1 — ${fmtPrice(p.price)}`, ''];
-  window.open('https://wa.me/212621575115?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+  if(p.stock!==undefined && p.stock!==null && Number(p.stock)<=0){ openModal(p.id); return; }
+  const item = CART.find(c=>c.id===p.id);
+  if(!item) addToCart(p.id, qty);
+  else if(qty>item.qty){ item.qty = qty; persistCart(); renderCart(); }
+  closeModal();
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+  openOrderForm();
+}
+/* Every WhatsApp contact counts as a Meta "Contact" conversion. */
+function openWhatsApp(url){
+  trackCommerceEvent('Contact',{content_name:'WhatsApp'});
+  const w = window.open(url,'_blank','noopener,noreferrer');
+  if(w) w.opener = null;
 }
 function toggleFav(id){
   if(FAVS.includes(id)) FAVS = FAVS.filter(f=>f!==id); else FAVS.push(id);
@@ -1908,7 +1985,7 @@ function updateStickyBar(){
   document.getElementById('sbImg').alt = last.name;
   document.getElementById('sbName').textContent = totalCount>1 ? `${totalCount} ${t.cartTitle}` : last.name;
   document.getElementById('sbPrice').textContent = fmtPrice(total);
-  document.getElementById('sbCartBtn').textContent = t.viewCart;
+  document.getElementById('sbCartBtn').textContent = t.waCartBtn;
   if(window.scrollY>380) bar.classList.add('show');
 }
 function buildWhatsAppMessage(fromContactForm){
@@ -1949,7 +2026,15 @@ function renderOrderSummary(){
         <h5>${c.name}</h5>
         <div class="ci-price">${c.qty} × ${fmtPrice(c.price)}</div>
       </div>
+      <button class="trashbtn" type="button" data-order-del="${c.key}" aria-label="Retirer ${c.name}">${ICONS.trash}</button>
     </div>`).join('');
+  // Express checkout can gather items from several clicks: let the customer drop one here.
+  wrap.querySelectorAll('[data-order-del]').forEach(b=>b.onclick=()=>{
+    CART = CART.filter(c=>c.key!==b.dataset.orderDel);
+    persistCart(); renderCart();
+    if(!CART.length){ closeOrderForm(); toast(I18N[currentLang].cartEmpty); return; }
+    renderOrderSummary();
+  });
   const total = CART.reduce((s,c)=>s+c.price*c.qty,0);
   document.getElementById('orderFormTotalVal').textContent = fmtPrice(total);
 }
@@ -1961,6 +2046,11 @@ function openOrderForm(){
   trackCommerceEvent('InitiateCheckout',{value:checkoutTotal,currency:'MAD',num_items:CART.reduce((s,c)=>s+Number(c.qty||0),0),content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)}))});
   document.getElementById('orderFormOverlay').classList.add('open');
   document.body.classList.add('no-scroll');
+  // Mouse users can start typing at once; on phones the keyboard would cover the summary.
+  if(window.matchMedia('(pointer: fine)').matches){
+    const first = document.getElementById('ofName');
+    if(first && !first.value) setTimeout(()=>first.focus({preventScroll:true}), 300);
+  }
 }
 function closeOrderForm(){
   document.getElementById('orderFormOverlay').classList.remove('open');
@@ -2008,8 +2098,7 @@ function openOrderFollowupWhatsApp(){
     : currentLang==='en'
       ? `Hello, I just placed AXORIA order${ref} and would like to follow up.`
       : `Bonjour, je viens de passer la commande AXORIA${ref} et je souhaite la suivre.`;
-  const w=window.open(`https://wa.me/212621575115?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');
-  if(w)w.opener=null;
+  openWhatsApp(`https://wa.me/212621575115?text=${encodeURIComponent(text)}`);
 }
 
 async function submitOrder(){
@@ -2171,15 +2260,23 @@ function spawnHeroParticles(){
 
 /* Links from the product pages (/?produit=<id>) and old schema URLs (#product-<id>) open that product. */
 let productDeepLinkDone = false;
+/* /?commander=<id> (the product pages' "Commander" button) goes straight to the order form. */
 function openProductFromUrl(){
   if(productDeepLinkDone) return;
-  let id = '';
-  try{ id = new URLSearchParams(location.search).get('produit') || ''; }catch(e){}
+  let id = '', buy = false;
+  try{
+    const q = new URLSearchParams(location.search);
+    id = q.get('commander') || '';
+    buy = !!id;
+    if(!id) id = q.get('produit') || '';
+  }catch(e){}
   if(!id){ const m = location.hash.match(/^#product-(.+)$/); if(m) id = decodeURIComponent(m[1]); }
   if(!id || !PRODUCTS.some(p=>String(p.id)===String(id) && p.visible)) return;
   productDeepLinkDone = true;
+  // Drop the parameter so a refresh does not add the product to the cart again.
+  try{ history.replaceState(null, '', location.pathname + '#menu'); }catch(e){}
   document.getElementById('menu')?.scrollIntoView();
-  openModal(String(id));
+  if(buy) buyNow(String(id), 1); else openModal(String(id));
 }
 
 function readLocalJSON(key){
@@ -2332,6 +2429,7 @@ function bindEvents(){
   document.getElementById('productModal').addEventListener('click', (e)=>{ if(e.target.id==='productModal') closeModal(); });
   document.getElementById('qtyPlus').onclick = ()=>{ modalQty++; document.getElementById('qtyVal').textContent=modalQty; updateModalPrice(); };
   document.getElementById('qtyMinus').onclick = ()=>{ if(modalQty>1) modalQty--; document.getElementById('qtyVal').textContent=modalQty; updateModalPrice(); };
+  document.getElementById('modalBuyBtn').onclick = ()=>buyNow(modalProduct.id, modalQty);
   document.getElementById('modalAddBtn').onclick = (e)=>{
     addToCart(modalProduct.id, modalQty);
     toast(I18N[currentLang].addedToast);
@@ -2341,13 +2439,40 @@ function bindEvents(){
   };
 
   document.getElementById('waCartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); openOrderForm(); };
-  document.getElementById('waOrderBtn').onclick = ()=>{ const w=window.open(buildWhatsAppMessage(true),'_blank','noopener,noreferrer'); if(w)w.opener=null; };
+  document.getElementById('waOrderBtn').onclick = ()=>openWhatsApp(buildWhatsAppMessage(true));
   document.getElementById('waFloat').href = 'https://wa.me/212621575115';
+  // Plain WhatsApp links (floating button, footer) are conversions too.
+  document.addEventListener('click', (e)=>{ if(e.target.closest('a[href*="wa.me/"]')) trackCommerceEvent('Contact',{content_name:'WhatsApp'}); });
+
+  // 3D tilt on product cards (desktop): CSS draws it, this only feeds the angles once per frame.
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const grid = document.getElementById('menuGrid');
+    let frame = 0;
+    grid.addEventListener('pointermove', (e)=>{
+      const card = e.target.closest('.pcard');
+      if(!card) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(()=>{
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        card.classList.add('tilt');
+        card.style.setProperty('--tx', `${(x*10).toFixed(2)}deg`);
+        card.style.setProperty('--ty', `${(-y*8).toFixed(2)}deg`);
+      });
+    }, {passive:true});
+    grid.addEventListener('pointerout', (e)=>{
+      const card = e.target.closest('.pcard');
+      if(!card || card.contains(e.relatedTarget)) return;
+      cancelAnimationFrame(frame);
+      card.classList.remove('tilt');
+      card.style.removeProperty('--tx');
+      card.style.removeProperty('--ty');
+    });
+  }
 
   document.getElementById('orderFormCloseBtn').onclick = closeOrderForm;
   document.getElementById('orderFormOverlay').addEventListener('click', (e)=>{ if(e.target.id==='orderFormOverlay') closeOrderForm(); });
   document.getElementById('orderFormSubmitBtn').onclick = submitOrder;
-  document.getElementById('orderFormWaBtn').onclick = ()=>{ const w=window.open(buildWhatsAppMessage(false),'_blank','noopener,noreferrer'); if(w)w.opener=null; };
   document.getElementById('orderSuccessBack').onclick=closeOrderSuccess;
   document.getElementById('orderSuccessWa').onclick=openOrderFollowupWhatsApp;
   document.getElementById('orderSuccessOverlay').addEventListener('click',e=>{if(e.target.id==='orderSuccessOverlay')closeOrderSuccess();});
@@ -2421,7 +2546,7 @@ function bindEvents(){
   }, {passive:true});
   document.getElementById('topBtn').onclick = ()=>window.scrollTo({top:0, behavior:'smooth'});
   document.getElementById('totopFooter').onclick = ()=>window.scrollTo({top:0, behavior:'smooth'});
-  document.getElementById('sbCartBtn').onclick = ()=>{ document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); };
+  document.getElementById('sbCartBtn').onclick = openOrderForm;
 
   document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click', ripple));
 
