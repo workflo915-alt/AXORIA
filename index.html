@@ -664,6 +664,7 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 .order-reassure{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 12px;font-size:12.5px;font-weight:600;color:var(--text-soft);}
 .order-reassure span{display:inline-flex;align-items:center;gap:6px;}
 .order-reassure span::before{content:'✓';color:#25D366;font-weight:800;}
+.pcard .card-buy{width:100%;justify-content:center;margin-top:8px;padding:13px 18px;font-size:14.5px;}
 #orderFormSummary .trashbtn{margin-left:auto;padding:9px;flex-shrink:0;}
 #orderFormSummary .trashbtn svg{width:18px;height:18px;display:block;}
 
@@ -783,7 +784,6 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
         <img src="https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg" alt="Neck & Shoulder Massager" loading="lazy">
         
         <button class="favbtn " data-fav="1968"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        <button class="quickbuy" data-quickbuy="1968">Achat rapide</button>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/masseur-cou-epaules.html">Neck & Shoulder Massager</a></h4>
@@ -802,8 +802,9 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 AXORIA — Feel Better, Every Day.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">300 DH</span>260 DH</span>
-          <button class="addbtn" data-add="1968"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          
         </div>
+        <button class="btn btn-primary card-buy" type="button" data-buy="1968">Commander maintenant</button>
       </div>
     </div>
     <div class="pcard reveal in" id="product-1967" data-id="1967">
@@ -811,7 +812,6 @@ AXORIA — Feel Better, Every Day.</p>
         <img src="/assets/products/1967.jpg" alt="Posture Corrector" loading="lazy">
         <span class="badge promo" style="background:#3F8FC4;">NEW</span>
         <button class="favbtn " data-fav="1967"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-rose.html">Posture Corrector</a></h4>
@@ -820,6 +820,7 @@ AXORIA — Feel Better, Every Day.</p>
           <span class="price-tag"><span class="price-old">179 DH</span>149 DH</span>
           <span style="font-size:11.5px;font-weight:700;color:#D34747;">Rupture de stock</span>
         </div>
+        
       </div>
     </div>
     <div class="pcard reveal in" id="product-1965" data-id="1965">
@@ -827,15 +828,15 @@ AXORIA — Feel Better, Every Day.</p>
         <img src="/assets/products/1965.jpg" alt="Posture Corrector" loading="lazy">
         <span class="badge promo" style="background:var(--coral);">BEST SELLER</span>
         <button class="favbtn " data-fav="1965"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.3 4.5 6 4.5c2 0 3.5 1 4 2.2C10.5 5.5 12 4.5 14 4.5c3.7 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></button>
-        <button class="quickbuy" data-quickbuy="1965">Achat rapide</button>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-noir.html">Posture Corrector</a></h4>
         <p class="desc">Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">135 DH</span>129 DH</span>
-          <button class="addbtn" data-add="1965"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          
         </div>
+        <button class="btn btn-primary card-buy" type="button" data-buy="1965">Commander maintenant</button>
       </div>
     </div></div>
   </div>
@@ -1056,9 +1057,7 @@ AXORIA — Feel Better, Every Day.</p>
       <div class="form-row"><label id="lblOrderNotes" for="ofNotes">Notes (optionnel)</label><textarea id="ofNotes" rows="3" maxlength="1000"></textarea></div>
       <div class="form-error" id="orderFormError" role="alert" aria-live="polite"></div>
       <div class="order-reassure" id="orderReassure"><span>Paiement à la livraison, en espèces</span><span>Livraison 24 à 72h partout au Maroc</span><span>Aucun paiement en ligne demandé</span></div>
-      <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;">Valider ma commande</button>
-      <button class="btn btn-green" id="orderFormWaBtn" style="width:100%;justify-content:center;margin-top:10px;">Besoin d&#39;aide ? WhatsApp</button>
-    </div>
+      <button class="btn btn-primary" id="orderFormSubmitBtn" style="width:100%;justify-content:center;">Valider ma commande</button>    </div>
   </div>
 </div>
 
@@ -1670,7 +1669,6 @@ function applyStaticText(){
   document.getElementById('lblOrderAddress').textContent = t.lblOrderAddress;
   document.getElementById('lblOrderNotes').textContent = t.lblOrderNotes;
   document.getElementById('orderFormSubmitBtn').textContent = t.orderSubmitBtn;
-  document.getElementById('orderFormWaBtn').textContent = t.orderHelpWa;
   if(document.getElementById('orderSuccessTitle')){
     document.getElementById('orderSuccessTitle').textContent=t.orderSuccessTitle;
     document.getElementById('orderSuccessText').textContent=t.orderSuccess;
@@ -1844,7 +1842,6 @@ function renderMenuGrid(){
         <img src="${p.img}" alt="${p.name}" loading="lazy">
         ${badgeHtml}
         <button class="favbtn ${FAVS.includes(p.id)?'active':''}" data-fav="${p.id}">${ICONS.heart}</button>
-        ${outOfStock ? '' : `<button class="quickbuy" data-quickbuy="${p.id}">${t.quickBuy}</button>`}
       </div>
       <div class="pcard-body">
         <h4>${productPage(p) ? `<a href="${productPage(p).url}">${p.name}</a>` : p.name}</h4>
@@ -1853,25 +1850,24 @@ function renderMenuGrid(){
           <span class="price-tag">${p.oldPrice? `<span class="price-old">${fmtPrice(p.oldPrice)}</span>`:''}${fmtPrice(p.price)}</span>
           ${outOfStock
             ? `<span style="font-size:11.5px;font-weight:700;color:#D34747;">${currentLang==='ar'?'نفذ من المخزون':currentLang==='en'?'Out of stock':'Rupture de stock'}</span>`
-            : `<button class="addbtn" data-add="${p.id}">${ICONS.plus}</button>`}
+            : ''}
         </div>
+        ${outOfStock ? '' : `<button class="btn btn-primary card-buy" type="button" data-buy="${p.id}">${t.heroOrder}</button>`}
       </div>
     </div>`;
   }).join('');
   grid.querySelectorAll('.pcard:not(.pcard-add)').forEach(card=>{
     card.addEventListener('click', (e)=>{
-      if(e.target.closest('.favbtn') || e.target.closest('.addbtn') || e.target.closest('a')) return;
+      if(e.target.closest('.favbtn') || e.target.closest('[data-buy]') || e.target.closest('a')) return;
       openModal(card.dataset.id);
     });
   });
   grid.querySelectorAll('[data-fav]').forEach(b=>{
     b.onclick = (e)=>{ e.stopPropagation(); toggleFav(b.dataset.fav); };
   });
-  grid.querySelectorAll('[data-add]').forEach(b=>{
-    b.onclick = (e)=>{ e.stopPropagation(); addToCart(b.dataset.add, 1); toast(I18N[currentLang].addedToast); ripple(e); };
-  });
-  grid.querySelectorAll('[data-quickbuy]').forEach(b=>{
-    b.onclick = (e)=>{ e.stopPropagation(); buyNow(b.dataset.quickbuy, 1); };
+  // One obvious action per product: straight to the cash-on-delivery order form.
+  grid.querySelectorAll('[data-buy]').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); buyNow(b.dataset.buy, 1); };
   });
 }
 /* Express checkout: straight to the cash-on-delivery order form, no cart detour.
@@ -2477,7 +2473,6 @@ function bindEvents(){
   document.getElementById('orderFormCloseBtn').onclick = closeOrderForm;
   document.getElementById('orderFormOverlay').addEventListener('click', (e)=>{ if(e.target.id==='orderFormOverlay') closeOrderForm(); });
   document.getElementById('orderFormSubmitBtn').onclick = submitOrder;
-  document.getElementById('orderFormWaBtn').onclick = ()=>openWhatsApp(buildWhatsAppMessage(false));
   document.getElementById('orderSuccessBack').onclick=closeOrderSuccess;
   document.getElementById('orderSuccessWa').onclick=openOrderFollowupWhatsApp;
   document.getElementById('orderSuccessOverlay').addEventListener('click',e=>{if(e.target.id==='orderSuccessOverlay')closeOrderSuccess();});
