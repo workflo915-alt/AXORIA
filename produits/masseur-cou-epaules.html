@@ -87,7 +87,7 @@ footer a{margin:0 8px;text-decoration:none}
 
       <ul class="ticks"><li>Massage relaxant de la nuque et des épaules</li><li>Sangles pratiques pour ajuster le positionnement</li><li>Idéal après une longue journée de travail</li><li>Design élégant et confortable</li></ul>
       <div class="ctas">
-        <a class="btn primary" id="pOrder" href="/?produit=1968#menu">Commander maintenant</a>
+        <a class="btn primary" id="pOrder" href="/?commander=1968">Commander maintenant</a>
         <a class="btn wa" id="pWa" href="https://wa.me/212621575115?text=Bonjour%20AXORIA%20!%20Je%20souhaite%20commander%20%3A%20Masseur%20cou%20et%20%C3%A9paules%20(260%20DH).%0Ahttps%3A%2F%2Faxoria.ma%2Fproduits%2Fmasseur-cou-epaules.html" target="_blank" rel="noopener">Commander sur WhatsApp</a>
       </div>
       <ul class="trust"><li>Livraison partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
@@ -131,7 +131,7 @@ footer a{margin:0 8px;text-decoration:none}
       var old=document.getElementById('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
       var inStock=p.stock==null||Number(p.stock)>0;
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison 24 à 72h':'Rupture de stock';
-      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?produit='+encodeURIComponent(ID)+'#menu">Commander maintenant</a>';
+      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
     })
     .catch(function(){});

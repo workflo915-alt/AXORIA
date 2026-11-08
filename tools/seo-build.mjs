@@ -298,7 +298,7 @@ footer a{margin:0 8px;text-decoration:none}
 ${paragraphs.map((t) => `      <p class="lead">${esc(t)}</p>`).join('\n')}
 ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
       <div class="ctas">
-        ${inStock ? `<a class="btn primary" id="pOrder" href="/?produit=${encodeURIComponent(p.id)}#menu">Commander maintenant</a>` : `<span class="btn disabled" id="pOrder">Rupture de stock</span>`}
+        ${inStock ? `<a class="btn primary" id="pOrder" href="/?commander=${encodeURIComponent(p.id)}">Commander maintenant</a>` : `<span class="btn disabled" id="pOrder">Rupture de stock</span>`}
         <a class="btn wa" id="pWa" href="${esc(waLink)}" target="_blank" rel="noopener">${inStock ? 'Commander sur WhatsApp' : 'Être prévenu(e) sur WhatsApp'}</a>
       </div>
       <ul class="trust"><li>Livraison partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
@@ -330,7 +330,7 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
       var old=document.getElementById('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
       var inStock=p.stock==null||Number(p.stock)>0;
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison 24 à 72h':'Rupture de stock';
-      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?produit='+encodeURIComponent(ID)+'#menu">Commander maintenant</a>';
+      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
     })
     .catch(function(){});
