@@ -114,6 +114,10 @@ footer a{margin:0 8px;text-decoration:none}
     <h2>Autres produits AXORIA</h2>
     <ul class="others"><li><a href="/produits/masseur-cou-epaules.html">Masseur cou et épaules<span>260 DH</span></a></li><li><a href="/produits/correcteur-posture-dos-epaules-noir.html">Correcteur de posture dos et épaules — Noir<span>129 DH</span></a></li></ul>
   </section>
+  <section>
+    <h2>Guides utiles</h2>
+    <ul class="others"><li><a href="/fr/guides/correcteur-posture-guide.html">Correcteur de posture : comment le choisir et le porter<span>Lire le guide →</span></a></li><li><a href="/fr/guides/posture-bureau.html">Comment améliorer sa posture au bureau ?<span>Lire le guide →</span></a></li></ul>
+  </section>
 </main>
 <footer>
   <a href="/">Boutique</a><a href="/guides.html">Guides</a><a href="/shipping-returns.html">Livraison &amp; retours</a><a href="/privacy.html">Confidentialité</a><a href="/terms.html">Conditions générales</a>
@@ -136,6 +140,40 @@ footer a{margin:0 8px;text-decoration:none}
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison 24 à 72h':'Rupture de stock';
       if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+    })
+    .catch(function(){});
+})();
+</script>
+<script>
+/* Ads: product pages are where ads land. Remember the Meta ad click (fbclid) for the order
+   that may follow, and on the live site only tell the Pixel which product was viewed. */
+(function(){
+  var now=Date.now(), fbclid=new URLSearchParams(location.search).get('fbclid');
+  var get=function(n){ var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)')); return m?m[1]:''; };
+  var set=function(n,v){ document.cookie=n+'='+v+'; path=/; max-age=7776000; SameSite=Lax'; };
+  try{
+    if(fbclid && get('_fbc').slice(-fbclid.length)!==fbclid) set('_fbc','fb.1.'+now+'.'+fbclid);
+    if(!get('_fbp')) set('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*1e10));
+  }catch(e){}
+  if(!/^(www\.)?axoria\.ma$/.test(location.hostname)) return;
+  fetch("https://gdemgpkkrmpridqgjmtx.supabase.co/rest/v1/axoria_store?select=value&key=eq.axoria_tracking",{headers:{apikey:"sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD"}})
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(rows){
+      var cfg=(rows&&rows[0]&&rows[0].value)||{}, pixel=String(cfg.pixelId||'').trim();
+      if(!cfg.enabled||!/^\d{5,30}$/.test(pixel)) return;
+      var start=function(){
+        if(!window.fbq){
+          var n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};
+          if(!window._fbq)window._fbq=n; n.push=n; n.loaded=true; n.version='2.0'; n.queue=[];
+          var s=document.createElement('script'); s.async=true; s.src='https://connect.facebook.net/en_US/fbevents.js'; document.head.appendChild(s);
+        }
+        window.fbq('init',pixel);
+        window.fbq('track','PageView');
+        window.fbq('track','ViewContent',{content_ids:["1967"],content_type:'product',content_name:"Correcteur de posture dos et épaules — Rose",value:129,currency:'MAD'});
+        var wa=document.getElementById('pWa'); if(wa) wa.addEventListener('click',function(){ window.fbq('track','Contact',{content_name:'WhatsApp'}); });
+      };
+      // Load the Pixel once the page is shown, so it never slows the product page down.
+      if(document.readyState==='complete') setTimeout(start,1200); else addEventListener('load',function(){ setTimeout(start,1200); });
     })
     .catch(function(){});
 })();

@@ -1154,6 +1154,18 @@ let META_PAGEVIEW_SENT=false;
 function validMetaPixelId(v){return /^\d{5,30}$/.test(String(v||'').trim());}
 function metaEventId(prefix='ax'){return `${prefix}-${Date.now()}-${(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2))}`;}
 function getCookieValue(name){const prefix=name+'=';return document.cookie.split(';').map(v=>v.trim()).find(v=>v.startsWith(prefix))?.slice(prefix.length)||'';}
+/* Ads attribution: keep the Meta ad click ID (fbclid) and a browser ID from the very first
+   page view, before the Pixel library loads, so every Pixel and Conversions API event can be
+   credited to the ad that brought the visitor. Same cookie formats the Pixel itself uses. */
+(function rememberAdClick(){
+  try{
+    const now=Date.now();
+    const fbclid=new URLSearchParams(location.search).get('fbclid');
+    const set=(name,value)=>{ document.cookie=`${name}=${value}; path=/; max-age=7776000; SameSite=Lax`; };
+    if(fbclid && !getCookieValue('_fbc').endsWith(fbclid)) set('_fbc',`fb.1.${now}.${fbclid}`);
+    if(!getCookieValue('_fbp')) set('_fbp',`fb.1.${now}.${Math.floor(Math.random()*1e10)}`);
+  }catch(e){}
+})();
 function whenIdle(cb){
   const run=()=>('requestIdleCallback' in window) ? requestIdleCallback(cb,{timeout:4000}) : setTimeout(cb,2000);
   if(document.readyState==='complete') run(); else window.addEventListener('load',run,{once:true});
@@ -1184,6 +1196,8 @@ async function loadTrackingConfig(){
     const raw=await storeGet('axoria_tracking',true);
     META_TRACKING={enabled:!!raw?.enabled,pixelId:String(raw?.pixelId||'').trim(),capiEnabled:!!raw?.capiEnabled};
   }catch(e){console.warn('Meta tracking config unavailable',e);}
+  // Only the real shop feeds Meta: local tests and Netlify previews never send events.
+  if(!/^(www\.)?axoria\.ma$/.test(location.hostname)) META_TRACKING.enabled=false;
   META_CONFIG_READY=true;
   if(ensureMetaPixel()&&!META_PAGEVIEW_SENT){META_PAGEVIEW_SENT=true;trackCommerceEvent('PageView');}
   META_PENDING.splice(0).forEach(args=>trackCommerceEvent(...args));
@@ -2144,26 +2158,19 @@ async function submitOrder(){
     const purchaseValue=Number(placed?.order_total||CART.reduce((s,c)=>s+Number(c.price||0)*Number(c.qty||0),0));
     const orderUuid=String(placed?.order_id||'').trim();
     const purchaseEventID=orderUuid ? `purchase-${orderUuid}` : metaEventId('purchase');
-    trackCommerceEvent('Purchase',{value:purchaseValue,currency:'MAD',content_type:'product',content_ids:CART.map(c=>String(c.id)),contents:CART.map(c=>({id:String(c.id),quantity:Number(c.qty||0),item_price:Number(c.price||0)})),order_id:String(placed?.order_code||placed?.order_id||'')},{ph:phone,fn:name,ct:city,country:'ma',external_id:orderUuid||String(placed?.order_code||'')},{eventID:purchaseEventID,browserOnly:true});
-
-    // Stock changed server-side: refresh the visible catalog immediately.
-    const fresh = await fetchProductsSafe();
-    if(fresh.status==='ok' && Array.isArray(fresh.data)){
-      PRODUCTS = fresh.data;
-      syncNextProductId();
-      renderCatFilters();
-      renderMenuGrid();
-    }
+    const orderCode=String(placed?.order_code||placed?.order_id||'').trim();
+    /* The thank-you page (/merci.html) shows this order and sends the browser "Purchase"
+       with the same event ID as the server-side one sent by the orders trigger, so Meta
+       counts it once. Only what the page displays is handed over (no name or phone). */
+    try{
+      sessionStorage.setItem('axoria_last_order', JSON.stringify({
+        id:orderUuid, code:orderCode, value:purchaseValue, currency:'MAD', lang:currentLang, eventID:purchaseEventID,
+        items:CART.map(c=>({id:String(c.id), name:c.name, qty:Number(c.qty||0), price:Number(c.price||0), img:String(c.img||'').startsWith('data:')?'':c.img}))
+      }));
+    }catch(e){}
     CART = [];
     persistCart();
-    renderCart();
-    document.getElementById('ofName').value = '';
-    document.getElementById('ofPhone').value = '';
-    document.getElementById('ofCity').value = '';
-    document.getElementById('ofAddress').value = '';
-    document.getElementById('ofNotes').value = '';
-    closeOrderForm();
-    showOrderSuccess(placed);
+    location.href = '/merci.html' + (orderCode ? `?commande=${encodeURIComponent(orderCode)}` : '');
   }catch(e){
     console.error('submitOrder failed', e);
     const msg = String(e?.message || '');

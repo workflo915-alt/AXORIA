@@ -18,3 +18,14 @@
 /admin
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
+
+# Thank-you page after an order: never in Google.
+/merci.html
+  X-Robots-Tag: noindex, nofollow
+
+/merci
+  X-Robots-Tag: noindex, nofollow
+
+# Product feed read by Meta Commerce Manager and Google Merchant Center.
+/feeds/*
+  Cache-Control: public, max-age=3600

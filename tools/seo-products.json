@@ -1,15 +1,19 @@
 {
   "1965": {
     "slug": "correcteur-posture-dos-epaules-noir",
-    "name": "Correcteur de posture dos et épaules — Noir"
+    "name": "Correcteur de posture dos et épaules — Noir",
+    "group": "correcteur-posture-dos-epaules",
+    "color": "Noir"
   },
   "1967": {
     "slug": "correcteur-posture-dos-epaules-rose",
-    "name": "Correcteur de posture dos et épaules — Rose"
+    "name": "Correcteur de posture dos et épaules — Rose",
+    "group": "correcteur-posture-dos-epaules",
+    "color": "Rose"
   },
   "1968": {
     "slug": "masseur-cou-epaules",
     "name": "Masseur cou et épaules"
   },
-  "_help": "Used by tools/seo-build.mjs. Key = product id from the admin. slug = page address /produits/<slug>.html (do not change it once Google has indexed it). name = title shown on that page (optional; the admin name is used when empty). New products get an entry automatically on the next run."
+  "_help": "Used by tools/seo-build.mjs. Key = product id from the admin. slug = page address /produits/<slug>.html (do not change it once Google has indexed it). name = title shown on that page (optional; the admin name is used when empty). group + color = colour variants of one product in the catalog feed (feeds/products.xml). New products get an entry automatically on the next run."
 }

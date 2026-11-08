@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>AXORIA — catalogue</title>
+    <link>https://axoria.ma/</link>
+    <description>Produits AXORIA, livraison partout au Maroc et paiement à la livraison.</description>
+    <item>
+      <g:id>1968</g:id>
+      <g:title>Masseur cou et épaules</g:title>
+      <g:description>Massage relaxant de la nuque et des épaules. Sangles pratiques pour ajuster le positionnement. Idéal après une longue journée de travail. Design élégant et confortable.</g:description>
+      <g:link>https://axoria.ma/produits/masseur-cou-epaules.html</g:link>
+      <g:image_link>https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg</g:image_link>
+      <g:brand>AXORIA</g:brand>
+      <g:condition>new</g:condition>
+      <g:availability>in_stock</g:availability>
+      <g:price>260.00 MAD</g:price>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>Massage &amp; Détente</g:product_type>
+      <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Massage &amp; Relaxation &gt; Massagers</g:google_product_category>
+    </item>
+    <item>
+      <g:id>1967</g:id>
+      <g:title>Correcteur de posture dos et épaules — Rose</g:title>
+      <g:description>Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives. Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.</g:description>
+      <g:link>https://axoria.ma/produits/correcteur-posture-dos-epaules-rose.html</g:link>
+      <g:image_link>https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1967/1794176890588-pecqkkza-axoria-1967.jpg</g:image_link>
+      <g:brand>AXORIA</g:brand>
+      <g:condition>new</g:condition>
+      <g:availability>out_of_stock</g:availability>
+      <g:price>129.00 MAD</g:price>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>Support &amp; Récupération</g:product_type>
+      <g:google_product_category>Health &amp; Beauty &gt; Health Care &gt; Supports &amp; Braces</g:google_product_category>
+      <g:item_group_id>correcteur-posture-dos-epaules</g:item_group_id>
+      <g:color>Rose</g:color>
+    </item>
+    <item>
+      <g:id>1965</g:id>
+      <g:title>Correcteur de posture dos et épaules — Noir</g:title>
+      <g:description>Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable. Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.</g:description>
+      <g:link>https://axoria.ma/produits/correcteur-posture-dos-epaules-noir.html</g:link>
+      <g:image_link>https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1965/1794176892817-v5lm970w-axoria-1965.jpg</g:image_link>
+      <g:brand>AXORIA</g:brand>
+      <g:condition>new</g:condition>
+      <g:availability>in_stock</g:availability>
+      <g:price>129.00 MAD</g:price>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>Support &amp; Récupération</g:product_type>
+      <g:google_product_category>Health &amp; Beauty &gt; Health Care &gt; Supports &amp; Braces</g:google_product_category>
+      <g:item_group_id>correcteur-posture-dos-epaules</g:item_group_id>
+      <g:color>Noir</g:color>
+    </item>
+  </channel>
+</rss>
