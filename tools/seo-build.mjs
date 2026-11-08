@@ -162,6 +162,47 @@ function descriptionParts(p) {
   return { bullets, paragraphs, details };
 }
 
+/* ---------- guides linked from product pages (internal linking for SEO) ---------- */
+const GUIDES = {
+  posture: [
+    { href: '/fr/guides/correcteur-posture-guide.html', title: 'Correcteur de posture : comment le choisir et le porter' },
+    { href: '/fr/guides/posture-bureau.html', title: 'Comment améliorer sa posture au bureau ?' },
+  ],
+  massage: [
+    { href: '/fr/guides/nuque-epaules-detente.html', title: 'Nuque et épaules tendues : une routine simple après le travail' },
+    { href: '/fr/guides/recuperation-sportive.html', title: 'Récupération après le sport : les bases' },
+  ],
+};
+const guidesFor = (p) => (/massage|détente/i.test(String(p.cat || '')) ? GUIDES.massage : GUIDES.posture);
+
+/* ---------- product feed: Meta Commerce Manager (catalog ads) + Google Merchant Center ---------- */
+const FEED_CATEGORY = {
+  'Support & Récupération': 'Health & Beauty > Health Care > Supports & Braces',
+  'Massage & Détente': 'Health & Beauty > Personal Care > Massage & Relaxation > Massagers',
+};
+function feedDescription(p) {
+  const { bullets, paragraphs, details } = descriptionParts(p);
+  return [...paragraphs, ...bullets.map((b) => `${b.replace(/[.!]+$/, '')}.`), ...details].join(' ').trim();
+}
+function productFeedXml(products, pages, config) {
+  const x = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
+  const items = products.map((p) => {
+    const page = pages[String(p.id)];
+    const cfg = config[String(p.id)] || {};
+    const image = page.imageUrl.startsWith('http') ? page.imageUrl : `${SITE}${page.imageUrl}`;
+    const inStock = p.stock === undefined || p.stock === null || Number(p.stock) > 0;
+    const fields = [
+      ['g:id', p.id], ['g:title', page.name], ['g:description', feedDescription(p) || page.name],
+      ['g:link', `${SITE}${page.url}`], ['g:image_link', image], ['g:brand', 'AXORIA'], ['g:condition', 'new'],
+      ['g:availability', inStock ? 'in_stock' : 'out_of_stock'], ['g:price', `${Number(p.price).toFixed(2)} MAD`],
+      ['g:identifier_exists', 'no'], ['g:product_type', p.cat],
+      ['g:google_product_category', FEED_CATEGORY[p.cat]], ['g:item_group_id', cfg.group], ['g:color', cfg.color],
+    ];
+    return `    <item>\n${fields.filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `      <${k}>${x(v)}</${k}>`).join('\n')}\n    </item>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n  <channel>\n    <title>AXORIA — catalogue</title>\n    <link>${SITE}/</link>\n    <description>Produits AXORIA, livraison partout au Maroc et paiement à la livraison.</description>\n${items.join('\n')}\n  </channel>\n</rss>\n`;
+}
+
 /* ---------- product page ---------- */
 function productPageHtml(p, page, ctx) {
   const { bullets, paragraphs, details } = descriptionParts(p);
@@ -310,6 +351,10 @@ ${details.length ? `  <section>\n    <h2>Description</h2>\n${details.map((t) => 
 ${faqs.map(([q, a]) => `    <h3>${esc(q)}</h3>\n    <p>${esc(a)}</p>`).join('\n')}
   </section>
 ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul class="others">${others.map((o) => `<li><a href="${o.url}">${esc(o.name)}<span>${esc(price(o.price))}</span></a></li>`).join('')}</ul>\n  </section>` : ''}
+  <section>
+    <h2>Guides utiles</h2>
+    <ul class="others">${guidesFor(p).map((g) => `<li><a href="${g.href}">${esc(g.title)}<span>Lire le guide →</span></a></li>`).join('')}</ul>
+  </section>
 </main>
 <footer>
   <a href="/">Boutique</a><a href="/guides.html">Guides</a><a href="/shipping-returns.html">Livraison &amp; retours</a><a href="/privacy.html">Confidentialité</a><a href="/terms.html">Conditions générales</a>
@@ -332,6 +377,40 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison 24 à 72h':'Rupture de stock';
       if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+    })
+    .catch(function(){});
+})();
+</script>
+<script>
+/* Ads: product pages are where ads land. Remember the Meta ad click (fbclid) for the order
+   that may follow, and on the live site only tell the Pixel which product was viewed. */
+(function(){
+  var now=Date.now(), fbclid=new URLSearchParams(location.search).get('fbclid');
+  var get=function(n){ var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)')); return m?m[1]:''; };
+  var set=function(n,v){ document.cookie=n+'='+v+'; path=/; max-age=7776000; SameSite=Lax'; };
+  try{
+    if(fbclid && get('_fbc').slice(-fbclid.length)!==fbclid) set('_fbc','fb.1.'+now+'.'+fbclid);
+    if(!get('_fbp')) set('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*1e10));
+  }catch(e){}
+  if(!/^(www\\.)?axoria\\.ma$/.test(location.hostname)) return;
+  fetch(${JSON.stringify(`${SUPABASE_URL}/rest/v1/axoria_store?select=value&key=eq.axoria_tracking`)},{headers:{apikey:${JSON.stringify(SUPABASE_KEY)}}})
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(rows){
+      var cfg=(rows&&rows[0]&&rows[0].value)||{}, pixel=String(cfg.pixelId||'').trim();
+      if(!cfg.enabled||!/^\\d{5,30}$/.test(pixel)) return;
+      var start=function(){
+        if(!window.fbq){
+          var n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};
+          if(!window._fbq)window._fbq=n; n.push=n; n.loaded=true; n.version='2.0'; n.queue=[];
+          var s=document.createElement('script'); s.async=true; s.src='https://connect.facebook.net/en_US/fbevents.js'; document.head.appendChild(s);
+        }
+        window.fbq('init',pixel);
+        window.fbq('track','PageView');
+        window.fbq('track','ViewContent',{content_ids:[${JSON.stringify(String(p.id))}],content_type:'product',content_name:${JSON.stringify(page.name)},value:${Number(p.price)},currency:'MAD'});
+        var wa=document.getElementById('pWa'); if(wa) wa.addEventListener('click',function(){ window.fbq('track','Contact',{content_name:'WhatsApp'}); });
+      };
+      // Load the Pixel once the page is shown, so it never slows the product page down.
+      if(document.readyState==='complete') setTimeout(start,1200); else addEventListener('load',function(){ setTimeout(start,1200); });
     })
     .catch(function(){});
 })();
@@ -434,12 +513,15 @@ async function main() {
   entries.splice(1, 0, ...productEntries);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((e) => `  ${e.trim()}`).join('\n')}\n</urlset>\n`);
 
-  // 6. Remember slugs for new products.
+  // 6. Product feed for Meta Commerce Manager and Google Merchant Center (both read this URL daily).
+  write('feeds/products.xml', productFeedXml(visible, pages, config));
+
+  // 7. Remember slugs for new products.
   write('tools/seo-products.json', `${JSON.stringify(config, null, 2)}\n`);
 
   console.log(`index.html: ${recorded.size} blocks pre-rendered, ${visible.length} products in the grid and schema`);
   for (const p of pageList) console.log(`  ${p.url}  —  ${p.name}`);
-  console.log('sitemap.xml updated. Next: review the pages, commit and deploy.');
+  console.log('sitemap.xml and feeds/products.xml updated. Next: review the pages, commit and deploy.');
 }
 
 main().catch((e) => { console.error(`seo-build failed: ${e.message}`); process.exit(1); });

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commande confirmée | AXORIA</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/brand/favicon-48.png">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1220">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A1220;--surface:#101E33;--line:#1E2E47;--text:#EAF1FB;--soft:#9FB0C8;--blue:#2F80ED;--gold:#C9A227;--wa:#1FA855;--ok:#4ADE80}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+[dir="rtl"] body{line-height:1.9}
+a{color:inherit}
+.top{display:flex;align-items:center;max-width:720px;margin:auto;padding:14px 20px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-family:Unbounded,sans-serif;font-weight:800;text-decoration:none;letter-spacing:.02em}
+.wrap{max-width:720px;margin:auto;padding:28px 20px 64px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px 22px}
+.check{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(74,222,128,.14);color:var(--ok);margin-bottom:14px}
+.check svg{width:32px;height:32px}
+h1{font-family:Unbounded,sans-serif;font-size:clamp(24px,5vw,34px);line-height:1.2;margin:0 0 10px}
+[dir="rtl"] h1{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800}
+.lead{color:var(--soft);margin:0 0 18px}
+.ref{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:999px;border:1px dashed var(--gold);font-weight:700;margin-bottom:20px}
+.ref strong{color:var(--gold);letter-spacing:.04em}
+h2{font-size:17px;margin:22px 0 10px}
+.items{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.items li{display:flex;align-items:center;gap:12px}
+.items img{width:52px;height:52px;border-radius:12px;object-fit:cover;background:#fff;flex-shrink:0}
+.items .q{color:var(--soft);font-size:14px}
+.total{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:800;font-size:18px}
+.steps{margin:0;padding-inline-start:20px;display:grid;gap:8px;color:var(--soft)}
+.steps li::marker{color:var(--gold);font-weight:800}
+.note{margin:18px 0 0;padding:12px 14px;border-radius:14px;background:rgba(201,162,39,.12);color:var(--text);font-size:14px}
+.ctas{display:grid;gap:10px;margin-top:22px}
+.btn{display:block;text-align:center;padding:15px 18px;border-radius:14px;font-weight:700;text-decoration:none;font-size:16px}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.ghost{border:1px solid var(--line);color:var(--text)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header class="top"><a class="brand" href="/"><img src="/assets/brand/axoria-logo-128.webp" alt="" width="36" height="36">AXORIA</a></header>
+<main class="wrap">
+  <div class="card">
+    <div class="check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <h1 id="title">Merci ! Votre commande est confirmée</h1>
+    <p class="lead" id="lead">Notre équipe vous contacte rapidement pour la confirmer.</p>
+    <div class="ref hidden" id="refBox"><span id="refLabel">Référence</span> <strong id="ref"></strong></div>
+    <section class="hidden" id="summary">
+      <h2 id="summaryTitle">Votre commande</h2>
+      <ul class="items" id="items"></ul>
+      <div class="total"><span id="totalLabel">Total à payer à la livraison</span><span id="total"></span></div>
+    </section>
+    <h2 id="nextTitle">Et maintenant ?</h2>
+    <ol class="steps" id="steps">
+      <li>Un conseiller AXORIA vous contacte (appel ou WhatsApp) pour confirmer votre commande.</li>
+      <li>Livraison en 24 à 72h selon votre ville.</li>
+      <li>Vous payez en espèces à la réception.</li>
+    </ol>
+    <p class="note" id="note">Gardez votre téléphone à portée de main pour ne pas manquer notre appel.</p>
+    <div class="ctas">
+      <a class="btn wa" id="waBtn" href="https://wa.me/212621575115" target="_blank" rel="noopener">Suivre ma commande sur WhatsApp</a>
+      <a class="btn ghost" id="backBtn" href="/#menu">Continuer mes achats</a>
+    </div>
+  </div>
+</main>
+<script>
+/* Thank-you page: shows the order the customer just placed and sends the Meta "Purchase"
+   from the browser. The database trigger sends the same Purchase server-side with the same
+   event ID (purchase-<order id>), so Meta counts each order once. Nothing is sent from
+   local tests or Netlify previews, and a refresh never sends it twice. */
+(function(){
+  var SUPABASE_URL = 'https://gdemgpkkrmpridqgjmtx.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD';
+  var LIVE_SITE = /^(www\.)?axoria\.ma$/.test(location.hostname);
+  var T = {
+    fr: { title:'Merci ! Votre commande est confirmée', lead:'Notre équipe vous contacte rapidement pour la confirmer.', ref:'Référence', summary:'Votre commande', total:'Total à payer à la livraison', next:'Et maintenant ?',
+          steps:['Un conseiller AXORIA vous contacte (appel ou WhatsApp) pour confirmer votre commande.','Livraison en 24 à 72h selon votre ville.','Vous payez en espèces à la réception.'],
+          note:'Gardez votre téléphone à portée de main pour ne pas manquer notre appel.', wa:'Suivre ma commande sur WhatsApp', back:'Continuer mes achats', waText:'Bonjour AXORIA, je viens de passer la commande {ref}.' },
+    en: { title:'Thank you! Your order is confirmed', lead:'Our team will contact you shortly to confirm it.', ref:'Reference', summary:'Your order', total:'Total to pay on delivery', next:'What happens next?',
+          steps:['An AXORIA advisor contacts you (call or WhatsApp) to confirm your order.','Delivery in 24–72h depending on your city.','You pay in cash on delivery.'],
+          note:'Keep your phone nearby so you don’t miss our call.', wa:'Follow my order on WhatsApp', back:'Continue shopping', waText:'Hello AXORIA, I just placed order {ref}.' },
+    ar: { title:'شكراً! تم تأكيد طلبك', lead:'سيتواصل معك فريقنا قريباً لتأكيده.', ref:'المرجع', summary:'طلبك', total:'المبلغ الذي ستدفعه عند الاستلام', next:'ماذا بعد؟',
+          steps:['سيتصل بك مستشار AXORIA (مكالمة أو واتساب) لتأكيد طلبك.','التوصيل خلال 24 إلى 72 ساعة حسب مدينتك.','تدفع نقداً عند الاستلام.'],
+          note:'أبقِ هاتفك قريباً حتى لا تفوتك مكالمتنا.', wa:'تابع طلبك عبر واتساب', back:'متابعة التسوق', waText:'مرحباً AXORIA، لقد قمت للتو بالطلب {ref}.' }
+  };
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+
+  var order = null;
+  try{ order = JSON.parse(sessionStorage.getItem('axoria_last_order') || 'null'); }catch(e){}
+  var params = new URLSearchParams(location.search);
+  var code = (order && order.code) || params.get('commande') || '';
+  var lang = (order && T[order.lang]) ? order.lang : 'fr';
+  var t = T[lang];
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.title = t.title + ' | AXORIA';
+  $('title').textContent = t.title; $('lead').textContent = t.lead; $('refLabel').textContent = t.ref;
+  $('summaryTitle').textContent = t.summary; $('totalLabel').textContent = t.total; $('nextTitle').textContent = t.next;
+  $('steps').innerHTML = t.steps.map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('');
+  $('note').textContent = t.note; $('waBtn').textContent = t.wa; $('backBtn').textContent = t.back;
+  var ref = code ? '#' + code : '';
+  $('waBtn').href = 'https://wa.me/212621575115?text=' + encodeURIComponent(t.waText.replace('{ref}', ref).replace('  ', ' '));
+  if(code){ $('ref').textContent = ref; $('refBox').classList.remove('hidden'); }
+
+  if(order && Array.isArray(order.items) && order.items.length){
+    $('items').innerHTML = order.items.map(function(i){
+      return '<li>' + (i.img ? '<img src="' + esc(i.img) + '" alt="" loading="lazy">' : '') +
+        '<div><div>' + esc(i.name) + '</div><div class="q">' + Number(i.qty) + ' × ' + Number(i.price) + ' DH</div></div></li>';
+    }).join('');
+    $('total').textContent = Number(order.value) + ' DH';
+    $('summary').classList.remove('hidden');
+  }
+
+  if(!order || !order.id) return; // direct visit or old link: nothing to measure
+  var trackedKey = 'axoria_purchase_tracked_' + order.id;
+  try{ if(localStorage.getItem(trackedKey)) return; }catch(e){}
+
+  var purchase = {
+    value: Number(order.value) || 0, currency: order.currency || 'MAD', content_type: 'product',
+    content_ids: order.items.map(function(i){ return String(i.id); }),
+    contents: order.items.map(function(i){ return { id: String(i.id), quantity: Number(i.qty) || 0, item_price: Number(i.price) || 0 }; }),
+    num_items: order.items.reduce(function(s, i){ return s + (Number(i.qty) || 0); }, 0),
+    order_id: String(order.code || '')
+  };
+  var eventID = order.eventID || ('purchase-' + order.id);
+
+  fetch(SUPABASE_URL + '/rest/v1/axoria_store?select=value&key=eq.axoria_tracking', { headers: { apikey: SUPABASE_KEY } })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      var cfg = (rows && rows[0] && rows[0].value) || {};
+      var pixelId = String(cfg.pixelId || '').trim();
+      if(!LIVE_SITE || !cfg.enabled || !/^\d{5,30}$/.test(pixelId)){
+        console.info('[AXORIA] Purchase not sent (test host or tracking off):', purchase, eventID);
+        return;
+      }
+      if(!window.fbq){
+        var n = window.fbq = function(){ n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+        if(!window._fbq) window._fbq = n;
+        n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+        var s = document.createElement('script'); s.async = true; s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+        document.head.appendChild(s);
+      }
+      window.fbq('init', pixelId);
+      window.fbq('track', 'PageView');
+      window.fbq('track', 'Purchase', purchase, { eventID: eventID });
+      try{ localStorage.setItem(trackedKey, '1'); }catch(e){}
+      $('waBtn').addEventListener('click', function(){ window.fbq('track', 'Contact', { content_name: 'WhatsApp' }); });
+    })
+    .catch(function(e){ console.warn('[AXORIA] tracking config unavailable', e); });
+})();
+</script>
+</body>
+</html>
