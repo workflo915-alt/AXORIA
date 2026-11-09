@@ -184,23 +184,30 @@ function feedDescription(p) {
   const { bullets, paragraphs, details } = descriptionParts(p);
   return [...paragraphs, ...bullets.map((b) => `${b.replace(/[.!]+$/, '')}.`), ...details].join(' ').trim();
 }
-function productFeedXml(products, pages, config) {
+function productFeedXml(products, pages, config, policy) {
   const x = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
+  const mad = (n) => `${Number(n).toFixed(2)} MAD`;
+  // Same delivery terms as the product pages (OFFER_POLICY in index.html).
+  const ship = policy.shippingDetails;
+  const shipping = `      <g:shipping>\n        <g:country>${x(ship.shippingDestination.addressCountry)}</g:country>\n        <g:price>${mad(ship.shippingRate.value)}</g:price>\n      </g:shipping>`;
   const items = products.map((p) => {
     const page = pages[String(p.id)];
     const cfg = config[String(p.id)] || {};
     const image = page.imageUrl.startsWith('http') ? page.imageUrl : `${SITE}${page.imageUrl}`;
     const inStock = p.stock === undefined || p.stock === null || Number(p.stock) > 0;
+    // A crossed-out price on the site becomes price + sale_price, so catalog ads show the discount too.
+    const onSale = Number(p.oldPrice) > Number(p.price);
     const fields = [
       ['g:id', p.id], ['g:title', page.name], ['g:description', feedDescription(p) || page.name],
       ['g:link', `${SITE}${page.url}`], ['g:image_link', image], ['g:brand', 'AXORIA'], ['g:condition', 'new'],
-      ['g:availability', inStock ? 'in_stock' : 'out_of_stock'], ['g:price', `${Number(p.price).toFixed(2)} MAD`],
+      ['g:availability', inStock ? 'in_stock' : 'out_of_stock'],
+      ['g:price', mad(onSale ? p.oldPrice : p.price)], ['g:sale_price', onSale ? mad(p.price) : undefined],
       ['g:identifier_exists', 'no'], ['g:product_type', p.cat],
       ['g:google_product_category', FEED_CATEGORY[p.cat]], ['g:item_group_id', cfg.group], ['g:color', cfg.color],
     ];
-    return `    <item>\n${fields.filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `      <${k}>${x(v)}</${k}>`).join('\n')}\n    </item>`;
+    return `    <item>\n${fields.filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `      <${k}>${x(v)}</${k}>`).join('\n')}\n${shipping}\n    </item>`;
   });
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n  <channel>\n    <title>AXORIA — catalogue</title>\n    <link>${SITE}/</link>\n    <description>Produits AXORIA, livraison partout au Maroc et paiement à la livraison.</description>\n${items.join('\n')}\n  </channel>\n</rss>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n  <channel>\n    <title>AXORIA — catalogue</title>\n    <link>${SITE}/</link>\n    <description>Produits AXORIA, livraison gratuite partout au Maroc et paiement à la livraison.</description>\n${items.join('\n')}\n  </channel>\n</rss>\n`;
 }
 
 /* ---------- product page ---------- */
@@ -523,7 +530,7 @@ async function main() {
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((e) => `  ${e.trim()}`).join('\n')}\n</urlset>\n`);
 
   // 6. Product feed for Meta Commerce Manager and Google Merchant Center (both read this URL daily).
-  write('feeds/products.xml', productFeedXml(visible, pages, config));
+  write('feeds/products.xml', productFeedXml(visible, pages, config, policy));
 
   // 7. Remember slugs for new products.
   write('tools/seo-products.json', `${JSON.stringify(config, null, 2)}\n`);

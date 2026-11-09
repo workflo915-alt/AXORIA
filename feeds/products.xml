@@ -3,7 +3,7 @@
   <channel>
     <title>AXORIA — catalogue</title>
     <link>https://axoria.ma/</link>
-    <description>Produits AXORIA, livraison partout au Maroc et paiement à la livraison.</description>
+    <description>Produits AXORIA, livraison gratuite partout au Maroc et paiement à la livraison.</description>
     <item>
       <g:id>1968</g:id>
       <g:title>Masseur cou et épaules</g:title>
@@ -13,10 +13,15 @@
       <g:brand>AXORIA</g:brand>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
-      <g:price>260.00 MAD</g:price>
+      <g:price>300.00 MAD</g:price>
+      <g:sale_price>260.00 MAD</g:sale_price>
       <g:identifier_exists>no</g:identifier_exists>
       <g:product_type>Massage &amp; Détente</g:product_type>
       <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Massage &amp; Relaxation &gt; Massagers</g:google_product_category>
+      <g:shipping>
+        <g:country>MA</g:country>
+        <g:price>0.00 MAD</g:price>
+      </g:shipping>
     </item>
     <item>
       <g:id>1967</g:id>
@@ -27,12 +32,17 @@
       <g:brand>AXORIA</g:brand>
       <g:condition>new</g:condition>
       <g:availability>out_of_stock</g:availability>
-      <g:price>129.00 MAD</g:price>
+      <g:price>135.00 MAD</g:price>
+      <g:sale_price>129.00 MAD</g:sale_price>
       <g:identifier_exists>no</g:identifier_exists>
       <g:product_type>Support &amp; Récupération</g:product_type>
       <g:google_product_category>Health &amp; Beauty &gt; Health Care &gt; Supports &amp; Braces</g:google_product_category>
       <g:item_group_id>correcteur-posture-dos-epaules</g:item_group_id>
       <g:color>Rose</g:color>
+      <g:shipping>
+        <g:country>MA</g:country>
+        <g:price>0.00 MAD</g:price>
+      </g:shipping>
     </item>
     <item>
       <g:id>1965</g:id>
@@ -43,12 +53,17 @@
       <g:brand>AXORIA</g:brand>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
-      <g:price>129.00 MAD</g:price>
+      <g:price>135.00 MAD</g:price>
+      <g:sale_price>129.00 MAD</g:sale_price>
       <g:identifier_exists>no</g:identifier_exists>
       <g:product_type>Support &amp; Récupération</g:product_type>
       <g:google_product_category>Health &amp; Beauty &gt; Health Care &gt; Supports &amp; Braces</g:google_product_category>
       <g:item_group_id>correcteur-posture-dos-epaules</g:item_group_id>
       <g:color>Noir</g:color>
+      <g:shipping>
+        <g:country>MA</g:country>
+        <g:price>0.00 MAD</g:price>
+      </g:shipping>
     </item>
   </channel>
 </rss>
