@@ -393,6 +393,15 @@ input:focus, textarea:focus{border-color:var(--teal);outline:none;}
 .star-input button{background:none;border:none;padding:2px;}
 .star-input svg{width:26px;height:26px;stroke:#FFC107;fill:none;transition:fill .15s ease;}
 .star-input button.on svg{fill:#FFC107;}
+.form-row select{font-family:var(--font-body);padding:13px 16px;border-radius:13px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);font-size:14.5px;}
+.form-row select:focus{border-color:var(--teal);outline:none;}
+.pcard-rating,.modal-rating{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--text-soft);margin:4px 0 2px;}
+.pcard-rating .st,.modal-rating .st,.modal-reviews .st{color:#FFC107;letter-spacing:1px;font-size:13px;}
+.modal-rating:empty{display:none;}
+.modal-reviews{margin:14px 0 0;display:grid;gap:8px;}
+.modal-reviews .mr{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.5;color:var(--text);}
+.modal-reviews .mr b{font-size:12.5px;}
+.modal-review-link{justify-self:start;background:none;border:none;padding:4px 0;color:var(--teal);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;font-family:inherit;}
 
 /* ---------- FAQ ---------- */
 .faq-list{max-width:760px;}
@@ -787,6 +796,7 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/masseur-cou-epaules.html">Masseur cou et épaules</a></h4>
+        
         <p class="desc">✅ Massage relaxant de la nuque et des épaules
 
 ✅ Sangles pratiques pour ajuster le positionnement
@@ -815,6 +825,7 @@ AXORIA — Feel Better, Every Day.</p>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-rose.html">Correcteur de posture dos et épaules — Rose</a></h4>
+        
         <p class="desc">Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">135 DH</span>129 DH</span>
@@ -831,6 +842,7 @@ AXORIA — Feel Better, Every Day.</p>
       </div>
       <div class="pcard-body">
         <h4><a href="/produits/correcteur-posture-dos-epaules-noir.html">Correcteur de posture dos et épaules — Noir</a></h4>
+        
         <p class="desc">Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.</p>
         <div class="price-row">
           <span class="price-tag"><span class="price-old">135 DH</span>129 DH</span>
@@ -912,6 +924,7 @@ AXORIA — Feel Better, Every Day.</p>
     <div class="review-slider" id="reviewSlider"></div>
     <div class="review-form reveal" id="reviewForm">
       <h3 style="font-size:19px;margin-bottom:18px;" id="revFormTitle">Laissez votre avis</h3>
+      <div class="form-row"><label id="lblProduct" for="revProduct">Produit acheté</label><select id="revProduct"><option value="">Choisissez le produit</option><option value="1968">Masseur cou et épaules</option><option value="1967">Correcteur de posture dos et épaules — Rose</option><option value="1965">Correcteur de posture dos et épaules — Noir</option></select></div>
       <div class="form-row"><label id="lblRating">Note</label><div class="star-input" id="starInput"></div></div>
       <div class="form-row"><label id="lblName">Nom</label><input type="text" id="revName" maxlength="60"></div>
       <div class="form-row"><label id="lblComment">Commentaire</label><textarea id="revComment" rows="3" maxlength="300"></textarea></div>
@@ -1070,6 +1083,7 @@ AXORIA — Feel Better, Every Day.</p>
     </div>
     <div class="mbody">
       <h3 id="modalName" style="font-size:23px;"></h3>
+      <div class="modal-rating" id="modalRating"></div>
       <p id="modalDesc" style="color:var(--text-soft);font-size:14.5px;line-height:1.6;"></p>
       <div class="qty-row">
         <button class="qty-btn" id="qtyMinus">−</button>
@@ -1082,6 +1096,7 @@ AXORIA — Feel Better, Every Day.</p>
         <button class="btn btn-primary" id="modalBuyBtn">Commander maintenant</button>
         <button class="btn btn-ghost" id="modalAddBtn">Ajouter au panier</button>
       </div>
+      <div class="modal-reviews" id="modalReviews"></div>
     </div>
   </div>
 </div>
@@ -1229,6 +1244,7 @@ const I18N = {
     statsLbl:["Paiement à la livraison","Délai indicatif","Support WhatsApp","Livraison nationale"],
     revEyebrow:'Avis Clients', revTitle:'Ce que disent nos clients', revFormTitle:'Laissez votre avis',
     lblRating:'Note', lblName:'Nom', lblComment:'Commentaire', submitReview:'Envoyer mon avis',
+    lblProduct:'Produit acheté', revChooseProduct:'Choisissez le produit', revNeedProduct:'Choisissez le produit que vous avez acheté.', leaveReview:'Donner mon avis sur ce produit',
     whyEyebrow:'Pourquoi AXORIA', whyTitle:'Une marque de confiance, pensée pour votre bien-être',
     whyCards:[
       ['Qualité contrôlée','Chaque produit est vérifié avant expédition pour garantir confort, solidité et qualité.'],
@@ -1292,6 +1308,7 @@ const I18N = {
     statsLbl:['Cash on delivery','Typical delivery time','WhatsApp support','Nationwide delivery'],
     revEyebrow:'Customer Reviews', revTitle:'What our customers say', revFormTitle:'Leave your review',
     lblRating:'Rating', lblName:'Name', lblComment:'Comment', submitReview:'Submit Review',
+    lblProduct:'Product purchased', revChooseProduct:'Choose the product', revNeedProduct:'Choose the product you bought.', leaveReview:'Review this product',
     whyEyebrow:'Why AXORIA', whyTitle:'A trusted brand, designed for your wellbeing',
     whyCards:[
       ['Checked quality','Every product is checked before shipping for comfort, durability and quality.'],
@@ -1355,6 +1372,7 @@ const I18N = {
     statsLbl:['الدفع عند الاستلام','مدة التوصيل التقريبية','دعم واتساب','توصيل داخل المغرب'],
     revEyebrow:'آراء العملاء', revTitle:'ماذا يقول عملاؤنا', revFormTitle:'اترك رأيك',
     lblRating:'التقييم', lblName:'الاسم', lblComment:'التعليق', submitReview:'إرسال الرأي',
+    lblProduct:'المنتج الذي اشتريته', revChooseProduct:'اختر المنتج', revNeedProduct:'اختر المنتج الذي اشتريته.', leaveReview:'أضف رأيك في هذا المنتج',
     whyEyebrow:'لماذا أكسوريا', whyTitle:'علامة موثوقة، مصممة لراحتك وعافيتك',
     whyCards:[
       ['جودة مُراقبة','يتم فحص كل منتج قبل الشحن لضمان الراحة والمتانة والجودة.'],
@@ -1567,11 +1585,18 @@ function productPage(p){ return PRODUCT_PAGES[String(p && p.id)] || null; }
 /* Catalog snapshot written by tools/seo-build.mjs: the pre-rendered products are clickable
    before Supabase answers, and it is the fallback if Supabase cannot be reached. */
 /*PRERENDERED_PRODUCTS:BEGIN*/
-const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Masseur cou et épaules","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Rose","price":129,"oldPrice":135,"discount":0,"badge":"","stock":0,"status":"active","visible":true,"desc":"Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.","longDesc":"Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1967/1794176890588-pecqkkza-axoria-1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Noir","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":18,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1965/1794176892817-v5lm970w-axoria-1965.jpg"}];
+const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Masseur cou et épaules","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Rose","price":129,"oldPrice":135,"discount":0,"badge":"","stock":0,"status":"active","visible":true,"desc":"Ceinture ajustable pensée pour apporter maintien, confort et sensation de soutien autour de la taille pendant vos activités quotidiennes ou sportives.","longDesc":"Ceinture AXORIA ajustable conçue pour offrir un maintien confortable autour de la taille pendant le sport ou au quotidien. Sa matière résistante et respirante et son réglage adaptable facilitent un port personnalisé selon la morphologie et l’activité.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1967/1794176890588-pecqkkza-axoria-1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Noir","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":17,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1965/1794176892817-v5lm970w-axoria-1965.jpg"}];
 /*PRERENDERED_PRODUCTS:END*/
+/* Approved reviews at the time of the last tools/seo-build.mjs run: the stars on the cards
+   show at once, before Supabase answers with the latest list. */
+/*PRERENDERED_REVIEWS:BEGIN*/
+const PRERENDERED_REVIEWS = [{"name":"fahd","rating":5,"comment":"merci bq","loc":"Maroc","product_id":"","created_at":"2026-10-07T02:48:07.455873+00:00"},{"name":"mohamed","rating":5,"comment":"chkran bzzzzzf tnsa7 bih","loc":"Maroc","product_id":"","created_at":"2026-10-06T16:54:53.378729+00:00"}];
+/*PRERENDERED_REVIEWS:END*/
 
 let PRODUCTS = [];
 let REVIEWS = [];
+// Product chosen for the review form (?avis=<id> link, or "review this product" in the modal).
+let REVIEW_PRODUCT_PRESET = '';
 let CART = [];
 let FAVS = [];
 let currentCategory = 'all';
@@ -1665,6 +1690,8 @@ function applyStaticText(){
   document.getElementById('lblRating').textContent = t.lblRating;
   document.getElementById('lblName').textContent = t.lblName;
   document.getElementById('lblComment').textContent = t.lblComment;
+  document.getElementById('lblProduct').textContent = t.lblProduct;
+  renderReviewProductOptions();
   document.getElementById('submitReview').textContent = t.submitReview;
   document.getElementById('faqTitle').textContent = t.faqTitle;
   document.getElementById('contactTitle').textContent = t.contactTitle;
@@ -1865,6 +1892,7 @@ function updateProductStructuredData(){
 
 function renderMenuGrid(){
   updateProductStructuredData();
+  renderReviewProductOptions();
   const grid = document.getElementById('menuGrid');
   const t = I18N[currentLang];
   const items = PRODUCTS.filter(p=>p.visible && (currentCategory==='all' || p.cat===currentCategory));
@@ -1877,6 +1905,7 @@ function renderMenuGrid(){
     const badgeHtml = p.badge==='promo' ? `<span class="badge promo">PROMO</span>`
       : p.badge==='new' ? `<span class="badge promo" style="background:#3F8FC4;">NEW</span>`
       : p.badge==='bestseller' ? `<span class="badge promo" style="background:var(--coral);">BEST SELLER</span>` : '';
+    const rating = productRating(p.id);
     return `
     <div class="pcard reveal in" id="product-${p.id}" data-id="${p.id}">
       <div class="imgwrap">
@@ -1886,6 +1915,7 @@ function renderMenuGrid(){
       </div>
       <div class="pcard-body">
         <h4>${productPage(p) ? `<a href="${productPage(p).url}">${p.name}</a>` : p.name}</h4>
+        ${rating ? `<div class="pcard-rating" title="${rating.avg} / 5"><span class="st">${ratingStarsText(rating.avg)}</span>${rating.avg.toFixed(1)} (${rating.count})</div>` : ''}
         <p class="desc">${p.desc}</p>
         <div class="price-row">
           <span class="price-tag">${p.oldPrice? `<span class="price-old">${fmtPrice(p.oldPrice)}</span>`:''}${fmtPrice(p.price)}</span>
@@ -1945,6 +1975,7 @@ function openModal(id){
   document.getElementById('modalImg').alt = p.name;
   document.getElementById('modalName').textContent = p.name;
   document.getElementById('modalDesc').textContent = p.longDesc || p.desc;
+  renderModalReviews(p);
   document.getElementById('qtyVal').textContent = modalQty;
   updateModalPrice();
   trackCommerceEvent('ViewContent',{content_ids:[String(p.id)],content_type:'product',content_name:p.name,value:Number(p.price||0),currency:'MAD'});
@@ -2222,6 +2253,65 @@ async function submitOrder(){
 
 function escapeReviewHtml(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
 
+/* Product reviews: each review names the product it is about (product_id). */
+function productRating(id){
+  const list = REVIEWS.filter(r=>String(r.product_id||'')===String(id) && Number(r.rating)>0);
+  if(!list.length) return null;
+  const avg = list.reduce((s,r)=>s+Number(r.rating),0)/list.length;
+  return { avg: Math.round(avg*10)/10, count: list.length, list };
+}
+function ratingStarsText(avg){ const n = Math.max(0, Math.min(5, Math.round(Number(avg)||0))); return '★'.repeat(n)+'☆'.repeat(5-n); }
+function reviewProductName(r){
+  const p = r && r.product_id ? PRODUCTS.find(x=>String(x.id)===String(r.product_id)) : null;
+  return p ? p.name : '';
+}
+function renderReviewProductOptions(){
+  const sel = document.getElementById('revProduct');
+  if(!sel) return;
+  const t = I18N[currentLang];
+  const keep = sel.value || REVIEW_PRODUCT_PRESET || '';
+  const items = PRODUCTS.filter(p=>p && p.visible);
+  sel.innerHTML = `<option value="">${escapeReviewHtml(t.revChooseProduct)}</option>`
+    + items.map(p=>`<option value="${escapeReviewHtml(p.id)}"${String(p.id)===String(keep)?' selected':''}>${escapeReviewHtml(p.name)}</option>`).join('');
+}
+function renderModalReviews(p){
+  const t = I18N[currentLang];
+  const r = productRating(p.id);
+  const head = document.getElementById('modalRating');
+  const box = document.getElementById('modalReviews');
+  if(head) head.innerHTML = r ? `<span class="st">${ratingStarsText(r.avg)}</span>${r.avg.toFixed(1)} (${r.count})` : '';
+  if(!box) return;
+  box.innerHTML = (r ? r.list.slice(0,2).map(x=>`<div class="mr"><span class="st">${ratingStarsText(x.rating)}</span> <b>${escapeReviewHtml(x.name)}</b><br>${escapeReviewHtml(x.comment)}</div>`).join('') : '')
+    + `<button type="button" class="modal-review-link" data-review-for="${escapeReviewHtml(p.id)}">${escapeReviewHtml(t.leaveReview)}</button>`;
+  box.querySelector('[data-review-for]').onclick = ()=>{ closeModal(); goToReviewForm(p.id); };
+}
+function goToReviewForm(id, smooth=true){
+  REVIEW_PRODUCT_PRESET = String(id||'');
+  renderReviewProductOptions();
+  const sel = document.getElementById('revProduct');
+  if(sel && REVIEW_PRODUCT_PRESET) sel.value = REVIEW_PRODUCT_PRESET;
+  const form = document.getElementById('reviewForm');
+  if(form){
+    // Arriving from a WhatsApp link: jump straight to the form instead of a long animated scroll.
+    const root = document.documentElement, prev = root.style.scrollBehavior;
+    if(!smooth) root.style.scrollBehavior = 'auto';
+    form.scrollIntoView({behavior: smooth ? 'smooth' : 'auto', block:'center'});
+    if(!smooth) root.style.scrollBehavior = prev;
+  }
+  setTimeout(()=>{ try{ document.getElementById('revName').focus({preventScroll:true}); }catch(e){} }, smooth ? 700 : 50);
+}
+/* /?avis=<id> (the link sent on WhatsApp after delivery) opens the review form for that product. */
+let reviewDeepLinkDone = false;
+function openReviewFromUrl(){
+  if(reviewDeepLinkDone) return;
+  let id = '';
+  try{ id = new URLSearchParams(location.search).get('avis') || ''; }catch(e){}
+  if(!id) return;
+  reviewDeepLinkDone = true;
+  try{ history.replaceState(null, '', location.pathname + '#avis'); }catch(e){}
+  goToReviewForm(PRODUCTS.some(p=>String(p.id)===String(id) && p.visible) ? id : '', false);
+}
+
 function renderReviews(){
   const slider = document.getElementById('reviewSlider');
   if(!REVIEWS.length){
@@ -2233,7 +2323,7 @@ function renderReviews(){
     <div class="rcard">
       <div class="stars">${Array.from({length:5}).map((_,i)=>`<span style="opacity:${i<r.rating?1:.25}">${ICONS.star}</span>`).join('')}</div>
       <p class="quote">"${escapeReviewHtml(r.comment)}"</p>
-      <div class="who"><div class="avatar">${escapeReviewHtml((r.name||'?').charAt(0))}</div><div><div class="nm">${escapeReviewHtml(r.name)}</div><div class="loc">${escapeReviewHtml(r.loc||'Maroc')}</div></div></div>
+      <div class="who"><div class="avatar">${escapeReviewHtml((r.name||'?').charAt(0))}</div><div><div class="nm">${escapeReviewHtml(r.name)}</div><div class="loc">${escapeReviewHtml(reviewProductName(r)||r.loc||'Maroc')}</div></div></div>
     </div>`).join('');
   let hovering = false;
   slider.onmouseenter = ()=>hovering=true;
@@ -2319,7 +2409,11 @@ function readLocalJSON(key){
 async function loadApprovedReviews(){
   if(!sb) return [];
   try{
-    const {data,error}=await sb.from('review_submissions').select('id,name,rating,comment,created_at').eq('status','approved').order('created_at',{ascending:false});
+    const read = cols => sb.from('review_submissions').select(cols).eq('status','approved').order('created_at',{ascending:false});
+    let res = await read('id,name,rating,comment,created_at,product_id');
+    // Until the product_id column exists in the database, read the reviews without it.
+    if(res.error) res = await read('id,name,rating,comment,created_at');
+    const {data,error} = res;
     if(error) throw error;
     return (Array.isArray(data)?data:[]).map(r=>({
       submission_id:r.id,
@@ -2327,6 +2421,7 @@ async function loadApprovedReviews(){
       rating:Number(r.rating)||0,
       comment:r.comment,
       loc:'Maroc',
+      product_id:r.product_id ? String(r.product_id) : '',
       created_at:r.created_at
     }));
   }catch(e){
@@ -2351,9 +2446,11 @@ async function init(){
   if(startProducts.length){ PRODUCTS = startProducts; syncNextProductId(); }
   const cachedCats = readLocalJSON('axoria_categories');
   if(Array.isArray(cachedCats) && cachedCats.length){ CATEGORIES = cachedCats; }
+  REVIEWS = PRERENDERED_REVIEWS.slice();
 
   applyStaticText();
-  if(PRODUCTS.length){ renderCatFilters(); renderMenuGrid(); openProductFromUrl(); }
+  if(PRODUCTS.length){ renderCatFilters(); renderMenuGrid(); openProductFromUrl(); openReviewFromUrl(); }
+  renderReviews();
   renderStarInput();
   renderCart();
   updateThemeIcon();
@@ -2407,6 +2504,7 @@ async function init(){
   renderReviews();
   renderCart();
   openProductFromUrl();
+  openReviewFromUrl();
 }
 
 let CLIENT_TZ = 'Africa/Casablanca';
@@ -2515,17 +2613,23 @@ function bindEvents(){
     const t = I18N[currentLang];
     const name = document.getElementById('revName').value.trim();
     const comment = document.getElementById('revComment').value.trim();
+    const productId = (document.getElementById('revProduct')?.value || '').trim();
+    if(!productId && PRODUCTS.some(p=>p && p.visible)){ toast(t.revNeedProduct); document.getElementById('revProduct')?.focus(); return; }
     if(!name || !comment){ toast(t.fillFields); return; }
     if(!sb){ toast(currentLang==='ar'?'تعذر إرسال الرأي الآن.':currentLang==='en'?'Unable to submit your review right now.':'Impossible d\'envoyer votre avis pour le moment.'); return; }
     const btn = document.getElementById('submitReview');
     btn.disabled = true;
     try{
-      const { error } = await sb.from('review_submissions').insert({
-        name, rating:selectedStars, comment, status:'pending'
-      });
+      const review = { name, rating:selectedStars, comment, status:'pending' };
+      let { error } = await sb.from('review_submissions').insert(productId ? { ...review, product_id:productId } : review);
+      // Until the product_id column exists in the database, still keep the review.
+      if(error && productId && /product_id/i.test(String(error.message||''))) ({ error } = await sb.from('review_submissions').insert(review));
       if(error) throw error;
       document.getElementById('revName').value='';
       document.getElementById('revComment').value='';
+      REVIEW_PRODUCT_PRESET='';
+      renderReviewProductOptions();
+      document.getElementById('revProduct').value='';
       selectedStars=5;
       renderStarInput();
       toast(currentLang==='ar'?'شكراً! سيتم نشر رأيك بعد المراجعة.':currentLang==='en'?'Thank you! Your review will be published after moderation.':'Merci ! Votre avis sera publié après vérification.');

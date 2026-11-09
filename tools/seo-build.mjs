@@ -140,6 +140,44 @@ async function loadCatalog() {
   return { products: rows.axoria_products, categories: Array.isArray(rows.axoria_categories) ? rows.axoria_categories : [] };
 }
 
+// Approved customer reviews: public data, the same list the storefront shows.
+async function loadReviews() {
+  const base = `${SUPABASE_URL}/rest/v1/review_submissions?status=eq.approved&order=created_at.desc`;
+  // Before the product_id column exists in the database, read the reviews without it.
+  for (const cols of ['name,rating,comment,created_at,product_id', 'name,rating,comment,created_at']) {
+    const res = await fetch(`${base}&select=${cols}`, { headers: { apikey: SUPABASE_KEY } });
+    if (!res.ok) continue;
+    return (await res.json()).map((r) => ({
+      name: String(r.name || ''), rating: Number(r.rating) || 0, comment: String(r.comment || ''), loc: 'Maroc',
+      product_id: r.product_id ? String(r.product_id) : '', created_at: r.created_at,
+    }));
+  }
+  console.warn('warning: approved reviews could not be read; pages are built without them');
+  return [];
+}
+
+/* ---------- reviews on product pages ---------- */
+const starsText = (n) => { const k = Math.max(0, Math.min(5, Math.round(Number(n) || 0))); return '★'.repeat(k) + '☆'.repeat(5 - k); };
+const reviewDate = (d) => {
+  const t = new Date(d);
+  return Number.isNaN(t.getTime()) ? '' : t.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Casablanca' });
+};
+function reviewSchema(r) {
+  return {
+    '@type': 'Review', author: { '@type': 'Person', name: plain(r.name) || 'Client AXORIA' },
+    datePublished: String(r.created_at || '').slice(0, 10) || undefined, reviewBody: plain(r.comment),
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+  };
+}
+function reviewsHtml(reviews, avg) {
+  if (!reviews.length) return '<p>Aucun avis pour le moment. Vous avez acheté ce produit ? Votre avis aide les autres clients à choisir.</p>';
+  const items = reviews.slice(0, 10).map((r) => {
+    const day = reviewDate(r.created_at);
+    return `<li><span class="st">${starsText(r.rating)}</span> <strong>${esc(r.name)}</strong>${day ? ` <time datetime="${esc(String(r.created_at).slice(0, 10))}">${esc(day)}</time>` : ''}<p>${esc(r.comment)}</p></li>`;
+  });
+  return `<p class="rating-big"><span class="st">${starsText(avg)}</span> ${avg.toFixed(1)} / 5 · ${reviews.length} avis</p><ul class="reviews">${items.join('')}</ul>`;
+}
+
 // Photos stored as base64 in the database become files with a real URL.
 function productImage(p) {
   const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/s.exec(String(p.img || ''));
@@ -226,6 +264,8 @@ function productPageHtml(p, page, ctx) {
   const waLink = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(waText)}`;
   const faqs = (ctx.i18n.faqs || []).slice(0, 5);
   const others = ctx.pages.filter((o) => o.id !== page.id);
+  const reviews = (ctx.reviews || []).filter((r) => r.product_id === String(p.id) && r.rating > 0);
+  const avg = reviews.length ? Math.round((reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) * 10) / 10 : 0;
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -238,6 +278,8 @@ function productPageHtml(p, page, ctx) {
         sku: String(p.id),
         category: p.cat || undefined,
         brand: { '@type': 'Brand', name: 'AXORIA' },
+        aggregateRating: reviews.length ? { '@type': 'AggregateRating', ratingValue: avg, reviewCount: reviews.length, bestRating: 5, worstRating: 1 } : undefined,
+        review: reviews.length ? reviews.slice(0, 10).map(reviewSchema) : undefined,
         offers: {
           '@type': 'Offer',
           url,
@@ -325,6 +367,15 @@ section p{color:var(--soft);margin:0 0 12px}
 .others{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;list-style:none;padding:0;margin:0}
 .others a{display:block;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);text-decoration:none;font-weight:600}
 .others span{display:block;color:var(--gold);font-size:14px;margin-top:4px}
+.st{color:#FFC107;letter-spacing:1px}
+.rating{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;color:var(--soft);font-size:14px;font-weight:600;text-decoration:none}
+.rating[hidden]{display:none}
+section p.rating-big{font-size:17px;font-weight:700;color:var(--text)}
+.reviews{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:12px}
+.reviews li{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface)}
+section .reviews li p{margin:6px 0 0;color:var(--text)}
+.reviews time{color:var(--soft);font-size:13px;margin-left:6px}
+.btn.ghost{display:inline-block;border:1px solid var(--line);color:var(--text);background:transparent;padding:12px 18px;font-size:15px}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
 @media (max-width:760px){.product{grid-template-columns:1fr;gap:22px}.top nav{gap:12px;font-size:13px}}
@@ -343,6 +394,7 @@ footer a{margin:0 8px;text-decoration:none}
       <span class="eyebrow">${esc(p.cat || 'AXORIA')}</span>
       <h1>${esc(page.name)}</h1>
       <div class="price"><span id="pPrice">${esc(price(p.price))}</span>${p.oldPrice ? ` <s id="pOld">${esc(price(p.oldPrice))}</s>` : ''}</div>
+      <a class="rating" id="pRating" href="#avis"${reviews.length ? '' : ' hidden'}>${reviews.length ? `<span class="st">${starsText(avg)}</span> ${avg.toFixed(1)} · ${reviews.length} avis` : ''}</a>
       <span class="stock ${inStock ? 'in' : 'out'}" id="pStock">${inStock ? 'En stock — livraison gratuite en 24 à 72h' : 'Rupture de stock'}</span>
 ${paragraphs.map((t) => `      <p class="lead">${esc(t)}</p>`).join('\n')}
 ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
@@ -354,6 +406,11 @@ ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}<
     </div>
   </article>
 ${details.length ? `  <section>\n    <h2>Description</h2>\n${details.map((t) => `    <p>${esc(t)}</p>`).join('\n')}\n  </section>` : ''}
+  <section id="avis">
+    <h2>Avis clients</h2>
+    <div id="pReviews">${reviewsHtml(reviews, avg)}</div>
+    <a class="btn ghost" href="/?avis=${encodeURIComponent(p.id)}">Donner mon avis</a>
+  </section>
   <section>
     <h2>Questions fréquentes</h2>
 ${faqs.map(([q, a]) => `    <h3>${esc(q)}</h3>\n    <p>${esc(a)}</p>`).join('\n')}
@@ -385,6 +442,27 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison gratuite en 24 à 72h':'Rupture de stock';
       if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+    })
+    .catch(function(){});
+})();
+</script>
+<script>
+/* Shows the reviews approved since this page was generated. */
+(function(){
+  var ID=${JSON.stringify(String(p.id))}, box=document.getElementById('pReviews'), link=document.getElementById('pRating');
+  if(!box) return;
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var stars=function(n){var k=Math.max(0,Math.min(5,Math.round(Number(n)||0)));return '★★★★★'.slice(0,k)+'☆☆☆☆☆'.slice(0,5-k);};
+  fetch(${JSON.stringify(`${SUPABASE_URL}/rest/v1/review_submissions?select=name,rating,comment,created_at&status=eq.approved&order=created_at.desc&limit=10`)}+'&product_id=eq.'+encodeURIComponent(ID),{headers:{apikey:${JSON.stringify(SUPABASE_KEY)}}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(list){
+      if(!Array.isArray(list)||!list.length) return;
+      var n=list.length, avg=Math.round(list.reduce(function(s,r){return s+(Number(r.rating)||0);},0)/n*10)/10;
+      box.innerHTML='<p class="rating-big"><span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' / 5 · '+n+' avis</p><ul class="reviews">'+list.map(function(r){
+        var d=new Date(r.created_at), day=isNaN(d.getTime())?'':d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+        return '<li><span class="st">'+stars(r.rating)+'</span> <strong>'+esc(r.name)+'</strong>'+(day?' <time>'+day+'</time>':'')+'<p>'+esc(r.comment)+'</p></li>';
+      }).join('')+'</ul>';
+      if(link){ link.hidden=false; link.innerHTML='<span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' · '+n+' avis'; }
     })
     .catch(function(){});
 })();
@@ -432,7 +510,7 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
 async function main() {
   let html = read('index.html');
   const config = JSON.parse(read('tools/seo-products.json'));
-  const { products, categories } = await loadCatalog();
+  const [{ products, categories }, reviews] = await Promise.all([loadCatalog(), loadReviews()]);
   const visible = products.filter((p) => p && p.visible !== false && p.status !== 'inactive');
 
   // 1. Product pages map (also used by the page script for links and schema).
@@ -463,12 +541,14 @@ async function main() {
   const forGrid = products.map((p) => (String(p.img || '').startsWith('data:') ? { ...p, img: pages[String(p.id)]?.image || '' } : p));
   const KEEP = ['id', 'cat', 'name', 'price', 'oldPrice', 'discount', 'badge', 'stock', 'status', 'visible', 'desc', 'longDesc', 'img'];
   html = setJsConst(html, 'PRERENDERED_PRODUCTS', forGrid.map((p) => Object.fromEntries(KEEP.filter((k) => p[k] !== undefined).map((k) => [k, p[k]]))));
+  html = setJsConst(html, 'PRERENDERED_REVIEWS', reviews);
   const sandbox = {
     document: { documentElement: {}, getElementById: element, querySelectorAll: () => [], createElement: () => ({}), head: { appendChild() {} } },
     currentLang: 'fr', currentCategory: 'all', FAVS: [], PRODUCTS: forGrid, CATEGORIES: categories.length ? categories : [], PRODUCT_PAGES: jsPages,
+    REVIEWS: reviews, REVIEW_PRODUCT_PRESET: '',
     attachFaqEvents() {}, animateStats() {}, updateProductStructuredData() {},
   };
-  const code = ['const I18N = ', 'const ICONS = ', 'const OFFER_POLICY = ', 'function badgeLogoSVG(', 'function applyStaticText(', 'function catNames(', 'function fmtPrice(', 'function productPage(', 'function renderCatFilters(', 'function renderMenuGrid(']
+  const code = ['const I18N = ', 'const ICONS = ', 'const OFFER_POLICY = ', 'function badgeLogoSVG(', 'function applyStaticText(', 'function catNames(', 'function fmtPrice(', 'function productPage(', 'function escapeReviewHtml(', 'function productRating(', 'function ratingStarsText(', 'function renderReviewProductOptions(', 'function renderCatFilters(', 'function renderMenuGrid(']
     .map((head) => declaration(html, head)).join('\n');
   vm.runInNewContext(`${code}\napplyStaticText(); renderCatFilters(); renderMenuGrid(); globalThis.__fr = I18N.fr; globalThis.__policy = OFFER_POLICY;`, sandbox, { timeout: 5000 });
   const i18n = sandbox.__fr;
@@ -510,7 +590,7 @@ async function main() {
   for (const p of visible) {
     const page = { id: String(p.id), ...pages[String(p.id)] };
     const rel = page.url.slice(1);
-    const next = productPageHtml(p, page, { i18n, pages: pageList, policy });
+    const next = productPageHtml(p, page, { i18n, pages: pageList, policy, reviews });
     const before = fs.existsSync(abs(rel)) ? fs.readFileSync(abs(rel), 'utf8').replace(/\r\n/g, '\n') : null;
     lastmod.set(page.url, (before === next && prevLastmod.get(`${SITE}${page.url}`)) || TODAY);
     eolOf.set(rel, '\n');

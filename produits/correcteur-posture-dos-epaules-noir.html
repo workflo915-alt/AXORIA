@@ -65,6 +65,15 @@ section p{color:var(--soft);margin:0 0 12px}
 .others{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;list-style:none;padding:0;margin:0}
 .others a{display:block;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);text-decoration:none;font-weight:600}
 .others span{display:block;color:var(--gold);font-size:14px;margin-top:4px}
+.st{color:#FFC107;letter-spacing:1px}
+.rating{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;color:var(--soft);font-size:14px;font-weight:600;text-decoration:none}
+.rating[hidden]{display:none}
+section p.rating-big{font-size:17px;font-weight:700;color:var(--text)}
+.reviews{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:12px}
+.reviews li{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface)}
+section .reviews li p{margin:6px 0 0;color:var(--text)}
+.reviews time{color:var(--soft);font-size:13px;margin-left:6px}
+.btn.ghost{display:inline-block;border:1px solid var(--line);color:var(--text);background:transparent;padding:12px 18px;font-size:15px}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
 @media (max-width:760px){.product{grid-template-columns:1fr;gap:22px}.top nav{gap:12px;font-size:13px}}
@@ -83,6 +92,7 @@ footer a{margin:0 8px;text-decoration:none}
       <span class="eyebrow">Support &amp; Récupération</span>
       <h1>Correcteur de posture dos et épaules — Noir</h1>
       <div class="price"><span id="pPrice">129 DH</span> <s id="pOld">135 DH</s></div>
+      <a class="rating" id="pRating" href="#avis" hidden></a>
       <span class="stock in" id="pStock">En stock — livraison gratuite en 24 à 72h</span>
       <p class="lead">Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.</p>
 
@@ -96,6 +106,11 @@ footer a{margin:0 8px;text-decoration:none}
   <section>
     <h2>Description</h2>
     <p>Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.</p>
+  </section>
+  <section id="avis">
+    <h2>Avis clients</h2>
+    <div id="pReviews"><p>Aucun avis pour le moment. Vous avez acheté ce produit ? Votre avis aide les autres clients à choisir.</p></div>
+    <a class="btn ghost" href="/?avis=1965">Donner mon avis</a>
   </section>
   <section>
     <h2>Questions fréquentes</h2>
@@ -140,6 +155,27 @@ footer a{margin:0 8px;text-decoration:none}
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison gratuite en 24 à 72h':'Rupture de stock';
       if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+    })
+    .catch(function(){});
+})();
+</script>
+<script>
+/* Shows the reviews approved since this page was generated. */
+(function(){
+  var ID="1965", box=document.getElementById('pReviews'), link=document.getElementById('pRating');
+  if(!box) return;
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var stars=function(n){var k=Math.max(0,Math.min(5,Math.round(Number(n)||0)));return '★★★★★'.slice(0,k)+'☆☆☆☆☆'.slice(0,5-k);};
+  fetch("https://gdemgpkkrmpridqgjmtx.supabase.co/rest/v1/review_submissions?select=name,rating,comment,created_at&status=eq.approved&order=created_at.desc&limit=10"+'&product_id=eq.'+encodeURIComponent(ID),{headers:{apikey:"sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD"}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(list){
+      if(!Array.isArray(list)||!list.length) return;
+      var n=list.length, avg=Math.round(list.reduce(function(s,r){return s+(Number(r.rating)||0);},0)/n*10)/10;
+      box.innerHTML='<p class="rating-big"><span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' / 5 · '+n+' avis</p><ul class="reviews">'+list.map(function(r){
+        var d=new Date(r.created_at), day=isNaN(d.getTime())?'':d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+        return '<li><span class="st">'+stars(r.rating)+'</span> <strong>'+esc(r.name)+'</strong>'+(day?' <time>'+day+'</time>':'')+'<p>'+esc(r.comment)+'</p></li>';
+      }).join('')+'</ul>';
+      if(link){ link.hidden=false; link.innerHTML='<span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' · '+n+' avis'; }
     })
     .catch(function(){});
 })();
