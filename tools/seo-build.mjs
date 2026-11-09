@@ -212,7 +212,7 @@ function productPageHtml(p, page, ctx) {
   const summary = bullets.length
     ? `${bullets.slice(0, 2).map((b, i) => (i ? b.charAt(0).toLowerCase() + b.slice(1) : b)).join(', ')}.`
     : (paragraphs[0] || plain(p.desc));
-  const metaDescription = clip(`${page.name} à ${price(p.price)}. Livraison partout au Maroc, paiement à la livraison. ${summary}`, 158);
+  const metaDescription = clip(`${page.name} à ${price(p.price)}. Livraison gratuite partout au Maroc, paiement à la livraison. ${summary}`, 158);
   const waText = inStock
     ? `Bonjour AXORIA ! Je souhaite commander : ${page.name} (${price(p.price)}).\n${url}`
     : `Bonjour AXORIA ! Prévenez-moi quand ce produit est de retour en stock : ${page.name}.\n${url}`;
@@ -239,6 +239,7 @@ function productPageHtml(p, page, ctx) {
           availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
           itemCondition: 'https://schema.org/NewCondition',
           seller: { '@type': 'Organization', name: 'AXORIA', url: `${SITE}/` },
+          ...ctx.policy,
         },
       },
       {
@@ -335,14 +336,14 @@ footer a{margin:0 8px;text-decoration:none}
       <span class="eyebrow">${esc(p.cat || 'AXORIA')}</span>
       <h1>${esc(page.name)}</h1>
       <div class="price"><span id="pPrice">${esc(price(p.price))}</span>${p.oldPrice ? ` <s id="pOld">${esc(price(p.oldPrice))}</s>` : ''}</div>
-      <span class="stock ${inStock ? 'in' : 'out'}" id="pStock">${inStock ? 'En stock — livraison 24 à 72h' : 'Rupture de stock'}</span>
+      <span class="stock ${inStock ? 'in' : 'out'}" id="pStock">${inStock ? 'En stock — livraison gratuite en 24 à 72h' : 'Rupture de stock'}</span>
 ${paragraphs.map((t) => `      <p class="lead">${esc(t)}</p>`).join('\n')}
 ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
       <div class="ctas">
         ${inStock ? `<a class="btn primary" id="pOrder" href="/?commander=${encodeURIComponent(p.id)}">Commander maintenant</a>` : `<span class="btn disabled" id="pOrder">Rupture de stock</span>`}
         <a class="btn wa" id="pWa" href="${esc(waLink)}" target="_blank" rel="noopener">${inStock ? 'Commander sur WhatsApp' : 'Être prévenu(e) sur WhatsApp'}</a>
       </div>
-      <ul class="trust"><li>Livraison partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
+      <ul class="trust"><li>Livraison gratuite partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li><a href="/shipping-returns.html">Retour possible sous 7 jours</a></li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
     </div>
   </article>
 ${details.length ? `  <section>\n    <h2>Description</h2>\n${details.map((t) => `    <p>${esc(t)}</p>`).join('\n')}\n  </section>` : ''}
@@ -374,7 +375,7 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
       document.getElementById('pPrice').textContent=p.price+' DH';
       var old=document.getElementById('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
       var inStock=p.stock==null||Number(p.stock)>0;
-      stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison 24 à 72h':'Rupture de stock';
+      stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison gratuite en 24 à 72h':'Rupture de stock';
       if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
       if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
     })
@@ -460,10 +461,12 @@ async function main() {
     currentLang: 'fr', currentCategory: 'all', FAVS: [], PRODUCTS: forGrid, CATEGORIES: categories.length ? categories : [], PRODUCT_PAGES: jsPages,
     attachFaqEvents() {}, animateStats() {}, updateProductStructuredData() {},
   };
-  const code = ['const I18N = ', 'const ICONS = ', 'function badgeLogoSVG(', 'function applyStaticText(', 'function catNames(', 'function fmtPrice(', 'function productPage(', 'function renderCatFilters(', 'function renderMenuGrid(']
+  const code = ['const I18N = ', 'const ICONS = ', 'const OFFER_POLICY = ', 'function badgeLogoSVG(', 'function applyStaticText(', 'function catNames(', 'function fmtPrice(', 'function productPage(', 'function renderCatFilters(', 'function renderMenuGrid(']
     .map((head) => declaration(html, head)).join('\n');
-  vm.runInNewContext(`${code}\napplyStaticText(); renderCatFilters(); renderMenuGrid(); globalThis.__fr = I18N.fr;`, sandbox, { timeout: 5000 });
+  vm.runInNewContext(`${code}\napplyStaticText(); renderCatFilters(); renderMenuGrid(); globalThis.__fr = I18N.fr; globalThis.__policy = OFFER_POLICY;`, sandbox, { timeout: 5000 });
   const i18n = sandbox.__fr;
+  // Delivery and returns for Google, defined once in index.html (OFFER_POLICY).
+  const policy = JSON.parse(JSON.stringify(sandbox.__policy));
 
   let missing = [];
   for (const [id, { html: inner }] of recorded) {
@@ -484,7 +487,7 @@ async function main() {
       item: {
         '@type': 'Product', '@id': url, name: page.name, image: image ? [image] : undefined,
         description: plain(p.longDesc || p.desc), brand: { '@type': 'Brand', name: 'AXORIA' }, sku: String(p.id), url,
-        offers: { '@type': 'Offer', priceCurrency: 'MAD', price: Number(p.price), availability: Number(p.stock ?? 1) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', url, seller: { '@type': 'Organization', name: 'AXORIA' } },
+        offers: { '@type': 'Offer', priceCurrency: 'MAD', price: Number(p.price), availability: Number(p.stock ?? 1) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', itemCondition: 'https://schema.org/NewCondition', url, seller: { '@type': 'Organization', name: 'AXORIA' }, ...policy },
       },
     };
   });
@@ -500,7 +503,7 @@ async function main() {
   for (const p of visible) {
     const page = { id: String(p.id), ...pages[String(p.id)] };
     const rel = page.url.slice(1);
-    const next = productPageHtml(p, page, { i18n, pages: pageList });
+    const next = productPageHtml(p, page, { i18n, pages: pageList, policy });
     const before = fs.existsSync(abs(rel)) ? fs.readFileSync(abs(rel), 'utf8').replace(/\r\n/g, '\n') : null;
     lastmod.set(page.url, (before === next && prevLastmod.get(`${SITE}${page.url}`)) || TODAY);
     eolOf.set(rel, '\n');
