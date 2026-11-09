@@ -494,11 +494,17 @@ async function main() {
   // 4. Product pages (and removal of pages whose product is gone or hidden).
   const pageList = visible.map((p) => ({ id: String(p.id), url: pages[String(p.id)].url, name: pages[String(p.id)].name, price: p.price }));
   const written = new Set();
+  // Sitemap dates only move when a page really changed, so Google keeps trusting them.
+  const prevLastmod = new Map([...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc><lastmod>([^<]+)<\/lastmod>/g)].map((m) => [m[1], m[2]]));
+  const lastmod = new Map();
   for (const p of visible) {
     const page = { id: String(p.id), ...pages[String(p.id)] };
     const rel = page.url.slice(1);
+    const next = productPageHtml(p, page, { i18n, pages: pageList });
+    const before = fs.existsSync(abs(rel)) ? fs.readFileSync(abs(rel), 'utf8').replace(/\r\n/g, '\n') : null;
+    lastmod.set(page.url, (before === next && prevLastmod.get(`${SITE}${page.url}`)) || TODAY);
     eolOf.set(rel, '\n');
-    write(rel, productPageHtml(p, page, { i18n, pages: pageList }));
+    write(rel, next);
     written.add(path.basename(rel));
   }
   for (const f of fs.existsSync(abs(PRODUCTS_DIR)) ? fs.readdirSync(abs(PRODUCTS_DIR)) : []) {
@@ -509,7 +515,7 @@ async function main() {
   const sitemap = read('sitemap.xml');
   const urls = [...sitemap.matchAll(/<url>[\s\S]*?<\/url>/g)].map((m) => m[0]).filter((u) => !u.includes(`/${PRODUCTS_DIR}/`));
   const entries = urls.map((u) => (u.includes(`<loc>${SITE}/</loc>`) ? u.replace(/<lastmod>[^<]*<\/lastmod>/, `<lastmod>${TODAY}</lastmod>`) : u));
-  const productEntries = pageList.map((p) => `<url><loc>${SITE}${p.url}</loc><lastmod>${TODAY}</lastmod><priority>0.9</priority></url>`);
+  const productEntries = pageList.map((p) => `<url><loc>${SITE}${p.url}</loc><lastmod>${lastmod.get(p.url) || TODAY}</lastmod><priority>0.9</priority></url>`);
   entries.splice(1, 0, ...productEntries);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((e) => `  ${e.trim()}`).join('\n')}\n</urlset>\n`);
 
