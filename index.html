@@ -247,14 +247,14 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .cat-empty{padding:60px 20px;text-align:center;color:var(--text-soft);border:1.5px dashed var(--line);border-radius:20px;font-size:14.5px;}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:999px;font-weight:700;font-size:15px;border:2px solid transparent;transition:transform .25s ease, box-shadow .25s ease, background .25s ease;position:relative;overflow:hidden;}
 .btn:active{transform:scale(.97);}
-.btn-primary{background:var(--teal);color:#fff;box-shadow:0 10px 26px rgba(31,158,138,.35);}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(31,158,138,.45);}
+.btn-primary{background:linear-gradient(100deg,var(--teal) 0%,#2F80ED 100%);color:#fff;box-shadow:0 10px 26px rgba(10,77,155,.32);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(47,128,237,.40);}
 .btn-outline{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.55);backdrop-filter:blur(6px);}
 .btn-outline:hover{background:#fff;color:var(--charcoal);transform:translateY(-3px);}
 .btn-dark{background:var(--charcoal);color:#fff;}
 .btn-dark:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
 .btn-coral{background:var(--coral);color:#fff;}
-.btn-coral:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(255,107,74,.4);}
+.btn-coral:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(201,162,39,.4);}
 .btn-green{background:#25D366;color:#fff;}
 .btn-green:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(37,211,102,.4);}
 .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s ease-out;pointer-events:none;}
@@ -268,7 +268,6 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .reveal.in{opacity:1;transform:translateY(0);}
 
 /* ---------- Products (Menu) ---------- */
-.menu-section{background:var(--bg-alt);}
 .cat-filters{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 16px;margin-bottom:44px;scrollbar-width:thin;scroll-snap-type:x proximity;}
 .cat-filters::-webkit-scrollbar{height:5px;}
 .cat-filters::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
@@ -311,7 +310,7 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .pcard-add .add-sub{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;}
 
 /* ---------- Modal ---------- */
-.modal-overlay{position:fixed;inset:0;background:rgba(8,14,12,.6);backdrop-filter:blur(4px);z-index:900;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(4,10,20,.6);backdrop-filter:blur(4px);z-index:900;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;display:flex;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.open{opacity:1;visibility:visible;}
 .modal{background:var(--surface);border-radius:28px;max-width:760px;width:100%;max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg);transform:translateY(30px) scale(.97);transition:transform .4s cubic-bezier(.2,.8,.2,1);display:grid;grid-template-columns:1fr 1fr;}
 .modal-overlay.open .modal{transform:translateY(0) scale(1);}
@@ -329,7 +328,7 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .modal-trust span::before{content:'✓';color:var(--teal);font-weight:800;}
 
 /* ---------- Cart Drawer ---------- */
-.cart-overlay{position:fixed;inset:0;background:rgba(8,14,12,.5);z-index:800;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;}
+.cart-overlay{position:fixed;inset:0;background:rgba(4,10,20,.5);z-index:800;opacity:0;visibility:hidden;transition:opacity .35s ease, visibility .35s ease;}
 .cart-overlay.open{opacity:1;visibility:visible;}
 .cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:801;box-shadow:-20px 0 50px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;}
 .cart-drawer.open{transform:translateX(0);}
@@ -373,7 +372,6 @@ select.langsel{appearance:none;border:1px solid var(--line);background:var(--sur
 .stat .lbl{font-size:12px;color:var(--text-soft);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;}
 
 /* ---------- Reviews ---------- */
-.reviews-section{background:var(--bg-alt);}
 .review-slider{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 20px;}
 .review-slider::-webkit-scrollbar{height:6px;}
 .review-slider::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
@@ -415,7 +413,6 @@ input:focus, textarea:focus{border-color:var(--teal);outline:none;}
 .faq-a p{padding:0 4px 22px;color:var(--text-soft);line-height:1.65;font-size:14.5px;max-width:600px;}
 
 /* ---------- Contact ---------- */
-.contact-section{background:var(--bg-alt);}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:stretch;}
 @media (max-width:900px){.contact-grid{grid-template-columns:1fr;}}
 .info-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -427,12 +424,12 @@ input:focus, textarea:focus{border-color:var(--teal);outline:none;}
 .mapbox{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-md);border:6px solid var(--surface);min-height:340px;display:block;transition:transform .35s ease, box-shadow .35s ease;}
 .mapbox:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
 .map-glass{position:absolute;top:16px;left:16px;z-index:3;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.65);border-radius:14px;padding:10px 16px;font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--charcoal);box-shadow:var(--shadow-sm);}
-.map-visual{position:relative;width:100%;height:100%;min-height:340px;background:linear-gradient(135deg, #E1F0EA 0%, #D3E8DE 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.map-grid{position:absolute;inset:-20%;background-image:repeating-linear-gradient(0deg, rgba(21,36,32,.06) 0, rgba(21,36,32,.06) 1px, transparent 1px, transparent 46px),repeating-linear-gradient(90deg, rgba(21,36,32,.06) 0, rgba(21,36,32,.06) 1px, transparent 1px, transparent 46px);transform:rotate(-4deg);}
-.map-pin{position:relative;z-index:2;width:56px;height:56px;border-radius:50% 50% 50% 0;background:var(--coral);transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(255,107,74,.4);animation:pinBob 2.4s ease-in-out infinite;}
+.map-visual{position:relative;width:100%;height:100%;min-height:340px;background:radial-gradient(circle at 50% 46%,rgba(47,128,237,.12),transparent 58%),linear-gradient(135deg, var(--mint) 0%, var(--mint-line) 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.map-grid{position:absolute;inset:-20%;--grid-line:rgba(10,36,60,.07);background-image:repeating-linear-gradient(0deg, var(--grid-line) 0, var(--grid-line) 1px, transparent 1px, transparent 46px),repeating-linear-gradient(90deg, var(--grid-line) 0, var(--grid-line) 1px, transparent 1px, transparent 46px);transform:rotate(-4deg);}
+.map-pin{position:relative;z-index:2;width:56px;height:56px;border-radius:50% 50% 50% 0;background:var(--coral);transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(201,162,39,.42);animation:pinBob 2.4s ease-in-out infinite;}
 .map-pin svg{width:26px;height:26px;color:#fff;transform:rotate(-45deg);stroke-width:2.3;}
 @keyframes pinBob{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(-8px);}}
-.map-pin-ring{position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle, rgba(255,107,74,.28) 0%, rgba(255,107,74,0) 70%);animation:pinRing 2.4s ease-in-out infinite;}
+.map-pin-ring{position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle, rgba(201,162,39,.30) 0%, rgba(201,162,39,0) 70%);animation:pinRing 2.4s ease-in-out infinite;}
 @keyframes pinRing{0%,100%{transform:scale(.85);opacity:.6;}50%{transform:scale(1.15);opacity:.9;}}
 .map-cta{position:absolute;bottom:16px;right:16px;z-index:3;background:var(--charcoal);color:#fff;font-size:12.5px;font-weight:700;padding:11px 18px;border-radius:999px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-sm);transition:background .25s ease, transform .25s ease;}
 .mapbox:hover .map-cta{background:var(--coral);transform:translateX(-2px);}
@@ -442,7 +439,7 @@ input:focus, textarea:focus{border-color:var(--teal);outline:none;}
 @media (max-width:500px){.formgrid{grid-template-columns:1fr;}}
 
 /* ---------- Footer ---------- */
-footer{background:var(--charcoal);color:#E9F2EE;padding:70px 0 0;}
+footer{background:var(--charcoal);color:#EAF1FB;padding:70px 0 0;}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:36px;padding-bottom:50px;border-bottom:1px solid rgba(255,255,255,.1);}
 @media (max-width:820px){.footer-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:500px){.footer-grid{grid-template-columns:1fr;}}
@@ -512,7 +509,7 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 
 /* ---------- Final visual polish ---------- */
 
-.character-bridge{position:relative;height:clamp(235px,27vw,320px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;border-bottom:1px solid var(--line);}
+.character-bridge{position:relative;height:clamp(235px,27vw,320px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;}
 .character-bridge::before{content:'';position:absolute;left:50%;bottom:7%;width:min(1000px,88vw);height:72px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(10,36,60,.16) 0%,rgba(10,36,60,.06) 42%,transparent 73%);filter:blur(2px);}
 [data-theme="dark"] .character-bridge::before{background:radial-gradient(ellipse,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 42%,transparent 73%);}
 .bridge-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--teal) 10%,transparent),transparent 43%);pointer-events:none;}
@@ -521,6 +518,17 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 .character-bridge .hero-character{bottom:7%!important;width:clamp(130px,13.4vw,190px)!important;filter:drop-shadow(0 15px 18px rgba(0,0,0,.18));}
 .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:clamp(148px,15.3vw,216px)!important;bottom:5%!important;}
 .character-bridge + .menu-section{padding-top:48px;}
+
+/* Colour blending: the alternate-colour sections fade in from the page colour and back out,
+   instead of starting and stopping on a hard edge. Back-to-back ones stay one continuous band. */
+:root{--band-fade:clamp(72px,10vw,150px);}
+.section.band{--band-top:var(--bg);--band-bottom:var(--bg);background:linear-gradient(180deg,var(--band-top) 0,var(--bg-alt) var(--band-fade),var(--bg-alt) calc(100% - var(--band-fade)),var(--band-bottom) 100%);}
+.section.band + .section.band{--band-top:var(--bg-alt);}
+.section.band:has(+ .section.band){--band-bottom:var(--bg-alt);}
+/* Dark theme: the map card and the footer take the navy palette instead of light green / a seam. */
+[data-theme="dark"] .map-visual{background:radial-gradient(circle at 50% 46%,rgba(47,128,237,.18),transparent 58%),linear-gradient(135deg,#10203A 0%,#0B1626 100%);}
+[data-theme="dark"] .map-grid{--grid-line:rgba(159,176,200,.08);}
+[data-theme="dark"] footer{background:linear-gradient(180deg,var(--bg) 0,var(--charcoal) 140px);}
 
 .reveal{will-change:opacity,transform;}
 .floatbtns{transition:bottom .28s ease;}
@@ -781,7 +789,7 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
     </div>
 </section>
 
-<section class="section menu-section" id="menu">
+<section class="section band menu-section" id="menu">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow" id="menuEyebrow">Notre Sélection</span>
@@ -889,7 +897,7 @@ AXORIA — Feel Better, Every Day.</p>
   </div>
 </section>
 
-<section class="section" id="howto" style="background:var(--bg-alt);">
+<section class="section band" id="howto">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow" id="howToEyebrow">Mode d&#39;emploi</span>
@@ -903,7 +911,7 @@ AXORIA — Feel Better, Every Day.</p>
   </div>
 </section>
 
-<section class="section guarantee-section" id="guarantee" style="background:var(--bg-alt);">
+<section class="section band guarantee-section" id="guarantee">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow" id="guaranteeEyebrow">Garanties</span>
@@ -917,7 +925,7 @@ AXORIA — Feel Better, Every Day.</p>
   </div>
 </section>
 
-<section class="section reviews-section" id="avis">
+<section class="section band reviews-section" id="avis">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow" id="revEyebrow">Avis Clients</span>
@@ -969,7 +977,7 @@ AXORIA — Feel Better, Every Day.</p>
   </div>
 </section>
 
-<section class="section contact-section" id="contact">
+<section class="section band contact-section" id="contact">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Contact</span>
@@ -1587,7 +1595,7 @@ function productPage(p){ return PRODUCT_PAGES[String(p && p.id)] || null; }
 /* Catalog snapshot written by tools/seo-build.mjs: the pre-rendered products are clickable
    before Supabase answers, and it is the fallback if Supabase cannot be reached. */
 /*PRERENDERED_PRODUCTS:BEGIN*/
-const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Masseur cou et épaules","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Rose","price":129,"oldPrice":135,"discount":0,"badge":"","stock":0,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable. Coloris rose.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies. Coloris rose.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1967/1794176890588-pecqkkza-axoria-1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Noir","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":16,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1965/1794176892817-v5lm970w-axoria-1965.jpg"}];
+const PRERENDERED_PRODUCTS = [{"id":"1968","cat":"Massage & Détente","name":"Masseur cou et épaules","price":260,"oldPrice":300,"badge":"","stock":19,"status":"active","visible":true,"desc":"✅ Massage relaxant de la nuque et des épaules\n\n✅ Sangles pratiques pour ajuster le positionnement\n\n✅ Idéal après une longue journée de travail\n\n✅ Design élégant et confortable\n\n🚚 Livraison partout au Maroc\n\n💵 Paiement à la livraison\n\nAXORIA — Feel Better, Every Day.","longDesc":"","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg"},{"id":"1967","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Rose","price":129,"oldPrice":135,"discount":0,"badge":"","stock":0,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable. Coloris rose.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies. Coloris rose.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1967/1794176890588-pecqkkza-axoria-1967.jpg"},{"id":"1965","cat":"Support & Récupération","name":"Correcteur de posture dos et épaules — Noir","price":129,"oldPrice":135,"discount":0,"badge":"bestseller","stock":15,"status":"active","visible":true,"desc":"Aide à soutenir les épaules et à favoriser un alignement plus naturel au quotidien, avec un maintien réglable et confortable.","longDesc":"Correcteur de posture AXORIA conçu pour accompagner le maintien des épaules et du dos vers un alignement plus naturel au quotidien. Léger, respirant et réglable, il se porte facilement au bureau, à la maison ou pendant certaines activités, avec un ajustement adaptable à différentes morphologies.","img":"https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1965/1794176892817-v5lm970w-axoria-1965.jpg"}];
 /*PRERENDERED_PRODUCTS:END*/
 /* Approved reviews at the time of the last tools/seo-build.mjs run: the stars on the cards
    show at once, before Supabase answers with the latest list. */
