@@ -400,12 +400,29 @@ section .reviews li p{margin:6px 0 0;color:var(--text)}
 .sticky{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:30;display:block;text-align:center;padding:15px 18px;border-radius:14px;font-weight:800;color:#fff;text-decoration:none;background:linear-gradient(100deg,#0A4D9B,var(--blue));box-shadow:0 10px 30px rgba(0,0,0,.45)}
 @media (min-width:761px){.sticky{display:none!important}}
 @media (max-width:760px){body{padding-bottom:84px}}
+/* Night sky behind the page, same as the shop's dark mode: twinkling stars and slow glowing lines. */
+.sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:radial-gradient(1100px 620px at 80% 6%,rgba(47,128,237,.12),transparent 62%),linear-gradient(180deg,#060C17 0%,#0A1220 48%,#0C1627 100%)}
+.sky-stars{position:absolute;inset:0;background-size:320px 320px;background-image:radial-gradient(1px 1px at 24px 38px,#fff 50%,transparent),radial-gradient(1px 1px at 82px 140px,rgba(255,255,255,.85) 50%,transparent),radial-gradient(1.5px 1.5px at 150px 60px,#fff 50%,transparent),radial-gradient(1px 1px at 210px 210px,rgba(255,255,255,.7) 50%,transparent),radial-gradient(1px 1px at 280px 110px,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 60px 270px,rgba(200,225,255,.9) 50%,transparent),radial-gradient(1px 1px at 300px 290px,rgba(255,255,255,.6) 50%,transparent),radial-gradient(1px 1px at 120px 230px,#fff 50%,transparent),radial-gradient(1px 1px at 245px 20px,rgba(255,255,255,.75) 50%,transparent),radial-gradient(1.2px 1.2px at 186px 300px,rgba(220,235,255,.9) 50%,transparent);opacity:.5}
+.sky-twinkle{background-size:470px 470px;background-image:radial-gradient(2px 2px at 60px 90px,#fff 45%,transparent),radial-gradient(1.6px 1.6px at 330px 40px,rgba(210,230,255,.95) 45%,transparent),radial-gradient(2px 2px at 400px 300px,#fff 45%,transparent),radial-gradient(1.6px 1.6px at 180px 380px,rgba(255,255,255,.9) 45%,transparent),radial-gradient(1.8px 1.8px at 250px 200px,rgba(190,220,255,.95) 45%,transparent);opacity:.3;animation:skyTwinkle 4.6s ease-in-out infinite;will-change:opacity}
+.sky-lines{position:absolute;left:-8%;width:116%;height:42vh;overflow:visible;will-change:transform,opacity;-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent)}
+.sky-lines path{fill:none;stroke:rgba(96,170,255,.40);stroke-width:1.3;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.sky-lines path.alt{stroke:rgba(64,210,190,.24)}
+.sky-lines path.glow{stroke-width:7;opacity:.16}
+.sky-lines-top{top:9vh;animation:skyDriftA 34s ease-in-out infinite alternate,skyGlow 9s ease-in-out infinite}
+.sky-lines-bottom{bottom:5vh;animation:skyDriftB 41s ease-in-out infinite alternate,skyGlow 11s ease-in-out 2s infinite}
+@keyframes skyDriftA{from{transform:translate3d(-3%,0,0)}to{transform:translate3d(3%,-2.5vh,0)}}
+@keyframes skyDriftB{from{transform:translate3d(3%,0,0)}to{transform:translate3d(-3%,2vh,0)}}
+@keyframes skyGlow{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes skyTwinkle{0%,100%{opacity:.18}50%{opacity:.85}}
+@media (max-width:760px){.sky-lines{height:34vh}}
+@media (prefers-reduced-motion:reduce){.sky-lines,.sky-twinkle{animation:none!important}}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
 @media (max-width:760px){.product{grid-template-columns:1fr;gap:22px}.top nav{gap:12px;font-size:13px}}
 </style>
 </head>
 <body>
+<div class="sky" aria-hidden="true"><div class="sky-stars"></div><div class="sky-stars sky-twinkle"></div><svg class="sky-lines sky-lines-top" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path class="glow" d="M-80 250C220 170 480 330 760 240S1250 110 1520 200"/><path d="M-80 250C220 170 480 330 760 240S1250 110 1520 200"/><path class="glow alt" d="M-80 300C260 240 560 380 860 300S1290 170 1520 250"/><path class="alt" d="M-80 300C260 240 560 380 860 300S1290 170 1520 250"/></svg><svg class="sky-lines sky-lines-bottom" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path class="glow alt" d="M-80 140C300 80 600 260 900 170S1300 60 1520 130"/><path class="alt" d="M-80 140C300 80 600 260 900 170S1300 60 1520 130"/><path class="glow" d="M-80 200C280 150 640 300 940 220S1320 130 1520 190"/><path d="M-80 200C280 150 640 300 940 220S1320 130 1520 190"/></svg></div>
 <header class="top">
   <a class="brand" href="/"><img src="/assets/brand/axoria-logo-128.webp" alt="" width="36" height="36">AXORIA</a>
   <nav><a href="/#menu">Produits</a><a href="/guides.html">Guides</a><a href="https://wa.me/${WHATSAPP}" rel="noopener">WhatsApp</a></nav>
