@@ -75,6 +75,28 @@ section p.rating-big{font-size:17px;font-weight:700;color:var(--text)}
 section .reviews li p{margin:6px 0 0;color:var(--text)}
 .reviews time{color:var(--soft);font-size:13px;margin-left:6px}
 .btn.ghost{display:inline-block;border:1px solid var(--line);color:var(--text);background:transparent;padding:12px 18px;font-size:15px}
+[hidden]{display:none!important}
+.order{display:grid;gap:6px;margin:18px 0 12px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.order h2{font-size:16px;margin:0 0 6px}
+.order label{font-size:13px;font-weight:700;color:var(--soft);margin-top:6px}
+.order input,.order textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.order textarea{resize:vertical}
+.order input:focus,.order textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+.order input[aria-invalid="true"]{border-color:#F87171}
+.qty-row{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:4px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.qty button{width:44px;height:42px;border:0;background:transparent;color:var(--text);font-size:20px;cursor:pointer}
+.qty button:disabled{opacity:.35;cursor:default}
+.qty output{min-width:34px;text-align:center;font-weight:800}
+.form-error{color:#F87171;font-size:14px;font-weight:600;margin:4px 0 0}
+.form-error:empty{display:none}
+.order .btn{width:100%;border:0;cursor:pointer;font:inherit;font-weight:800;font-size:16px;margin-top:8px}
+.order .btn[disabled]{opacity:.7;cursor:wait}
+.reassure{font-size:12.5px;color:var(--soft);text-align:center;margin:6px 0 0}
+#pWa{margin-top:10px}
+.sticky{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:30;display:block;text-align:center;padding:15px 18px;border-radius:14px;font-weight:800;color:#fff;text-decoration:none;background:linear-gradient(100deg,#0A4D9B,var(--blue));box-shadow:0 10px 30px rgba(0,0,0,.45)}
+@media (min-width:761px){.sticky{display:none!important}}
+@media (max-width:760px){body{padding-bottom:84px}}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
 @media (max-width:760px){.product{grid-template-columns:1fr;gap:22px}.top nav{gap:12px;font-size:13px}}
@@ -97,10 +119,26 @@ footer a{margin:0 8px;text-decoration:none}
       <span class="stock in" id="pStock">En stock — livraison gratuite en 24 à 72h</span>
 
       <ul class="ticks"><li>Massage relaxant de la nuque et des épaules</li><li>Sangles pratiques pour ajuster le positionnement</li><li>Idéal après une longue journée de travail</li><li>Design élégant et confortable</li></ul>
-      <div class="ctas">
-        <a class="btn primary" id="pOrder" href="/?commander=1968">Commander maintenant</a>
-        <a class="btn wa" id="pWa" href="https://wa.me/212621575115?text=Bonjour%20AXORIA%20!%20Je%20souhaite%20commander%20%3A%20Masseur%20cou%20et%20%C3%A9paules%20(260%20DH).%0Ahttps%3A%2F%2Faxoria.ma%2Fproduits%2Fmasseur-cou-epaules.html" target="_blank" rel="noopener">Commander sur WhatsApp</a>
-      </div>
+      <form class="order" id="pForm" novalidate>
+        <h2>Commander — paiement à la livraison</h2>
+        <div class="qty-row"><span id="qLabel">Quantité</span><div class="qty" role="group" aria-labelledby="qLabel"><button type="button" id="qMinus" aria-label="Retirer un article" disabled>−</button><output id="qVal">1</output><button type="button" id="qPlus" aria-label="Ajouter un article">+</button></div></div>
+        <label for="oName">Nom complet</label>
+        <input id="oName" type="text" autocomplete="name" maxlength="120" required>
+        <label for="oPhone">Téléphone</label>
+        <input id="oPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="06 XX XX XX XX" required aria-describedby="oError">
+        <label for="oCity">Ville</label>
+        <input id="oCity" type="text" list="maCities" autocomplete="address-level2" maxlength="120" required>
+        <datalist id="maCities"><option value="Casablanca"><option value="Rabat"><option value="Salé"><option value="Témara"><option value="Kénitra"><option value="Mohammedia"><option value="Marrakech"><option value="Fès"><option value="Meknès"><option value="Tanger"><option value="Tétouan"><option value="Agadir"><option value="Inezgane"><option value="Aït Melloul"><option value="Oujda"><option value="Nador"><option value="Berkane"><option value="El Jadida"><option value="Safi"><option value="Essaouira"><option value="Béni Mellal"><option value="Khouribga"><option value="Settat"><option value="Berrechid"><option value="Bouskoura"><option value="Dar Bouazza"><option value="Skhirat"><option value="Bouznika"><option value="Khémisset"><option value="Sidi Kacem"><option value="Sidi Slimane"><option value="Larache"><option value="Ksar El Kébir"><option value="Asilah"><option value="Martil"><option value="M'diq"><option value="Fnideq"><option value="Chefchaouen"><option value="Al Hoceïma"><option value="Taza"><option value="Guercif"><option value="Taourirt"><option value="Sefrou"><option value="Ifrane"><option value="Azrou"><option value="Khénifra"><option value="Midelt"><option value="Errachidia"><option value="Ouarzazate"><option value="Zagora"><option value="Taroudant"><option value="Tiznit"><option value="Guelmim"><option value="Tan-Tan"><option value="Laâyoune"><option value="Dakhla"><option value="Kelaat Sraghna"><option value="Ben Guerir"><option value="Youssoufia"><option value="Oued Zem"><option value="Fquih Ben Salah"><option value="Sidi Bennour"><option value="Azemmour"></datalist>
+        <label for="oAddress">Adresse</label>
+        <input id="oAddress" type="text" autocomplete="street-address" maxlength="300" required>
+        <label for="oNotes">Notes (optionnel)</label>
+        <textarea id="oNotes" rows="2" maxlength="1000"></textarea>
+        <p class="form-error" id="oError" role="alert" aria-live="polite"></p>
+        <button class="btn primary" id="oSubmit" type="submit">Valider ma commande · <span id="oTotal">260 DH</span></button>
+        <p class="reassure">Paiement à la livraison, en espèces · Livraison gratuite en 24 à 72h · Aucun paiement en ligne</p>
+      </form>
+      <span class="btn disabled" id="pSoldOut" hidden>Rupture de stock</span>
+      <a class="btn wa" id="pWa" href="https://wa.me/212621575115?text=Bonjour%20AXORIA%20!%20Je%20souhaite%20commander%20%3A%20Masseur%20cou%20et%20%C3%A9paules%20(260%20DH).%0Ahttps%3A%2F%2Faxoria.ma%2Fproduits%2Fmasseur-cou-epaules.html" target="_blank" rel="noopener">Commander sur WhatsApp</a>
       <ul class="trust"><li>Livraison gratuite partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li><a href="/shipping-returns.html">Retour possible sous 7 jours</a></li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
     </div>
   </article>
@@ -132,27 +170,108 @@ footer a{margin:0 8px;text-decoration:none}
     <ul class="others"><li><a href="/fr/guides/nuque-epaules-detente.html">Nuque et épaules tendues : une routine simple après le travail<span>Lire le guide →</span></a></li><li><a href="/fr/guides/recuperation-sportive.html">Récupération après le sport : les bases<span>Lire le guide →</span></a></li></ul>
   </section>
 </main>
+<a class="sticky" id="pSticky" href="#pForm" hidden>Commander · <span id="pStickyPrice">260 DH</span></a>
 <footer>
   <a href="/">Boutique</a><a href="/guides.html">Guides</a><a href="/shipping-returns.html">Livraison &amp; retours</a><a href="/privacy.html">Confidentialité</a><a href="/terms.html">Conditions générales</a>
   <p>© 2026 AXORIA — Feel Better, Every Day.</p>
 </footer>
 <script>
-/* Keeps price and stock exact if the catalog changed since this page was generated. */
+/* Order form: the shop's order path without leaving the page. place_order checks price and
+   stock on the server; /merci.html then shows the order and sends the browser Purchase with
+   the server-side event ID, so Meta counts it once. The catalog refresh keeps price and stock
+   exact if they changed since this page was generated. */
 (function(){
-  var ID="1968";
-  fetch("https://gdemgpkkrmpridqgjmtx.supabase.co/rest/v1/axoria_store?select=value&key=eq.axoria_products",{headers:{apikey:"sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD"}})
-    .then(function(r){return r.ok?r.json():null;})
+  var ID="1968", NAME="Masseur cou et épaules", IMG="https://gdemgpkkrmpridqgjmtx.supabase.co/storage/v1/object/public/product-images/products/1968/1791764778099-6pmjecsh-WhatsApp-Image-2026-10-12-at-12.09.34-AM.jpeg";
+  var API="https://gdemgpkkrmpridqgjmtx.supabase.co", KEY="sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD";
+  var $=function(id){return document.getElementById(id);};
+  var form=$('pForm'), sticky=$('pSticky');
+  if(!form) return;
+  var st={price:260, max:10, qty:1, started:false, sending:false};
+  var dh=function(n){ return (Math.round(Number(n)*100)/100)+' DH'; };
+  function render(){
+    $('qVal').textContent=st.qty;
+    $('qMinus').disabled=st.qty<=1; $('qPlus').disabled=st.qty>=st.max;
+    var total=$('oTotal'); if(total) total.textContent=dh(st.price*st.qty);
+    var sp=$('pStickyPrice'); if(sp) sp.textContent=dh(st.price);
+  }
+  function setAvailable(ok){
+    form.hidden=!ok; var so=$('pSoldOut'); if(so) so.hidden=ok;
+    if(!ok&&sticky) sticky.hidden=true;
+  }
+  $('qMinus').addEventListener('click',function(){ if(st.qty>1){ st.qty--; render(); } });
+  $('qPlus').addEventListener('click',function(){ if(st.qty<st.max){ st.qty++; render(); } });
+  /* First touch of the form = the shop's "Commander" click: AddToCart then InitiateCheckout. */
+  function begin(){
+    if(st.started) return; st.started=true;
+    var value=st.price*st.qty, contents=[{id:ID,quantity:st.qty,item_price:st.price}];
+    if(window.axTrack){
+      window.axTrack('AddToCart',{content_ids:[ID],content_type:'product',content_name:NAME,value:value,currency:'MAD',contents:contents});
+      window.axTrack('InitiateCheckout',{value:value,currency:'MAD',num_items:st.qty,content_ids:[ID],contents:contents});
+    }
+  }
+  form.addEventListener('focusin',begin);
+  function phoneMA(v){
+    v=String(v||'').trim().replace(/[\s().-]/g,'');
+    if(v.indexOf('00212')===0) v='0'+v.slice(5); else if(v.indexOf('+212')===0) v='0'+v.slice(4); else if(v.indexOf('212')===0) v='0'+v.slice(3);
+    v=v.replace(/\D/g,'');
+    return /^0[5-7]\d{8}$/.test(v)?v:'';
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(st.sending) return;
+    var err=$('oError'), ph=$('oPhone');
+    err.textContent=''; ph.removeAttribute('aria-invalid');
+    var name=$('oName').value.trim(), city=$('oCity').value.trim(), address=$('oAddress').value.trim(), notes=$('oNotes').value.trim();
+    if(!name||!ph.value.trim()||!city||!address){ err.textContent='Merci de remplir le nom, le téléphone, la ville et l’adresse.'; return; }
+    var phone=phoneMA(ph.value);
+    if(!phone){ ph.setAttribute('aria-invalid','true'); err.textContent='Veuillez saisir un numéro marocain valide (ex. 06 12 34 56 78 ou +212 6 12 34 56 78).'; ph.focus(); return; }
+    ph.value=phone; begin();
+    var btn=$('oSubmit'), label=btn.innerHTML;
+    st.sending=true; btn.disabled=true; btn.textContent='Envoi en cours…';
+    fetch(API+'/rest/v1/rpc/place_order',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({p_customer_name:name,p_phone:phone,p_city:city,p_address:address,p_notes:notes||null,p_items:[{product_id:ID,qty:st.qty}]})})
+      .then(function(r){ return r.json().catch(function(){ return null; }).then(function(j){ if(!r.ok) throw new Error((j&&j.message)||('HTTP '+r.status)); return j; }); })
+      .then(function(j){
+        var placed=Array.isArray(j)?j[0]:j;
+        var uuid=String((placed&&placed.order_id)||''), code=String((placed&&(placed.order_code||placed.order_id))||'');
+        try{ sessionStorage.setItem('axoria_last_order',JSON.stringify({id:uuid,code:code,value:Number((placed&&placed.order_total)||st.price*st.qty),currency:'MAD',lang:'fr',eventID:uuid?'purchase-'+uuid:'',items:[{id:ID,name:NAME,qty:st.qty,price:st.price,img:IMG}]})); }catch(x){}
+        location.href='/merci.html'+(code?'?commande='+encodeURIComponent(code):'');
+      })
+      .catch(function(x){
+        var m=String((x&&x.message)||'');
+        err.textContent=/Insufficient stock|Product unavailable|Product not found/.test(m)
+          ? 'La quantité demandée n’est plus disponible. Actualisez la page puis réessayez.'
+          : 'Erreur lors de l’envoi. Merci de réessayer ou de nous contacter sur WhatsApp.';
+        st.sending=false; btn.disabled=false; btn.innerHTML=label; render();
+      });
+  });
+  /* Phones: a "Commander" bar stays at the bottom while the form is out of view. */
+  if(sticky&&'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){ sticky.hidden=es[0].isIntersecting||form.hidden; }).observe(form);
+    sticky.addEventListener('click',function(e){
+      e.preventDefault();
+      form.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){ try{ $('oName').focus({preventScroll:true}); }catch(x){} },600);
+    });
+  }
+  render();
+  fetch(API+'/rest/v1/axoria_store?select=value&key=eq.axoria_products',{headers:{apikey:KEY}})
+    .then(function(r){ return r.ok?r.json():null; })
     .then(function(rows){
       var list=rows&&rows[0]&&rows[0].value; if(!Array.isArray(list)) return;
-      var p=list.filter(function(x){return String(x.id)===ID;})[0];
-      var order=document.getElementById('pOrder'), stock=document.getElementById('pStock');
-      if(!p||p.visible===false){ stock.className='stock out'; stock.textContent='Produit indisponible'; order.outerHTML='<a class="btn primary" id="pOrder" href="/#menu">Voir les produits disponibles</a>'; return; }
-      document.getElementById('pPrice').textContent=p.price+' DH';
-      var old=document.getElementById('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
+      var p=list.filter(function(x){ return String(x.id)===ID; })[0], stock=$('pStock');
+      if(!p||p.visible===false||(p.status&&p.status!=='active')){
+        stock.className='stock out'; stock.textContent='Produit indisponible'; setAvailable(false);
+        var so=$('pSoldOut'); if(so) so.outerHTML='<a class="btn primary" id="pSoldOut" href="/#menu">Voir les produits disponibles</a>';
+        return;
+      }
+      st.price=Number(p.price)||st.price;
+      $('pPrice').textContent=st.price+' DH';
+      var old=$('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
       var inStock=p.stock==null||Number(p.stock)>0;
+      st.max=p.stock==null?10:Math.max(1,Math.min(10,Number(p.stock)||1));
+      if(st.qty>st.max) st.qty=st.max;
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison gratuite en 24 à 72h':'Rupture de stock';
-      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
-      if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+      setAvailable(inStock); render();
     })
     .catch(function(){});
 })();
@@ -181,7 +300,8 @@ footer a{margin:0 8px;text-decoration:none}
 </script>
 <script>
 /* Ads: product pages are where ads land. Remember the Meta ad click (fbclid) for the order
-   that may follow, and on the live site only tell the Pixel which product was viewed. */
+   that may follow, and on the live site tell the Pixel which product was viewed and when
+   the order form was started. */
 (function(){
   var now=Date.now(), fbclid=new URLSearchParams(location.search).get('fbclid');
   var get=function(n){ var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)')); return m?m[1]:''; };
@@ -190,12 +310,19 @@ footer a{margin:0 8px;text-decoration:none}
     if(fbclid && get('_fbc').slice(-fbclid.length)!==fbclid) set('_fbc','fb.1.'+now+'.'+fbclid);
     if(!get('_fbp')) set('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*1e10));
   }catch(e){}
-  if(!/^(www\.)?axoria\.ma$/.test(location.hostname)) return;
+  /* window.axTrack(name, data): events from the order form. They wait in a queue until the
+     Pixel has started, so a quick visitor's first click is not lost. */
+  var queue=[], ready=false;
+  window.axTrack=function(name,data){ if(ready) window.fbq('track',name,data||{}); else queue.push([name,data||{}]); };
+  if(!/^(www\.)?axoria\.ma$/.test(location.hostname)){
+    window.axTrack=function(name,data){ try{ console.info('[AXORIA] '+name+' not sent (test host)',data); }catch(e){} };
+    return;
+  }
   fetch("https://gdemgpkkrmpridqgjmtx.supabase.co/rest/v1/axoria_store?select=value&key=eq.axoria_tracking",{headers:{apikey:"sb_publishable_LcXsTIdML2gITtM8UDqtWw_toCYU4qD"}})
     .then(function(r){return r.ok?r.json():[];})
     .then(function(rows){
       var cfg=(rows&&rows[0]&&rows[0].value)||{}, pixel=String(cfg.pixelId||'').trim();
-      if(!cfg.enabled||!/^\d{5,30}$/.test(pixel)) return;
+      if(!cfg.enabled||!/^\d{5,30}$/.test(pixel)){ window.axTrack=function(){}; queue.length=0; return; }
       var start=function(){
         if(!window.fbq){
           var n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};
@@ -206,6 +333,8 @@ footer a{margin:0 8px;text-decoration:none}
         window.fbq('track','PageView');
         window.fbq('track','ViewContent',{content_ids:["1968"],content_type:'product',content_name:"Masseur cou et épaules",value:260,currency:'MAD'});
         var wa=document.getElementById('pWa'); if(wa) wa.addEventListener('click',function(){ window.fbq('track','Contact',{content_name:'WhatsApp'}); });
+        ready=true;
+        queue.splice(0).forEach(function(a){ window.fbq('track',a[0],a[1]); });
       };
       // Load the Pixel once the page is shown, so it never slows the product page down.
       if(document.readyState==='complete') setTimeout(start,1200); else addEventListener('load',function(){ setTimeout(start,1200); });
