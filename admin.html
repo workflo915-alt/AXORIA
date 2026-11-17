@@ -95,7 +95,7 @@
         </div>
       </div>
       <div id="reviewsSummary" class="sub" style="margin:0 0 12px"></div>
-      <div class="table-wrap"><table style="min-width:1050px"><thead><tr><th>Date</th><th>Client</th><th>Note</th><th>Commentaire</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="reviewsBody"></tbody></table></div>
+      <div class="table-wrap"><table style="min-width:1050px"><thead><tr><th>Date</th><th>Client</th><th>Produit</th><th>Note</th><th>Commentaire</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="reviewsBody"></tbody></table></div>
     </section>
 
 
@@ -228,6 +228,16 @@ async function renameCategory(id,newName){newName=newName.trim();const c=CATEGOR
 async function deleteCategory(id){if(CATEGORIES.length<=1){toast('Gardez au moins une catégorie');return;}const c=CATEGORIES.find(x=>String(x.id)===String(id));if(!c||!confirm(`Supprimer « ${c.name} » ?`))return;const fallback=CATEGORIES.find(x=>String(x.id)!==String(id));PRODUCTS.forEach(p=>{if(p.cat===c.name)p.cat=fallback.name;});CATEGORIES=CATEGORIES.filter(x=>String(x.id)!==String(id));try{await Promise.all([setStore('axoria_categories',CATEGORIES),setStore('axoria_products',PRODUCTS)]);renderCategories();renderProducts();toast('Catégorie supprimée');}catch(e){console.error(e);toast('Échec suppression catégorie');}}
 
 function waPhone(v){let n=String(v||'').replace(/\D/g,'');if(n.startsWith('0'))n='212'+n.slice(1);return n;}
+/* After delivery: WhatsApp message with the link that opens the review form for the product bought. */
+function reviewRequestLink(o){
+  const first=Array.isArray(o.items)?o.items.find(i=>i&&(i.product_id||i.id)):null;
+  const id=first?String(first.product_id||first.id):'';
+  const url=id?`https://axoria.ma/?avis=${encodeURIComponent(id)}`:'https://axoria.ma/#avis';
+  const firstName=String(o.customer_name||'').trim().split(/\s+/)[0]||'';
+  const ref=o.order_code||`AX-${String(o.id||'').slice(0,8).toUpperCase()}`;
+  const text=`Bonjour${firstName?' '+firstName:''} 👋\nMerci pour votre commande AXORIA (${ref}).\nVotre avis nous aide beaucoup : notez votre produit en 30 secondes ici 👉 ${url}\nشكراً على ثقتك، رأيك يهمنا 🙏`;
+  return `https://wa.me/${waPhone(o.phone)}?text=${encodeURIComponent(text)}`;
+}
 function telPhone(v){return String(v||'').replace(/[^\d+]/g,'');}
 async function loadOrders(){
   const body=$('ordersBody');
@@ -268,7 +278,7 @@ function renderOrders(){
       <td><strong>${money(o.total)}</strong></td>
       <td>${esc(o.notes||'—')}</td>
       <td><span class="status ${esc(o.status)}">${esc(o.status)}</span><select data-order="${esc(o.id)}" style="margin-top:7px">${ORDER_STATUSES.map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></td>
-      <td><div class="row-actions"><a class="btn ghost" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a><a class="btn ghost" href="tel:${tel}">Appeler</a></div></td>
+      <td><div class="row-actions"><a class="btn ghost" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a><a class="btn ghost" href="tel:${tel}">Appeler</a>${o.status==='Delivered'?`<a class="btn primary" href="${esc(reviewRequestLink(o))}" target="_blank" rel="noopener">Demander un avis</a>`:''}</div></td>
     </tr>`;
   }).join('');
   body.querySelectorAll('[data-order]').forEach(s=>s.onchange=()=>updateOrder(s.dataset.order,s.value,s));
@@ -293,7 +303,7 @@ $('orderStatusFilter').addEventListener('change',renderOrders);
 async function loadReviewSubmissions(){
   const body=$('reviewsBody');
   if(!body)return;
-  body.innerHTML='<tr><td colspan="6" class="muted">Chargement…</td></tr>';
+  body.innerHTML='<tr><td colspan="7" class="muted">Chargement…</td></tr>';
   try{
     const {data,error}=await sb.from('review_submissions').select('*').order('created_at',{ascending:false});
     if(error)throw error;
@@ -301,10 +311,12 @@ async function loadReviewSubmissions(){
     renderReviewSubmissions();
   }catch(e){
     console.error(e);
-    body.innerHTML='<tr><td colspan="6" class="muted">Impossible de charger les avis.</td></tr>';
+    body.innerHTML='<tr><td colspan="7" class="muted">Impossible de charger les avis.</td></tr>';
   }
 }
 function reviewStatusLabel(s){return s==='approved'?'Approuvé':s==='rejected'?'Refusé':'En attente';}
+// Product a review is about (reviews sent before product reviews existed have none).
+function productNameById(id){if(!id)return '—';const p=PRODUCTS.find(x=>String(x.id)===String(id));return p?p.name:`#${id}`;}
 function renderReviewSubmissions(){
   const body=$('reviewsBody');
   if(!body)return;
@@ -313,16 +325,17 @@ function renderReviewSubmissions(){
   const rows=REVIEW_SUBMISSIONS.filter(r=>{
     if(status && r.status!==status)return false;
     if(!q)return true;
-    return [r.name,r.comment].some(v=>String(v||'').toLowerCase().includes(q));
+    return [r.name,r.comment,productNameById(r.product_id)].some(v=>String(v||'').toLowerCase().includes(q));
   });
   const pending=REVIEW_SUBMISSIONS.filter(r=>r.status==='pending').length;
   const approved=REVIEW_SUBMISSIONS.filter(r=>r.status==='approved').length;
   const rejected=REVIEW_SUBMISSIONS.filter(r=>r.status==='rejected').length;
   if($('reviewsSummary'))$('reviewsSummary').textContent=`${REVIEW_SUBMISSIONS.length} avis · En attente: ${pending} · Approuvés: ${approved} · Refusés: ${rejected}`;
-  if(!rows.length){body.innerHTML='<tr><td colspan="6" class="muted">Aucun avis pour ce filtre.</td></tr>';return;}
+  if(!rows.length){body.innerHTML='<tr><td colspan="7" class="muted">Aucun avis pour ce filtre.</td></tr>';return;}
   body.innerHTML=rows.map(r=>`<tr>
     <td>${esc(new Date(r.created_at).toLocaleString('fr-FR'))}</td>
     <td><strong>${esc(r.name)}</strong></td>
+    <td>${esc(productNameById(r.product_id))}</td>
     <td><span class="review-stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.rating)||0)))}${'☆'.repeat(Math.max(0,5-(Number(r.rating)||0)))}</span></td>
     <td style="max-width:430px;white-space:normal;line-height:1.45">${esc(r.comment)}</td>
     <td><span class="status ${esc(r.status)}">${reviewStatusLabel(r.status)}</span></td>
