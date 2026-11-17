@@ -324,7 +324,8 @@ function productPageHtml(p, page, ctx) {
 <meta name="theme-color" content="#0A1220">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"></noscript>
 <script type="application/ld+json">${scriptJson(schema)}</script>
 <style>
 :root{--bg:#0A1220;--surface:#101E33;--line:#1E2E47;--text:#EAF1FB;--soft:#9FB0C8;--blue:#2F80ED;--teal:#20BFA9;--gold:#C9A227;--wa:#1FA855}
@@ -369,7 +370,7 @@ section p{color:var(--soft);margin:0 0 12px}
 .others span{display:block;color:var(--gold);font-size:14px;margin-top:4px}
 .st{color:#FFC107;letter-spacing:1px}
 .rating{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;color:var(--soft);font-size:14px;font-weight:600;text-decoration:none}
-.rating[hidden]{display:none}
+.rating[hidden],section[hidden]{display:none}
 section p.rating-big{font-size:17px;font-weight:700;color:var(--text)}
 .reviews{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:12px}
 .reviews li{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface)}
@@ -406,7 +407,7 @@ ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}<
     </div>
   </article>
 ${details.length ? `  <section>\n    <h2>Description</h2>\n${details.map((t) => `    <p>${esc(t)}</p>`).join('\n')}\n  </section>` : ''}
-  <section id="avis">
+  <section id="avis"${reviews.length ? '' : ' hidden'}>
     <h2>Avis clients</h2>
     <div id="pReviews">${reviewsHtml(reviews, avg)}</div>
     <a class="btn ghost" href="/?avis=${encodeURIComponent(p.id)}">Donner mon avis</a>
@@ -463,6 +464,7 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
         return '<li><span class="st">'+stars(r.rating)+'</span> <strong>'+esc(r.name)+'</strong>'+(day?' <time>'+day+'</time>':'')+'<p>'+esc(r.comment)+'</p></li>';
       }).join('')+'</ul>';
       if(link){ link.hidden=false; link.innerHTML='<span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' · '+n+' avis'; }
+      var sec=document.getElementById('avis'); if(sec) sec.hidden=false;
     })
     .catch(function(){});
 })();
