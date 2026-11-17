@@ -579,10 +579,21 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 @keyframes skyRise{from{transform:translateY(46px);opacity:0;}to{transform:none;opacity:1;}}
 @keyframes moonGlow{0%,100%{opacity:.55;}50%{opacity:1;}}
 @keyframes sunSpin{to{transform:rotate(360deg);}}
+/* The hidden one of moon / sun does not keep animating. */
+[data-theme="dark"] .sun::after,[data-theme="light"] .moon::after{animation:none;}
 @media (max-width:700px){
   /* Phones: the title fills the width, so the moon / sun peeks in from the right edge above it. */
   .celestial{top:36px;right:-12px;width:58px;}
-  .sky-lines{height:34vh;}
+  /* Phones: lighter and calmer. Still stars, one slow pair of lines low on the screen (away from the
+     title), steady glows: a single small animation keeps scrolling smooth and spares the battery. */
+  .sky-stars{opacity:.42;}
+  .sky-stars.sky-twinkle{animation:none;opacity:.3;will-change:auto;}
+  .sky-lines{height:30vh;-webkit-mask-image:none;mask-image:none;}
+  .sky-lines-top{display:none;}
+  .sky-lines-bottom{animation:skyDriftB 60s ease-in-out infinite alternate;opacity:.6;}
+  .moon::after,.sun::after{animation:none;}
+  .moon{box-shadow:0 0 20px 4px rgba(170,205,255,.24),0 0 56px 12px rgba(90,150,240,.12);}
+  .sun{box-shadow:0 0 24px 6px rgba(255,196,90,.30),0 0 64px 16px rgba(255,214,120,.14);}
 }
 @media (prefers-reduced-motion:reduce){
   .sky-lines,.sky-twinkle,.celestial,.moon::after,.sun::after{animation:none!important;}

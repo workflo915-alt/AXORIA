@@ -111,7 +111,8 @@ section .reviews li p{margin:6px 0 0;color:var(--text)}
 @keyframes skyDriftB{from{transform:translate3d(3%,0,0)}to{transform:translate3d(-3%,2vh,0)}}
 @keyframes skyGlow{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes skyTwinkle{0%,100%{opacity:.18}50%{opacity:.85}}
-@media (max-width:760px){.sky-lines{height:34vh}}
+/* Phones: lighter and calmer, same as the shop: still stars and one slow pair of lines low on the screen. */
+@media (max-width:760px){.sky-stars{opacity:.42}.sky-stars.sky-twinkle{animation:none;opacity:.3;will-change:auto}.sky-lines{height:30vh;-webkit-mask-image:none;mask-image:none}.sky-lines-top{display:none}.sky-lines-bottom{animation:skyDriftB 60s ease-in-out infinite alternate;opacity:.6}}
 @media (prefers-reduced-motion:reduce){.sky-lines,.sky-twinkle{animation:none!important}}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
