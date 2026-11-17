@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* Apply the visitor's saved light/dark choice before the first paint (no night-to-day flash). */try{var t=JSON.parse(localStorage.getItem('axoria_theme')||'null');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <title>AXORIA – Bien-être, massage & posture au Maroc</title>
 <meta name="description" content="AXORIA, marque marocaine de bien-être : massage, posture et récupération au quotidien. Livraison gratuite partout au Maroc et paiement à la livraison.">
 <meta property="og:title" content="AXORIA — Bien-être, massage & posture au Maroc">
@@ -523,14 +524,70 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 
 /* Colour blending: the alternate-colour sections fade in from the page colour and back out,
    instead of starting and stopping on a hard edge. Back-to-back ones stay one continuous band. */
-:root{--band-fade:clamp(72px,10vw,150px);}
-.section.band{--band-top:var(--bg);--band-bottom:var(--bg);background:linear-gradient(180deg,var(--band-top) 0,var(--bg-alt) var(--band-fade),var(--bg-alt) calc(100% - var(--band-fade)),var(--band-bottom) 100%);}
-.section.band + .section.band{--band-top:var(--bg-alt);}
-.section.band:has(+ .section.band){--band-bottom:var(--bg-alt);}
+:root{--band-fade:clamp(72px,10vw,150px);--band-color:color-mix(in srgb,var(--bg-alt) 62%,transparent);}
+.section.band{--band-top:transparent;--band-bottom:transparent;background:linear-gradient(180deg,var(--band-top) 0,var(--band-color) var(--band-fade),var(--band-color) calc(100% - var(--band-fade)),var(--band-bottom) 100%);}
+.section.band + .section.band{--band-top:var(--band-color);}
+.section.band:has(+ .section.band){--band-bottom:var(--band-color);}
 /* Dark theme: the map card and the footer take the navy palette instead of light green / a seam. */
 [data-theme="dark"] .map-visual{background:radial-gradient(circle at 50% 46%,rgba(47,128,237,.18),transparent 58%),linear-gradient(135deg,#10203A 0%,#0B1626 100%);}
 [data-theme="dark"] .map-grid{--grid-line:rgba(159,176,200,.08);}
-[data-theme="dark"] footer{background:linear-gradient(180deg,var(--bg) 0,var(--charcoal) 140px);}
+[data-theme="dark"] footer{background:linear-gradient(180deg,transparent 0,var(--charcoal) 160px);}
+
+/* ---------- Sky behind the whole site ----------
+   Night in dark mode (stars that twinkle), day in light mode (light blue), slow glowing lines in
+   both, and in the hero the moon or the sun: switching the theme sets one and raises the other.
+   Only transform/opacity animate (cheap on phones); nothing moves with "reduce motion". */
+:root{--sky-line:rgba(47,128,237,.30);--sky-line-2:rgba(32,170,200,.22);}
+[data-theme="dark"]{--sky-line:rgba(96,170,255,.40);--sky-line-2:rgba(64,210,190,.24);}
+.sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+.sky-day,.sky-night{position:absolute;inset:0;transition:opacity 1.2s ease;}
+.sky-day{background:linear-gradient(180deg,#D6E8FF 0%,#E8F2FF 38%,#F5F9FE 100%);opacity:1;}
+.sky-night{background:radial-gradient(1100px 620px at 80% 6%,rgba(47,128,237,.12),transparent 62%),linear-gradient(180deg,#060C17 0%,#0A1220 48%,#0C1627 100%);opacity:0;}
+[data-theme="dark"] .sky-day{opacity:0;}
+[data-theme="dark"] .sky-night{opacity:1;}
+.sky-stars{position:absolute;inset:0;background-size:320px 320px;background-image:radial-gradient(1px 1px at 24px 38px,#fff 50%,transparent),radial-gradient(1px 1px at 82px 140px,rgba(255,255,255,.85) 50%,transparent),radial-gradient(1.5px 1.5px at 150px 60px,#fff 50%,transparent),radial-gradient(1px 1px at 210px 210px,rgba(255,255,255,.7) 50%,transparent),radial-gradient(1px 1px at 280px 110px,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 60px 270px,rgba(200,225,255,.9) 50%,transparent),radial-gradient(1px 1px at 300px 290px,rgba(255,255,255,.6) 50%,transparent),radial-gradient(1px 1px at 120px 230px,#fff 50%,transparent),radial-gradient(1px 1px at 245px 20px,rgba(255,255,255,.75) 50%,transparent),radial-gradient(1.2px 1.2px at 186px 300px,rgba(220,235,255,.9) 50%,transparent);opacity:.55;}
+.sky-twinkle{background-size:470px 470px;background-image:radial-gradient(2px 2px at 60px 90px,#fff 45%,transparent),radial-gradient(1.6px 1.6px at 330px 40px,rgba(210,230,255,.95) 45%,transparent),radial-gradient(2px 2px at 400px 300px,#fff 45%,transparent),radial-gradient(1.6px 1.6px at 180px 380px,rgba(255,255,255,.9) 45%,transparent),radial-gradient(1.8px 1.8px at 250px 200px,rgba(190,220,255,.95) 45%,transparent);opacity:.3;animation:skyTwinkle 4.6s ease-in-out infinite;will-change:opacity;}
+.sky-lines{position:absolute;left:-8%;width:116%;height:42vh;overflow:visible;will-change:transform,opacity;-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);}
+.sky-lines path{fill:none;stroke:var(--sky-line);stroke-width:1.3;stroke-linecap:round;vector-effect:non-scaling-stroke;}
+.sky-lines path.alt{stroke:var(--sky-line-2);}
+.sky-lines path.glow{stroke-width:7;opacity:.16;}
+.sky-lines-top{top:9vh;animation:skyDriftA 34s ease-in-out infinite alternate,skyGlow 9s ease-in-out infinite;}
+.sky-lines-bottom{bottom:5vh;animation:skyDriftB 41s ease-in-out infinite alternate,skyGlow 11s ease-in-out 2s infinite;}
+@keyframes skyDriftA{from{transform:translate3d(-3%,0,0);}to{transform:translate3d(3%,-2.5vh,0);}}
+@keyframes skyDriftB{from{transform:translate3d(3%,0,0);}to{transform:translate3d(-3%,2vh,0);}}
+@keyframes skyGlow{0%,100%{opacity:.55;}50%{opacity:1;}}
+@keyframes skyTwinkle{0%,100%{opacity:.18;}50%{opacity:.85;}}
+/* Sections let the sky through: the hero keeps only its glows (moved to a layer that fades out
+   at the bottom), the avatar strip is clear, bands are translucent (see .section.band). */
+.hero,[data-theme="light"] .hero{background:none;}
+.hero::after{display:none;}
+.hero-visual{background:radial-gradient(ellipse at 72% 58%,rgba(35,133,191,.18) 0%,rgba(35,133,191,0) 38%),radial-gradient(ellipse at 82% 22%,rgba(13,83,151,.24) 0%,rgba(13,83,151,0) 34%);-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 140px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 140px),transparent);}
+[data-theme="light"] .hero-visual{background:radial-gradient(ellipse at 70% 52%,rgba(63,143,196,.16) 0%,rgba(63,143,196,0) 38%),radial-gradient(ellipse at 86% 18%,rgba(32,191,169,.10) 0%,rgba(32,191,169,0) 30%);}
+.hero-overlay{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 90px),transparent);}
+.character-bridge{background:none;}
+.bridge-glow{background:radial-gradient(ellipse 42% 46% at 50% 58%,color-mix(in srgb,var(--teal) 12%,transparent),transparent 100%);}
+/* Moon (dark) and sun (light) in the hero. */
+.celestial{position:absolute;top:clamp(110px,17vh,170px);right:clamp(40px,11vw,190px);width:clamp(76px,8.5vw,124px);aspect-ratio:1;z-index:1;pointer-events:none;animation:skyRise 1.8s cubic-bezier(.2,.8,.2,1) .2s both;}
+.celestial span{position:absolute;inset:0;border-radius:50%;transition:transform 1.4s cubic-bezier(.22,.8,.2,1),opacity 1.1s ease;}
+.moon{background:radial-gradient(circle at 34% 32%,#FFFFFF 0%,#E8EFF8 38%,#C9D6E6 70%,#AFC0D6 100%);box-shadow:0 0 34px 6px rgba(170,205,255,.30),0 0 110px 28px rgba(90,150,240,.16);}
+.moon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 62% 58%,rgba(120,140,170,.34) 0 9%,transparent 10%),radial-gradient(circle at 38% 66%,rgba(120,140,170,.26) 0 6%,transparent 7%),radial-gradient(circle at 56% 30%,rgba(120,140,170,.22) 0 5%,transparent 6%);}
+.moon::after{content:'';position:absolute;inset:-60%;border-radius:50%;background:radial-gradient(circle,rgba(150,195,255,.24),transparent 62%);animation:moonGlow 5s ease-in-out infinite;}
+.sun{background:radial-gradient(circle at 40% 38%,#FFF6D6 0%,#FFD978 45%,#FFB84A 100%);box-shadow:0 0 46px 12px rgba(255,196,90,.38),0 0 140px 40px rgba(255,214,120,.20);}
+.sun::after{content:'';position:absolute;inset:-55%;border-radius:50%;background:repeating-conic-gradient(rgba(255,206,110,.22) 0deg 6deg,transparent 6deg 18deg);-webkit-mask-image:radial-gradient(circle,transparent 34%,#000 37%,transparent 70%);mask-image:radial-gradient(circle,transparent 34%,#000 37%,transparent 70%);animation:sunSpin 60s linear infinite;}
+.moon,[data-theme="light"] .sun{transform:translateY(0);opacity:1;}
+.sun,[data-theme="light"] .moon{transform:translateY(130%) scale(.85);opacity:0;}
+@keyframes skyRise{from{transform:translateY(46px);opacity:0;}to{transform:none;opacity:1;}}
+@keyframes moonGlow{0%,100%{opacity:.55;}50%{opacity:1;}}
+@keyframes sunSpin{to{transform:rotate(360deg);}}
+@media (max-width:700px){
+  /* Phones: the title fills the width, so the moon / sun peeks in from the right edge above it. */
+  .celestial{top:36px;right:-12px;width:58px;}
+  .sky-lines{height:34vh;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sky-lines,.sky-twinkle,.celestial,.moon::after,.sun::after{animation:none!important;}
+  .celestial span,.sky-day,.sky-night{transition:none!important;}
+}
 
 .reveal{will-change:opacity,transform;}
 .floatbtns{transition:bottom .28s ease;}
@@ -723,6 +780,12 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 </style>
 </head>
 <body>
+<div class="sky" aria-hidden="true">
+  <div class="sky-day"></div>
+  <div class="sky-night"><div class="sky-stars"></div><div class="sky-stars sky-twinkle"></div></div>
+  <svg class="sky-lines sky-lines-top" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path class="glow" d="M-80 250C220 170 480 330 760 240S1250 110 1520 200"/><path d="M-80 250C220 170 480 330 760 240S1250 110 1520 200"/><path class="glow alt" d="M-80 300C260 240 560 380 860 300S1290 170 1520 250"/><path class="alt" d="M-80 300C260 240 560 380 860 300S1290 170 1520 250"/></svg>
+  <svg class="sky-lines sky-lines-bottom" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path class="glow alt" d="M-80 140C300 80 600 260 900 170S1300 60 1520 130"/><path class="alt" d="M-80 140C300 80 600 260 900 170S1300 60 1520 130"/><path class="glow" d="M-80 200C280 150 640 300 940 220S1320 130 1520 190"/><path d="M-80 200C280 150 640 300 940 220S1320 130 1520 190"/></svg>
+</div>
 
 <div class="scroll-progress" aria-hidden="true"></div>
 <div class="toast" id="toast"></div>
@@ -752,6 +815,7 @@ input[aria-invalid='true']{border-color:#B42318!important;box-shadow:0 0 0 3px r
 <div class="mobile-menu" id="mobileMenu" aria-hidden="true"><a href="#home">Accueil</a><a href="#menu">Produits</a><a href="#about">À Propos</a><a href="#avis">Avis</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div>
 
 <section class="hero" id="home">
+  <div class="celestial" aria-hidden="true"><span class="moon"></span><span class="sun"></span></div>
   <div class="hero-visual" id="heroVisual" aria-hidden="true">
     <div class="hero-atmosphere" id="heroAtmosphere"></div>
   </div>
