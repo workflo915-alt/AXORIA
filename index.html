@@ -28,7 +28,9 @@
 <meta name="theme-color" content="#0A1220">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Fonts load without blocking the first paint: text shows at once in the system font, then switches. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap"></noscript>
 <link rel="preconnect" href="https://gdemgpkkrmpridqgjmtx.supabase.co" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous" async id="supabaseLib"></script>
 <script type="application/ld+json">
@@ -973,7 +975,7 @@ AXORIA — Feel Better, Every Day.</p>
       <span class="eyebrow">Contact</span>
       <h2 id="contactTitle">Parlons-en</h2>
     </div>
-    <div class="info-cards reveal" id="infoCards" style="margin-bottom:28px;"><div class="info-card"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3z"/></svg><div><h5>WhatsApp</h5><p>06 21 57 51 15</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2-.5c1 .3 2 .5 3 .7a2 2 0 0 1 1.7 2z"/></svg><div><h5>Téléphone</h5><p>06 21 57 51 15</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg><div><h5>Instagram</h5><p>@axoria_store</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg><div><h5>Livraison</h5><p>Gratuite partout au Maroc</p></div></div></div>
+    <div class="info-cards reveal" id="infoCards" style="margin-bottom:28px;"><div class="info-card"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3z"/></svg><div><h5>WhatsApp</h5><p>06 21 57 51 15</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2-.5c1 .3 2 .5 3 .7a2 2 0 0 1 1.7 2z"/></svg><div><h5>Téléphone</h5><p>06 21 57 51 15</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg><div><h5>Instagram</h5><p>@axoria.ma</p></div></div><div class="info-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg><div><h5>Livraison</h5><p>Gratuite partout au Maroc</p></div></div></div>
     <div class="contact-grid">
       <a class="mapbox reveal" id="mapCard" href="https://www.google.com/maps?q=33.969167,-6.821228" target="_blank" rel="noopener">
         <div class="map-glass" id="mapGlassLbl">📍 AXORIA</div>
@@ -1016,7 +1018,7 @@ AXORIA — Feel Better, Every Day.</p>
       <div>
         <div class="fbrand" id="footBrandSlot"><img src="/assets/brand/axoria-logo-128.webp" alt="AXORIA" width="58" height="58" style="width:58px;height:58px;object-fit:contain;display:block;border-radius:50%;" decoding="async"><span>AXORIA</span></div>
         <p class="fdesc" id="footDesc">Marque marocaine de bien-être et de confort au quotidien, livrée partout au Maroc.</p>
-        <div class="social-row" id="socialRow"><a href="https://www.instagram.com/axoria_store" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3z"/></svg></a></div>
+        <div class="social-row" id="socialRow"><a href="https://www.instagram.com/axoria.ma" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 3.5 16.8L2 22l5.3-1.4A8.8 8.8 0 1 0 17.6 6.3z"/></svg></a></div>
       </div>
       <div><h5 id="fh1">Liens rapides</h5><ul class="flinks" id="footQuick"><li><a href="#home">Accueil</a></li><li><a href="#menu">Produits</a></li><li><a href="#about">À Propos</a></li><li><a href="#avis">Avis</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li><li><a href="guides.html">Guides</a></li></ul></div>
       <div><h5 id="fh2">Informations</h5><ul class="flinks" id="footInfo"><li><a href="shipping-returns.html">Livraison & Retours</a></li><li><a href="privacy.html">Confidentialité</a></li><li><a href="terms.html">Conditions générales</a></li></ul></div>
@@ -1276,7 +1278,7 @@ const I18N = {
       ["Combien de temps prend la livraison ?","La livraison est gratuite et prend en général 24 à 72h selon votre ville. Contactez-nous par WhatsApp pour une estimation précise vers votre région."],
       ["Puis-je commander plusieurs produits ensemble ?","Bien sûr — ajoutez les produits AXORIA de votre choix au panier, ils seront regroupés dans une seule commande."]],
     contactTitle:'Parlons-en',
-    infoCards:[["WhatsApp","06 21 57 51 15"],["Téléphone","06 21 57 51 15"],["Instagram","@axoria_store"],["Livraison","Gratuite partout au Maroc"]],
+    infoCards:[["WhatsApp","06 21 57 51 15"],["Téléphone","06 21 57 51 15"],["Instagram","@axoria.ma"],["Livraison","Gratuite partout au Maroc"]],
     lblFullname:'Nom complet', lblPhone:'Téléphone', lblEmail:'Email', lblSubject:'Sujet', lblMessage:'Message',
     waOrderBtn:'Commander via WhatsApp', waCartBtn:'Commander maintenant', mapCta:'Voir sur Google Maps',
     footDesc:'Marque marocaine de bien-être et de confort au quotidien, livrée partout au Maroc.',
@@ -1340,7 +1342,7 @@ const I18N = {
       ["How long does delivery take?","Delivery is free and usually takes 24 to 72 hours depending on your city. Contact us on WhatsApp for an accurate estimate for your region."],
       ["Can I order several products together?","Of course — add the AXORIA products you want to your cart and they will be grouped into one order."]],
     contactTitle:"Let's talk",
-    infoCards:[["WhatsApp","06 21 57 51 15"],["Phone","06 21 57 51 15"],["Instagram","@axoria_store"],["Delivery","Free across Morocco"]],
+    infoCards:[["WhatsApp","06 21 57 51 15"],["Phone","06 21 57 51 15"],["Instagram","@axoria.ma"],["Delivery","Free across Morocco"]],
     lblFullname:'Full Name', lblPhone:'Phone', lblEmail:'Email', lblSubject:'Subject', lblMessage:'Message',
     waOrderBtn:'Order via WhatsApp', waCartBtn:'Order Now', mapCta:'View on Google Maps',
     footDesc:'Moroccan wellness and everyday comfort brand, delivered across Morocco.',
@@ -1404,7 +1406,7 @@ const I18N = {
       ["كم من الوقت يستغرق التوصيل؟","التوصيل مجاني ويستغرق عادة من 24 إلى 72 ساعة حسب مدينتك؛ تواصل معنا عبر واتساب لتقدير دقيق لمنطقتك."],
       ["هل يمكنني طلب عدة منتجات معاً؟","بالتأكيد — أضف منتجات أكسوريا التي تريدها إلى السلة وسيتم تجميعها في طلب واحد."]],
     contactTitle:'تواصل معنا',
-    infoCards:[["واتساب","06 21 57 51 15"],["الهاتف","06 21 57 51 15"],["انستغرام","@axoria_store"],["التوصيل","مجاني لجميع مدن المغرب"]],
+    infoCards:[["واتساب","06 21 57 51 15"],["الهاتف","06 21 57 51 15"],["انستغرام","@axoria.ma"],["التوصيل","مجاني لجميع مدن المغرب"]],
     lblFullname:'الاسم الكامل', lblPhone:'الهاتف', lblEmail:'البريد الإلكتروني', lblSubject:'الموضوع', lblMessage:'الرسالة',
     waOrderBtn:'اطلب عبر واتساب', waCartBtn:'اطلب الآن', mapCta:'شاهد على خرائط جوجل',
     footDesc:'علامة مغربية للعناية والراحة اليومية، تُوصَّل لجميع مدن المغرب.',
@@ -1682,8 +1684,8 @@ function applyStaticText(){
     const icns=[ICONS.leaf,ICONS.bolt,ICONS.shield,ICONS.chat];
     return `<div class="pillar">${icns[i]}<span>${p}</span></div>`;
   }).join('');
-  const statVals = ['COD','24–72h','7j/7','Maroc'];
-  document.getElementById('statsRow').innerHTML = t.statsLbl.map((l,i)=>`<div class="stat"><div class="num" data-final="${statVals[i]}">0</div><div class="lbl">${l}</div></div>`).join('');
+  const statVals = ({fr:['COD','24–72h','7j/7','Maroc'], en:['COD','24–72h','7/7','Morocco'], ar:['COD','24–72h','7/7','المغرب']})[currentLang] || ['COD','24–72h','7j/7','Maroc'];
+  document.getElementById('statsRow').innerHTML = t.statsLbl.map((l,i)=>`<div class="stat"><div class="num" data-final="${statVals[i]}">${statVals[i]}</div><div class="lbl">${l}</div></div>`).join('');
   document.getElementById('revEyebrow').textContent = t.revEyebrow;
   document.getElementById('revTitle').textContent = t.revTitle;
   document.getElementById('revFormTitle').textContent = t.revFormTitle;
@@ -1735,7 +1737,7 @@ function applyStaticText(){
   document.getElementById('orderReassure').innerHTML = t.orderReassure.map(x=>`<span>${x}</span>`).join('');
   const modalTrust = document.getElementById('modalTrust');
   if(modalTrust) modalTrust.innerHTML = t.trustBadges.map(x=>`<span>${x}</span>`).join('');
-  document.getElementById('socialRow').innerHTML = `<a href="https://www.instagram.com/axoria_store" target="_blank" rel="noopener" aria-label="Instagram">${ICONS.ig}</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp">${ICONS.whatsapp}</a>`;
+  document.getElementById('socialRow').innerHTML = `<a href="https://www.instagram.com/axoria.ma" target="_blank" rel="noopener" aria-label="Instagram">${ICONS.ig}</a><a href="https://wa.me/212621575115" target="_blank" rel="noopener" aria-label="WhatsApp">${ICONS.whatsapp}</a>`;
   document.getElementById('infoCards').innerHTML = t.infoCards.map((c,i)=>{
     const icns=[ICONS.whatsapp,ICONS.phone,ICONS.ig,ICONS.truck];
     return `<div class="info-card">${icns[i]}<div><h5>${c[0]}</h5><p>${c[1]}</p></div></div>`;
@@ -1763,12 +1765,14 @@ function attachFaqEvents(){
   });
 }
 function animateStats(){
+  /* Only plain numbers count up. Labels such as "24–72h" or "7j/7" are shown as they are,
+     so they never sit at "0" when the animation can't run (no scroll, screenshots, crawlers). */
   document.querySelectorAll('.stat .num').forEach(el=>{
-    const final = el.getAttribute('data-final');
-    const numMatch = final.match(/[\d.]+/);
-    if(!numMatch) { el.textContent = final; return; }
-    const num = parseFloat(numMatch[0]);
-    const suffix = final.replace(numMatch[0],'');
+    const final = el.getAttribute('data-final') || '';
+    el.textContent = final;
+    if(!/^\d+(\.\d+)?$/.test(final) || !('IntersectionObserver' in window)) return;
+    const num = parseFloat(final);
+    const suffix = '';
     let started = false;
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{
@@ -2403,6 +2407,15 @@ function openProductFromUrl(){
   if(buy) buyNow(String(id), 1); else openModal(String(id));
 }
 
+const LANGS = ['fr','en','ar'];
+function pickStartLang(){
+  let fromUrl = '', saved = '';
+  try{ fromUrl = String(new URLSearchParams(location.search).get('lang') || '').toLowerCase(); }catch(e){}
+  try{ saved = localStorage.getItem('axoria_lang') || ''; }catch(e){}
+  if(LANGS.includes(fromUrl)){ try{ localStorage.setItem('axoria_lang', fromUrl); }catch(e){} return fromUrl; }
+  return LANGS.includes(saved) ? saved : 'fr';
+}
+
 function readLocalJSON(key){
   try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
 }
@@ -2448,6 +2461,10 @@ async function init(){
   if(Array.isArray(cachedCats) && cachedCats.length){ CATEGORIES = cachedCats; }
   REVIEWS = PRERENDERED_REVIEWS.slice();
 
+  /* Language: ?lang=ar|en|fr in the link (ads in Darija or Arabic) wins, then the visitor's
+     last choice, then French. */
+  currentLang = pickStartLang();
+  { const sel = document.getElementById('langSel'); if(sel) sel.value = currentLang; }
   applyStaticText();
   if(PRODUCTS.length){ renderCatFilters(); renderMenuGrid(); openProductFromUrl(); openReviewFromUrl(); }
   renderReviews();
@@ -2539,6 +2556,7 @@ function updateThemeIcon(){
 function bindEvents(){
   document.getElementById('langSel').onchange = (e)=>{
     currentLang = e.target.value;
+    try{ localStorage.setItem('axoria_lang', currentLang); }catch(err){}
     applyStaticText(); renderCatFilters(); renderMenuGrid(); renderReviews(); renderStarInput(); renderCart(); updateClock();
   };
   document.getElementById('themeBtn').onclick = ()=>{

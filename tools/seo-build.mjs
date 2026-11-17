@@ -253,6 +253,7 @@ function productPageHtml(p, page, ctx) {
   const { bullets, paragraphs, details } = descriptionParts(p);
   const url = `${SITE}${page.url}`;
   const inStock = p.stock === undefined || p.stock === null || Number(p.stock) > 0;
+  const maxQty = p.stock === undefined || p.stock === null ? 10 : Math.max(1, Math.min(10, Number(p.stock) || 1));
   const image = page.imageUrl ? (page.imageUrl.startsWith('http') ? page.imageUrl : `${SITE}${page.imageUrl}`) : `${SITE}/assets/brand/og-axoria.jpg`;
   const summary = bullets.length
     ? `${bullets.slice(0, 2).map((b, i) => (i ? b.charAt(0).toLowerCase() + b.slice(1) : b)).join(', ')}.`
@@ -324,7 +325,8 @@ function productPageHtml(p, page, ctx) {
 <meta name="theme-color" content="#0A1220">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"></noscript>
 <script type="application/ld+json">${scriptJson(schema)}</script>
 <style>
 :root{--bg:#0A1220;--surface:#101E33;--line:#1E2E47;--text:#EAF1FB;--soft:#9FB0C8;--blue:#2F80ED;--teal:#20BFA9;--gold:#C9A227;--wa:#1FA855}
@@ -369,13 +371,35 @@ section p{color:var(--soft);margin:0 0 12px}
 .others span{display:block;color:var(--gold);font-size:14px;margin-top:4px}
 .st{color:#FFC107;letter-spacing:1px}
 .rating{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;color:var(--soft);font-size:14px;font-weight:600;text-decoration:none}
-.rating[hidden]{display:none}
+.rating[hidden],section[hidden]{display:none}
 section p.rating-big{font-size:17px;font-weight:700;color:var(--text)}
 .reviews{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:12px}
 .reviews li{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface)}
 section .reviews li p{margin:6px 0 0;color:var(--text)}
 .reviews time{color:var(--soft);font-size:13px;margin-left:6px}
 .btn.ghost{display:inline-block;border:1px solid var(--line);color:var(--text);background:transparent;padding:12px 18px;font-size:15px}
+[hidden]{display:none!important}
+.order{display:grid;gap:6px;margin:18px 0 12px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.order h2{font-size:16px;margin:0 0 6px}
+.order label{font-size:13px;font-weight:700;color:var(--soft);margin-top:6px}
+.order input,.order textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.order textarea{resize:vertical}
+.order input:focus,.order textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+.order input[aria-invalid="true"]{border-color:#F87171}
+.qty-row{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:4px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.qty button{width:44px;height:42px;border:0;background:transparent;color:var(--text);font-size:20px;cursor:pointer}
+.qty button:disabled{opacity:.35;cursor:default}
+.qty output{min-width:34px;text-align:center;font-weight:800}
+.form-error{color:#F87171;font-size:14px;font-weight:600;margin:4px 0 0}
+.form-error:empty{display:none}
+.order .btn{width:100%;border:0;cursor:pointer;font:inherit;font-weight:800;font-size:16px;margin-top:8px}
+.order .btn[disabled]{opacity:.7;cursor:wait}
+.reassure{font-size:12.5px;color:var(--soft);text-align:center;margin:6px 0 0}
+#pWa{margin-top:10px}
+.sticky{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:30;display:block;text-align:center;padding:15px 18px;border-radius:14px;font-weight:800;color:#fff;text-decoration:none;background:linear-gradient(100deg,#0A4D9B,var(--blue));box-shadow:0 10px 30px rgba(0,0,0,.45)}
+@media (min-width:761px){.sticky{display:none!important}}
+@media (max-width:760px){body{padding-bottom:84px}}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--soft)}
 footer a{margin:0 8px;text-decoration:none}
 @media (max-width:760px){.product{grid-template-columns:1fr;gap:22px}.top nav{gap:12px;font-size:13px}}
@@ -398,15 +422,31 @@ footer a{margin:0 8px;text-decoration:none}
       <span class="stock ${inStock ? 'in' : 'out'}" id="pStock">${inStock ? 'En stock — livraison gratuite en 24 à 72h' : 'Rupture de stock'}</span>
 ${paragraphs.map((t) => `      <p class="lead">${esc(t)}</p>`).join('\n')}
 ${bullets.length ? `      <ul class="ticks">${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
-      <div class="ctas">
-        ${inStock ? `<a class="btn primary" id="pOrder" href="/?commander=${encodeURIComponent(p.id)}">Commander maintenant</a>` : `<span class="btn disabled" id="pOrder">Rupture de stock</span>`}
-        <a class="btn wa" id="pWa" href="${esc(waLink)}" target="_blank" rel="noopener">${inStock ? 'Commander sur WhatsApp' : 'Être prévenu(e) sur WhatsApp'}</a>
-      </div>
+      <form class="order" id="pForm" novalidate${inStock ? '' : ' hidden'}>
+        <h2>Commander — paiement à la livraison</h2>
+        <div class="qty-row"><span id="qLabel">Quantité</span><div class="qty" role="group" aria-labelledby="qLabel"><button type="button" id="qMinus" aria-label="Retirer un article" disabled>−</button><output id="qVal">1</output><button type="button" id="qPlus" aria-label="Ajouter un article"${maxQty > 1 ? '' : ' disabled'}>+</button></div></div>
+        <label for="oName">Nom complet</label>
+        <input id="oName" type="text" autocomplete="name" maxlength="120" required>
+        <label for="oPhone">Téléphone</label>
+        <input id="oPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="06 XX XX XX XX" required aria-describedby="oError">
+        <label for="oCity">Ville</label>
+        <input id="oCity" type="text" list="maCities" autocomplete="address-level2" maxlength="120" required>
+        <datalist id="maCities">${ctx.cities || ''}</datalist>
+        <label for="oAddress">Adresse</label>
+        <input id="oAddress" type="text" autocomplete="street-address" maxlength="300" required>
+        <label for="oNotes">Notes (optionnel)</label>
+        <textarea id="oNotes" rows="2" maxlength="1000"></textarea>
+        <p class="form-error" id="oError" role="alert" aria-live="polite"></p>
+        <button class="btn primary" id="oSubmit" type="submit">Valider ma commande · <span id="oTotal">${esc(price(p.price))}</span></button>
+        <p class="reassure">Paiement à la livraison, en espèces · Livraison gratuite en 24 à 72h · Aucun paiement en ligne</p>
+      </form>
+      <span class="btn disabled" id="pSoldOut"${inStock ? ' hidden' : ''}>Rupture de stock</span>
+      <a class="btn wa" id="pWa" href="${esc(waLink)}" target="_blank" rel="noopener">${inStock ? 'Commander sur WhatsApp' : 'Être prévenu(e) sur WhatsApp'}</a>
       <ul class="trust"><li>Livraison gratuite partout au Maroc</li><li>Paiement à la livraison, en espèces</li><li><a href="/shipping-returns.html">Retour possible sous 7 jours</a></li><li>Conseils et suivi sur WhatsApp 7j/7</li></ul>
     </div>
   </article>
 ${details.length ? `  <section>\n    <h2>Description</h2>\n${details.map((t) => `    <p>${esc(t)}</p>`).join('\n')}\n  </section>` : ''}
-  <section id="avis">
+  <section id="avis"${reviews.length ? '' : ' hidden'}>
     <h2>Avis clients</h2>
     <div id="pReviews">${reviewsHtml(reviews, avg)}</div>
     <a class="btn ghost" href="/?avis=${encodeURIComponent(p.id)}">Donner mon avis</a>
@@ -421,27 +461,108 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
     <ul class="others">${guidesFor(p).map((g) => `<li><a href="${g.href}">${esc(g.title)}<span>Lire le guide →</span></a></li>`).join('')}</ul>
   </section>
 </main>
+<a class="sticky" id="pSticky" href="#pForm" hidden>Commander · <span id="pStickyPrice">${esc(price(p.price))}</span></a>
 <footer>
   <a href="/">Boutique</a><a href="/guides.html">Guides</a><a href="/shipping-returns.html">Livraison &amp; retours</a><a href="/privacy.html">Confidentialité</a><a href="/terms.html">Conditions générales</a>
   <p>© ${new Date().getFullYear()} AXORIA — Feel Better, Every Day.</p>
 </footer>
 <script>
-/* Keeps price and stock exact if the catalog changed since this page was generated. */
+/* Order form: the shop's order path without leaving the page. place_order checks price and
+   stock on the server; /merci.html then shows the order and sends the browser Purchase with
+   the server-side event ID, so Meta counts it once. The catalog refresh keeps price and stock
+   exact if they changed since this page was generated. */
 (function(){
-  var ID=${JSON.stringify(String(p.id))};
-  fetch(${JSON.stringify(`${SUPABASE_URL}/rest/v1/axoria_store?select=value&key=eq.axoria_products`)},{headers:{apikey:${JSON.stringify(SUPABASE_KEY)}}})
-    .then(function(r){return r.ok?r.json():null;})
+  var ID=${JSON.stringify(String(p.id))}, NAME=${JSON.stringify(page.name)}, IMG=${JSON.stringify(page.imageUrl || '')};
+  var API=${JSON.stringify(SUPABASE_URL)}, KEY=${JSON.stringify(SUPABASE_KEY)};
+  var $=function(id){return document.getElementById(id);};
+  var form=$('pForm'), sticky=$('pSticky');
+  if(!form) return;
+  var st={price:${Number(p.price) || 0}, max:${maxQty}, qty:1, started:false, sending:false};
+  var dh=function(n){ return (Math.round(Number(n)*100)/100)+' DH'; };
+  function render(){
+    $('qVal').textContent=st.qty;
+    $('qMinus').disabled=st.qty<=1; $('qPlus').disabled=st.qty>=st.max;
+    var total=$('oTotal'); if(total) total.textContent=dh(st.price*st.qty);
+    var sp=$('pStickyPrice'); if(sp) sp.textContent=dh(st.price);
+  }
+  function setAvailable(ok){
+    form.hidden=!ok; var so=$('pSoldOut'); if(so) so.hidden=ok;
+    if(!ok&&sticky) sticky.hidden=true;
+  }
+  $('qMinus').addEventListener('click',function(){ if(st.qty>1){ st.qty--; render(); } });
+  $('qPlus').addEventListener('click',function(){ if(st.qty<st.max){ st.qty++; render(); } });
+  /* First touch of the form = the shop's "Commander" click: AddToCart then InitiateCheckout. */
+  function begin(){
+    if(st.started) return; st.started=true;
+    var value=st.price*st.qty, contents=[{id:ID,quantity:st.qty,item_price:st.price}];
+    if(window.axTrack){
+      window.axTrack('AddToCart',{content_ids:[ID],content_type:'product',content_name:NAME,value:value,currency:'MAD',contents:contents});
+      window.axTrack('InitiateCheckout',{value:value,currency:'MAD',num_items:st.qty,content_ids:[ID],contents:contents});
+    }
+  }
+  form.addEventListener('focusin',begin);
+  function phoneMA(v){
+    v=String(v||'').trim().replace(/[\\s().-]/g,'');
+    if(v.indexOf('00212')===0) v='0'+v.slice(5); else if(v.indexOf('+212')===0) v='0'+v.slice(4); else if(v.indexOf('212')===0) v='0'+v.slice(3);
+    v=v.replace(/\\D/g,'');
+    return /^0[5-7]\\d{8}$/.test(v)?v:'';
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(st.sending) return;
+    var err=$('oError'), ph=$('oPhone');
+    err.textContent=''; ph.removeAttribute('aria-invalid');
+    var name=$('oName').value.trim(), city=$('oCity').value.trim(), address=$('oAddress').value.trim(), notes=$('oNotes').value.trim();
+    if(!name||!ph.value.trim()||!city||!address){ err.textContent='Merci de remplir le nom, le téléphone, la ville et l’adresse.'; return; }
+    var phone=phoneMA(ph.value);
+    if(!phone){ ph.setAttribute('aria-invalid','true'); err.textContent='Veuillez saisir un numéro marocain valide (ex. 06 12 34 56 78 ou +212 6 12 34 56 78).'; ph.focus(); return; }
+    ph.value=phone; begin();
+    var btn=$('oSubmit'), label=btn.innerHTML;
+    st.sending=true; btn.disabled=true; btn.textContent='Envoi en cours…';
+    fetch(API+'/rest/v1/rpc/place_order',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({p_customer_name:name,p_phone:phone,p_city:city,p_address:address,p_notes:notes||null,p_items:[{product_id:ID,qty:st.qty}]})})
+      .then(function(r){ return r.json().catch(function(){ return null; }).then(function(j){ if(!r.ok) throw new Error((j&&j.message)||('HTTP '+r.status)); return j; }); })
+      .then(function(j){
+        var placed=Array.isArray(j)?j[0]:j;
+        var uuid=String((placed&&placed.order_id)||''), code=String((placed&&(placed.order_code||placed.order_id))||'');
+        try{ sessionStorage.setItem('axoria_last_order',JSON.stringify({id:uuid,code:code,value:Number((placed&&placed.order_total)||st.price*st.qty),currency:'MAD',lang:'fr',eventID:uuid?'purchase-'+uuid:'',items:[{id:ID,name:NAME,qty:st.qty,price:st.price,img:IMG}]})); }catch(x){}
+        location.href='/merci.html'+(code?'?commande='+encodeURIComponent(code):'');
+      })
+      .catch(function(x){
+        var m=String((x&&x.message)||'');
+        err.textContent=/Insufficient stock|Product unavailable|Product not found/.test(m)
+          ? 'La quantité demandée n’est plus disponible. Actualisez la page puis réessayez.'
+          : 'Erreur lors de l’envoi. Merci de réessayer ou de nous contacter sur WhatsApp.';
+        st.sending=false; btn.disabled=false; btn.innerHTML=label; render();
+      });
+  });
+  /* Phones: a "Commander" bar stays at the bottom while the form is out of view. */
+  if(sticky&&'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){ sticky.hidden=es[0].isIntersecting||form.hidden; }).observe(form);
+    sticky.addEventListener('click',function(e){
+      e.preventDefault();
+      form.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){ try{ $('oName').focus({preventScroll:true}); }catch(x){} },600);
+    });
+  }
+  render();
+  fetch(API+'/rest/v1/axoria_store?select=value&key=eq.axoria_products',{headers:{apikey:KEY}})
+    .then(function(r){ return r.ok?r.json():null; })
     .then(function(rows){
       var list=rows&&rows[0]&&rows[0].value; if(!Array.isArray(list)) return;
-      var p=list.filter(function(x){return String(x.id)===ID;})[0];
-      var order=document.getElementById('pOrder'), stock=document.getElementById('pStock');
-      if(!p||p.visible===false){ stock.className='stock out'; stock.textContent='Produit indisponible'; order.outerHTML='<a class="btn primary" id="pOrder" href="/#menu">Voir les produits disponibles</a>'; return; }
-      document.getElementById('pPrice').textContent=p.price+' DH';
-      var old=document.getElementById('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
+      var p=list.filter(function(x){ return String(x.id)===ID; })[0], stock=$('pStock');
+      if(!p||p.visible===false||(p.status&&p.status!=='active')){
+        stock.className='stock out'; stock.textContent='Produit indisponible'; setAvailable(false);
+        var so=$('pSoldOut'); if(so) so.outerHTML='<a class="btn primary" id="pSoldOut" href="/#menu">Voir les produits disponibles</a>';
+        return;
+      }
+      st.price=Number(p.price)||st.price;
+      $('pPrice').textContent=st.price+' DH';
+      var old=$('pOld'); if(old){ if(p.oldPrice) old.textContent=p.oldPrice+' DH'; else old.remove(); }
       var inStock=p.stock==null||Number(p.stock)>0;
+      st.max=p.stock==null?10:Math.max(1,Math.min(10,Number(p.stock)||1));
+      if(st.qty>st.max) st.qty=st.max;
       stock.className='stock '+(inStock?'in':'out'); stock.textContent=inStock?'En stock — livraison gratuite en 24 à 72h':'Rupture de stock';
-      if(inStock&&order.tagName!=='A') order.outerHTML='<a class="btn primary" id="pOrder" href="/?commander='+encodeURIComponent(ID)+'">Commander maintenant</a>';
-      if(!inStock&&order.tagName==='A') order.outerHTML='<span class="btn disabled" id="pOrder">Rupture de stock</span>';
+      setAvailable(inStock); render();
     })
     .catch(function(){});
 })();
@@ -463,13 +584,15 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
         return '<li><span class="st">'+stars(r.rating)+'</span> <strong>'+esc(r.name)+'</strong>'+(day?' <time>'+day+'</time>':'')+'<p>'+esc(r.comment)+'</p></li>';
       }).join('')+'</ul>';
       if(link){ link.hidden=false; link.innerHTML='<span class="st">'+stars(avg)+'</span> '+avg.toFixed(1)+' · '+n+' avis'; }
+      var sec=document.getElementById('avis'); if(sec) sec.hidden=false;
     })
     .catch(function(){});
 })();
 </script>
 <script>
 /* Ads: product pages are where ads land. Remember the Meta ad click (fbclid) for the order
-   that may follow, and on the live site only tell the Pixel which product was viewed. */
+   that may follow, and on the live site tell the Pixel which product was viewed and when
+   the order form was started. */
 (function(){
   var now=Date.now(), fbclid=new URLSearchParams(location.search).get('fbclid');
   var get=function(n){ var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)')); return m?m[1]:''; };
@@ -478,12 +601,19 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
     if(fbclid && get('_fbc').slice(-fbclid.length)!==fbclid) set('_fbc','fb.1.'+now+'.'+fbclid);
     if(!get('_fbp')) set('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*1e10));
   }catch(e){}
-  if(!/^(www\\.)?axoria\\.ma$/.test(location.hostname)) return;
+  /* window.axTrack(name, data): events from the order form. They wait in a queue until the
+     Pixel has started, so a quick visitor's first click is not lost. */
+  var queue=[], ready=false;
+  window.axTrack=function(name,data){ if(ready) window.fbq('track',name,data||{}); else queue.push([name,data||{}]); };
+  if(!/^(www\\.)?axoria\\.ma$/.test(location.hostname)){
+    window.axTrack=function(name,data){ try{ console.info('[AXORIA] '+name+' not sent (test host)',data); }catch(e){} };
+    return;
+  }
   fetch(${JSON.stringify(`${SUPABASE_URL}/rest/v1/axoria_store?select=value&key=eq.axoria_tracking`)},{headers:{apikey:${JSON.stringify(SUPABASE_KEY)}}})
     .then(function(r){return r.ok?r.json():[];})
     .then(function(rows){
       var cfg=(rows&&rows[0]&&rows[0].value)||{}, pixel=String(cfg.pixelId||'').trim();
-      if(!cfg.enabled||!/^\\d{5,30}$/.test(pixel)) return;
+      if(!cfg.enabled||!/^\\d{5,30}$/.test(pixel)){ window.axTrack=function(){}; queue.length=0; return; }
       var start=function(){
         if(!window.fbq){
           var n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};
@@ -494,6 +624,8 @@ ${others.length ? `  <section>\n    <h2>Autres produits AXORIA</h2>\n    <ul cla
         window.fbq('track','PageView');
         window.fbq('track','ViewContent',{content_ids:[${JSON.stringify(String(p.id))}],content_type:'product',content_name:${JSON.stringify(page.name)},value:${Number(p.price)},currency:'MAD'});
         var wa=document.getElementById('pWa'); if(wa) wa.addEventListener('click',function(){ window.fbq('track','Contact',{content_name:'WhatsApp'}); });
+        ready=true;
+        queue.splice(0).forEach(function(a){ window.fbq('track',a[0],a[1]); });
       };
       // Load the Pixel once the page is shown, so it never slows the product page down.
       if(document.readyState==='complete') setTimeout(start,1200); else addEventListener('load',function(){ setTimeout(start,1200); });
@@ -583,6 +715,8 @@ async function main() {
 
   // 4. Product pages (and removal of pages whose product is gone or hidden).
   const pageList = visible.map((p) => ({ id: String(p.id), url: pages[String(p.id)].url, name: pages[String(p.id)].name, price: p.price }));
+  // Moroccan cities suggested in the product pages' order form: the shop checkout's list.
+  const cities = (html.match(/<datalist id="maCities">([\s\S]*?)<\/datalist>/) || [])[1] || '';
   const written = new Set();
   // Sitemap dates only move when a page really changed, so Google keeps trusting them.
   const prevLastmod = new Map([...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc><lastmod>([^<]+)<\/lastmod>/g)].map((m) => [m[1], m[2]]));
@@ -590,7 +724,7 @@ async function main() {
   for (const p of visible) {
     const page = { id: String(p.id), ...pages[String(p.id)] };
     const rel = page.url.slice(1);
-    const next = productPageHtml(p, page, { i18n, pages: pageList, policy, reviews });
+    const next = productPageHtml(p, page, { i18n, pages: pageList, policy, reviews, cities });
     const before = fs.existsSync(abs(rel)) ? fs.readFileSync(abs(rel), 'utf8').replace(/\r\n/g, '\n') : null;
     lastmod.set(page.url, (before === next && prevLastmod.get(`${SITE}${page.url}`)) || TODAY);
     eolOf.set(rel, '\n');
