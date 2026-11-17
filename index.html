@@ -510,8 +510,10 @@ footer p.fdesc{font-size:13.5px;color:#AEC2BB;line-height:1.6;max-width:280px;}
 /* ---------- Final visual polish ---------- */
 
 .character-bridge{position:relative;height:clamp(235px,27vw,320px);overflow:hidden;background:linear-gradient(180deg,var(--bg-alt) 0%,var(--bg) 86%);isolation:isolate;}
-.character-bridge::before{content:'';position:absolute;left:50%;bottom:7%;width:min(1000px,88vw);height:72px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(10,36,60,.16) 0%,rgba(10,36,60,.06) 42%,transparent 73%);filter:blur(2px);}
-[data-theme="dark"] .character-bridge::before{background:radial-gradient(ellipse,rgba(0,0,0,.42) 0%,rgba(0,0,0,.14) 42%,transparent 73%);}
+/* Ground shadow: one per avatar, created and moved by the fan script together with its avatar
+   (same place, depth, size and fade), instead of one fixed band under the whole strip. */
+.char-shadow{position:absolute;left:50%;z-index:1;aspect-ratio:5/1;border-radius:50%;pointer-events:none;will-change:transform,opacity;background:radial-gradient(closest-side,rgba(10,36,60,.30) 0%,rgba(10,36,60,.12) 58%,transparent 100%);}
+[data-theme="dark"] .char-shadow{background:radial-gradient(closest-side,rgba(0,0,0,.58) 0%,rgba(0,0,0,.22) 58%,transparent 100%);}
 .bridge-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--teal) 10%,transparent),transparent 43%);pointer-events:none;}
 .character-stage{position:absolute;inset:0;z-index:2;pointer-events:none;perspective:900px;perspective-origin:50% 58%;transform-style:preserve-3d;}
 .character-stage::after{display:none!important;}
@@ -547,7 +549,7 @@ body.cart-bar-visible .floatbtns{bottom:92px;}
   .character-bridge{height:235px;}
   .character-bridge .hero-character{width:96px!important;}
   .character-bridge .hero-character.is-main,.character-bridge .hero-character.is-featured{width:112px!important;}
-  .character-bridge .hero-character:nth-child(n+9){display:none;}
+  .character-bridge .hero-character:nth-of-type(n+9){display:none;}
   .character-bridge + .menu-section{padding-top:36px;}
   body.cart-bar-visible .floatbtns{bottom:104px;right:14px;}
   .floatbtns{right:14px;bottom:16px;}
@@ -2735,6 +2737,19 @@ init().catch(e=>console.error('init failed', e));
   // The first two cells are the athlete man + athlete woman.
   if(chars[1]) chars[1].classList.add('is-featured');
 
+  // Ground shadow under each avatar: a <span> placed just before it (spans keep the avatars'
+  // div:nth-of-type order), sized from the avatar here and moved with it in update().
+  const shadows=chars.map(el=>{const s=document.createElement('span');s.className='char-shadow';el.before(s);return s;});
+  const sizeShadows=()=>chars.forEach((el,i)=>{
+    const s=shadows[i], cs=getComputedStyle(el);
+    s.hidden=cs.display==='none';
+    if(s.hidden)return;
+    const w=el.offsetWidth*.62;
+    s.style.width=`${w.toFixed(1)}px`;
+    s.style.bottom=`${((parseFloat(cs.bottom)||0)-w/10).toFixed(1)}px`; // ellipse centred on the feet line
+  });
+  sizeShadows();
+
   // Sprite order alternates man / woman by lifestyle role.
   // Keep the athlete duo visible from the start, then fan men left and women right.
   const desktopTargets=[46,54,39,61,32,68,25,75,18,82,11,89,5,95];
@@ -2786,6 +2801,10 @@ init().catch(e=>console.error('init failed', e));
       el.style.left=`${xPct.toFixed(2)}%`;
       el.style.opacity=opacity.toFixed(3);
       el.style.transform=`translate3d(-50%,${y.toFixed(1)}px,${z.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+      const s=shadows[i];
+      s.style.left=el.style.left;
+      s.style.opacity=el.style.opacity;
+      s.style.transform=`translate3d(-50%,${y.toFixed(1)}px,${(z-1).toFixed(1)}px) scale(${scale.toFixed(3)})`;
     });
 
     atmosphere.style.transform=`translate3d(${(-p*8).toFixed(1)}px,${(-p*12).toFixed(1)}px,0) scale(${(1+p*.03).toFixed(3)})`;
@@ -2804,7 +2823,7 @@ init().catch(e=>console.error('init failed', e));
   if(reduced){interaction=.30;update();return;}
   update();
   window.addEventListener('scroll',request,{passive:true});
-  window.addEventListener('resize',request,{passive:true});
+  window.addEventListener('resize',()=>{sizeShadows();request();},{passive:true});
   hero.addEventListener('pointerdown',boost,{passive:true});
 })();
 </script>
